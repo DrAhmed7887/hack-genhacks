@@ -1,0 +1,55 @@
+{
+ "voice": "onwK4e9ZLuTAKqWW03F9",
+ "voice_name": "Daniel (ElevenLabs premade)",
+ "model": "eleven_multilingual_v2",
+ "speed": 1.08,
+ "display": {
+  "P2": "P2",
+  "R1": "R1",
+  "R2": "R2",
+  "C0": "C0",
+  "API": "API",
+  "APIs": "APIs",
+  "Open-Meteo": "Open-Meteo",
+  "PollenPlan": "PollenPlan"
+ },
+ "lines": [
+  {
+   "id": "s1",
+   "say": "When should a patient restart an already-prescribed pollen spray? And if our own alert rule fails to beat the forecast, would we say so?"
+  },
+  {
+   "id": "s2",
+   "say": "Open the live demo with zero keys. On Valencia's May twenty-eighth replay, pollen stays below threshold, so zero reminders fire. Switch to Madrid's May eighteenth grass spike: deterministic code drafts one hundred eleven reminders, and a nurse approves every batch."
+  },
+  {
+   "id": "s3",
+   "say": "Weather APIs model an eleven-kilometre grid; people breathe near point traps. We checked five years of Open-Meteo forecasts against Madrid, Basel, and Zürich traps — eight thousand seventy-six city-days."
+  },
+  {
+   "id": "s4",
+   "say": "Six rules were frozen in the repo before scoring: testing day rules P2 against R1, and pre-peak onset R2 against P2 and climatology across twenty-eight seasons — including missed seasons."
+  },
+  {
+   "id": "s5a",
+   "hold": 2.3,
+   "say": "Across eight hundred sixty-three high-pollen events, the API forecast caught forty-one point six percent. Our rule caught forty-one point zero. It did not beat the API."
+  },
+  {
+   "id": "s5b",
+   "say": "So the app uses the API forecast, and our work went into what happens next."
+  },
+  {
+   "id": "s6",
+   "say": "Code filters who gets a draft, and a nurse approves every batch. Thirty-four patients without a medicine on file are blocked automatically. Each draft names only the medicine class already on file. Not a medical device."
+  },
+  {
+   "id": "s7",
+   "say": "Honest limits: even the API forecast catches only thirteen point six percent of Madrid olive spikes. Pre-peak lead reflects look-ahead, not beating climatology. Valencia is never scored."
+  },
+  {
+   "id": "s8",
+   "say": "Zero unapproved sends, eighty-nine of two hundred filtered out by code, and ninety-five green tests. Open the live PollenPlan demo today — zero setup required."
+  }
+ ]
+}

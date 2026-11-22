@@ -454,5 +454,101 @@ class TestStaticAndWording:
             for m in re.finditer(r"beats the api", low):
                 before = low[max(0, m.start() - 3):m.start()]
                 assert before == "no ", f"{name}: un-negated 'beats the API' at {m.start()}"
+            # Only the signed negated safety line and the audit-log wording
+            # ("no drug, dose, or diagnosis added") may contain "diagnos".
+            scrubbed = low.replace("do not diagnose anything", "").replace("no drug, dose, or diagnosis added", "")
             for phrase in ("clinically validated", "diagnos", "recommend treatment"):
-                assert phrase not in low, f"{name}: forbidden phrase {phrase!r}"
+                assert phrase not in scrubbed, f"{name}: forbidden phrase {phrase!r}"
+
+
+def embedded_console_data(html: str) -> dict:
+    m = re.search(r'<script type="application/json" id="nurse-console-data">\n(.*?)\n</script>', html, re.S)
+    assert m, "nurse console data block not found"
+    return json.loads(m.group(1))
+
+
+class TestNurseConsole:
+    """The interactive console is injected from Python and must match src.reminders."""
+
+    @staticmethod
+    def _patients():
+        import csv
+
+        sys.path.insert(0, str(REPO_ROOT))
+        from src import reminders
+
+        with (REPO_ROOT / "data" / "patients.csv").open() as fh:
+            return reminders, [reminders.patient_from_row(r) for r in csv.DictReader(fh)]
+
+    def test_counts_and_ids_match_build_batch(self):
+        reminders, patients = self._patients()
+        data = embedded_console_data(load_demo_html())
+        assert data["roster_size"] == len(patients) == 200
+        by_id = {s["id"]: s for s in data["scenarios"]}
+        expected = {"valencia_control": None, "madrid_grass": "grass", "basel_birch": "birch", "olive_sim": "olive"}
+        assert set(by_id) == set(expected)
+        for sid, species in expected.items():
+            sc = by_id[sid]
+            batch = reminders.build_batch(patients, species) if species else []
+            assert sc["alerting_species"] == species
+            assert [d["patient_id"] for d in sc["drafts"]] == [m.patient_id for m in batch]
+            assert sc["eligible_count"] == len(batch)
+            assert sc["filtered_count"] == 200 - len(batch)
+            assert sum(sc["filtered_reasons"].values()) == sc["filtered_count"]
+            for d, m in zip(sc["drafts"], batch):
+                assert d["message"] == " ".join(m.lines)
+                assert d["med_class_on_file"] == m.medicine_class
+        assert by_id["valencia_control"]["eligible_count"] == 0
+        for sid in ("madrid_grass", "basel_birch", "olive_sim"):
+            assert by_id[sid]["eligible_count"] > 0
+
+    def test_valencia_control_below_thresholds(self):
+        data = embedded_console_data(load_demo_html())
+        sc = next(s for s in data["scenarios"] if s["id"] == "valencia_control")
+        assert sc["means"]["olive"] == 39.6 and sc["means"]["grass"] == 12.9
+        for sp, v in sc["means"].items():
+            assert v < data["thresholds"][sp]
+
+    def test_required_dom_ids_and_order(self):
+        html = load_demo_html()
+        for dom_id in ("replay-scenario-select", "nurse-draft-table-body", "approve-batch-btn", "nurse-audit-log"):
+            assert f'id="{dom_id}"' in html
+        assert html.index('id="nurse-console"') < html.index("<h2>Key Findings</h2>")
+
+    def test_render_check_passes(self):
+        assert render_demo.main(["--check"]) == 0
+
+    def test_no_network_added(self):
+        html = load_demo_html()
+        assert "fetch(" not in html and "XMLHttpRequest" not in html
+        assert not re.search(r"<script\b[^>]*\bsrc\s*=", html, re.I)
+
+
+# --- alerting_species: raw (unrounded) threshold semantics -------------------
+
+_ALERT = {"olive": 162, "grass": 35, "birch": 30}
+
+
+def test_alerting_species_uses_raw_not_rounded_means():
+    assert round(34.96, 1) == 35.0
+    means = {"olive": 0.0, "grass": 34.96, "birch": 0.0}
+    assert render_demo.alerting_species(means, _ALERT) is None
+
+
+def test_alerting_species_triggers_at_exact_threshold():
+    means = {"olive": 0.0, "grass": 35.0, "birch": 0.0}
+    assert render_demo.alerting_species(means, _ALERT) == "grass"
+
+
+def test_alerting_species_simultaneous_crossing_raises():
+    import pytest
+    means = {"olive": 162.0, "grass": 35.0, "birch": 0.0}
+    with pytest.raises(ValueError, match="Multiple species crossed"):
+        render_demo.alerting_species(means, _ALERT)
+
+
+def test_approve_batch_scope_disclosure_in_demo():
+    page = (DEMO_DIR / "index.html").read_text()
+    assert "Approve Entire Scenario Batch (" in page
+    assert "hidden by filter" in page
+    assert "hidden by filter at sign-off" in page

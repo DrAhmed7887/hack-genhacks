@@ -10,6 +10,8 @@ A minimal static demo for GitHub Pages visualizing the pre-registered backtest r
 - **Thresholds signed 22 Nov 2026** - Alert thresholds in `rules/thresholds.json` (olive 162, grass 35, birch 30 grains/m³, daily mean) are status `signed` (CRITERIA_FOR_SIGNOFF rows 1–4 as proposed); retrospective use, not clinical guidance
 - **Model vs reality** - CAMS is an 11 km grid model; ground truth comes from point traps. This mismatch affects accuracy.
 
+![PollenPlan Workflow](docs/flow.svg)
+
 ## What's in This Repo
 
 | Component | Description |
@@ -19,6 +21,10 @@ A minimal static demo for GitHub Pages visualizing the pre-registered backtest r
 | `eval/results/misses.csv` | Every missed observed high day |
 | `docs/results_table.md` | Human-readable results table |
 | `demo/index.html` | **This demo** - static visualization for GitHub Pages |
+| `demo/index.html` (`#nurse-console`) | **Nurse Briefing & Batch Approval Console** - replays four scenarios (Valencia control: 0 drafted; Madrid grass, Basel birch, olive simulation) over 200 synthetic patients; shows drafts and code-filtered patients, and approval writes an in-page audit line. 0 external sends; nothing leaves the browser |
+| `CLAIMS.md` | Every public number and feature claim with its source key and command |
+| `JUDGES.md` | Guide for judges mapped to the four criteria, with honest limits and review backlog |
+| `docs/flow.svg` | Workflow diagram (embedded above) |
 | `eval/render_demo.py` | Writes the demo's onset table (all 28 seasons) from `backtest.json`; `--check` fails if the HTML is stale |
 | `rules/thresholds.json` | Alert thresholds (signed 22 Nov 2026) |
 | `tests/` | Unit tests for backtest rules and reminder logic |
@@ -109,7 +115,7 @@ Set the custom domain under **Settings** > **Pages** > **Custom domain**, then c
 | Basel | birch, grass | MeteoSwiss (PBS) |
 | Zurich | birch, grass | MeteoSwiss (PZH) |
 
-**Valencia** (the app's target city) has no observed ground truth in this repo, is **never scored**, and is excluded from all evaluation. The demo shows no Valencia data; it only states that Valencia is never scored.
+**Valencia** (the app's target city) has no observed ground truth in this repo, is **never scored**, and is excluded from all evaluation; the Clínica Demo console uses a Valencia 2025 CAMS control replay (labelled model output only, never scored).
 
 ### Season Definition
 

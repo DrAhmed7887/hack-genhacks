@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="360" viewBox="0 0 1100 360" role="img" aria-labelledby="flow-title flow-desc">
+  <title id="flow-title">PollenPlan workflow</title>
+  <desc id="flow-desc">Five stages left to right: Open-Meteo CAMS forecast plus Madrid and MeteoSwiss point traps, pre-registered backtest and kill-check, signed threshold gate, deterministic reminder eligibility, nurse batch approval console with zero external sends.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; fill: #0f172a; }
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+      .step { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; fill: #475569; }
+      .head { font-size: 15px; font-weight: 700; }
+      .body { font-size: 12px; fill: #334155; }
+      .path { font-size: 11px; fill: #0f172a; }
+      .tag  { font-size: 11px; font-weight: 600; }
+      .box  { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; }
+    </style>
+  </defs>
+
+  <rect width="1100" height="360" fill="#f8fafc"/>
+
+  <text x="30" y="40" font-size="20" font-weight="700">PollenPlan: from open data to a nurse-approved draft</text>
+  <text x="30" y="62" font-size="13" fill="#475569" style="fill:#475569">Retrospective and static. Every number comes from eval/results/backtest.json.</text>
+
+  <!-- 1 inputs -->
+  <rect class="box" x="30" y="90" width="176" height="190" rx="10"/>
+  <rect x="30" y="90" width="176" height="6" rx="3" fill="#0ea5e9"/>
+  <text class="step" x="118" y="120" text-anchor="middle">1  DATA</text>
+  <text class="head" x="118" y="146" text-anchor="middle">Open-Meteo</text>
+  <text class="head" x="118" y="164" text-anchor="middle">CAMS Forecast</text>
+  <text class="body" x="118" y="190" text-anchor="middle">+ Madrid / MeteoSwiss</text>
+  <text class="body" x="118" y="206" text-anchor="middle">Point Traps (CC BY)</text>
+  <text class="path mono" x="118" y="236" text-anchor="middle">data/cache/</text>
+  <text class="body" x="118" y="258" text-anchor="middle">Valencia: demo only</text>
+
+  <!-- 2 backtest -->
+  <rect class="box" x="246" y="90" width="176" height="190" rx="10"/>
+  <rect x="246" y="90" width="176" height="6" rx="3" fill="#6366f1"/>
+  <text class="step" x="334" y="120" text-anchor="middle">2  EVIDENCE</text>
+  <text class="head" x="334" y="146" text-anchor="middle">Pre-Registered</text>
+  <text class="head" x="334" y="164" text-anchor="middle">Backtest &amp; Kill-Check</text>
+  <text class="path mono" x="334" y="192" text-anchor="middle">eval/backtest.py</text>
+  <text class="body" x="334" y="214" text-anchor="middle">P0, P1, P2, R1, R2, C0</text>
+  <text class="body" x="334" y="236" text-anchor="middle">P2 0.416 vs R1 0.410</text>
+  <text class="body" x="334" y="258" text-anchor="middle">no "beats the API" claim</text>
+
+  <!-- 3 gate -->
+  <rect class="box" x="462" y="90" width="176" height="190" rx="10"/>
+  <rect x="462" y="90" width="176" height="6" rx="3" fill="#f59e0b"/>
+  <text class="step" x="550" y="120" text-anchor="middle">3  SIGNED GATE</text>
+  <text class="head" x="550" y="146" text-anchor="middle">Signed Threshold</text>
+  <text class="head" x="550" y="164" text-anchor="middle">Gate</text>
+  <text class="path mono" x="550" y="192" text-anchor="middle">rules/thresholds.json</text>
+  <text class="body" x="550" y="214" text-anchor="middle">olive 162 · grass 35</text>
+  <text class="body" x="550" y="230" text-anchor="middle">birch 30 (grains/m³)</text>
+  <text class="body" x="550" y="258" text-anchor="middle">signed 22 Nov 2026</text>
+
+  <!-- 4 eligibility -->
+  <rect class="box" x="678" y="90" width="176" height="190" rx="10"/>
+  <rect x="678" y="90" width="176" height="6" rx="3" fill="#10b981"/>
+  <text class="step" x="766" y="120" text-anchor="middle">4  CODE DECIDES</text>
+  <text class="head" x="766" y="146" text-anchor="middle">Deterministic</text>
+  <text class="head" x="766" y="164" text-anchor="middle">Reminder Eligibility</text>
+  <text class="path mono" x="766" y="192" text-anchor="middle">src/reminders.py</text>
+  <text class="body" x="766" y="214" text-anchor="middle">existing med class only</text>
+  <text class="body" x="766" y="236" text-anchor="middle">fixed safety line on</text>
+  <text class="body" x="766" y="252" text-anchor="middle">every message</text>
+
+  <!-- 5 nurse -->
+  <rect class="box" x="894" y="90" width="176" height="190" rx="10"/>
+  <rect x="894" y="90" width="176" height="6" rx="3" fill="#ef4444"/>
+  <text class="step" x="982" y="120" text-anchor="middle">5  HUMAN</text>
+  <text class="head" x="982" y="146" text-anchor="middle">Nurse Batch</text>
+  <text class="head" x="982" y="164" text-anchor="middle">Approval Console</text>
+  <text class="path mono" x="982" y="192" text-anchor="middle">demo/index.html</text>
+  <text class="body" x="982" y="214" text-anchor="middle">nurse approves every batch</text>
+  <text class="tag" x="982" y="244" text-anchor="middle" style="fill:#b91c1c">0 external sends</text>
+  <text class="body" x="982" y="262" text-anchor="middle">200 synthetic patients</text>
+
+  <!-- arrows -->
+  <line x1="208" y1="185" x2="244" y2="185" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="424" y1="185" x2="460" y2="185" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="640" y1="185" x2="676" y2="185" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="856" y1="185" x2="892" y2="185" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- footer -->
+  <line x1="30" y1="304" x2="1070" y2="304" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="30" y="327" font-size="12" style="fill:#475569">Thresholds are single-centre published values, retrospective use only. Not a clinical tool. Patients are synthetic (seed 20261120).</text>
+  <text x="30" y="345" font-size="12" style="fill:#475569">Sources: Open-Meteo (CC BY 4.0), CAMS ENSEMBLE, Comunidad de Madrid (CC BY), MeteoSwiss (CC-BY).</text>
+</svg>
