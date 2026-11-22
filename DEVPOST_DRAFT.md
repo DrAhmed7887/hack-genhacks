@@ -31,8 +31,8 @@ live). Thresholds are single-centre published values, status `signed 22 Nov 2026
 Retrospective analysis; not a clinical tool; no Valencia accuracy claim
 (Valencia has no observed counts and is never scored).
 
-**Try it.** Live demo (no account): [DEMO_URL — needs Pages enable + push].
-Video (≤3 min): [VIDEO_URL — needs Ahmed's Unlisted upload].
+**Try it.** Live demo (no account): https://drahmed7887.github.io/hack-genhacks/.
+Video (2:16, QC clean — no black frames, -13.6 LUFS): `video/film/renders/film_2026-11-22_21-15-36.mp4` — [VIDEO_URL — needs Ahmed's Unlisted upload].
 
 ## Built with
 
@@ -52,7 +52,7 @@ MeteoSwiss (CC-BY). Synthetic patients: seeded generator.
 
 - [x] Signed 22 Nov (rows 1–11 as-is, Ahmed's call)
 - [ ] NLV: clear entering for $1050 CAD prizes (needs-lawyer flag)
-- [ ] Authorize: commit + push + public repo + Pages (Source = GitHub Actions)
+- [x] Committed 504fb15 + pushed + public + Pages live (CI + deploy green 22 Nov)
 - [ ] Upload video Unlisted, check in private window, paste URL above
 - [ ] Paste demo URL above, open logged-out in private window
 - [ ] Submit by 24 Dec (48 h buffer, in Egypt)
