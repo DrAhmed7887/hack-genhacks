@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@v4
         with: {fetch-depth: 0}
       - uses: actions/setup-python@v5
-        with: {python-version: "3.12"}
-      - run: pip install numpy pandas pytest requests
+        with: {python-version: "3.9"}
+      - run: pip install -r requirements.txt
       - run: python -m pytest -q tests && python eval/backtest.py
       - run: docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:v8.21.2 detect --source /repo -v --redact
