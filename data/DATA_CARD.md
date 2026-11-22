@@ -43,6 +43,35 @@ assumed. See `docs/DATA_PLAN.md` for the backtest design and
     the same measurement and are **not used** — the backtest aligns
     Open-Meteo to the `d0` (6 UTC - 6 UTC) window to match MeteoSwiss, per
     `docs/DATA_PLAN.md` §2.1.
+- **`reference_timestamp` convention — verified, start of window, not end**
+  (re-checked 22 Nov 2026, live `curl` against the published files, see
+  shell history; not assumed):
+  - Source: `https://data.geo.admin.ch/ch.meteoschweiz.ogd-pollen/ogd-pollen_meta_parameters.csv`
+    (collection-level parameter dictionary) and
+    `https://data.geo.admin.ch/ch.meteoschweiz.ogd-pollen/pbs/ogd-pollen_pbs_d_historical.csv`
+    (the actual daily data file for Basel).
+  - The parameter dictionary's English description for `kabetud0` reads
+    verbatim: **"Birch; daily average pollen concentration 6 UTC - 6 UTC
+    following day / Betula"**. The German, French and Italian columns say
+    the same thing ("6 UTC - 6 UTC Folgetag" / "6 UTC - 6 UTC du jour
+    suivant" / "6 UTC - 6 UTC del giorno seguente") — "following day" /
+    "Folgetag" / "jour suivant" / "giorno seguente" all describe the
+    window's *end*, confirming the window runs forward from the labelled
+    day, not backward into it.
+  - The actual daily historical CSV confirms this: the first data row is
+    `PBS;01.03.1969 00:00;2;0;0;0;0;0;0;;;;;;;` — `reference_timestamp`
+    is stamped at `00:00` on the calendar date the row is labelled with,
+    and that row's `kabetud0`/`khpoacd0` value is the average over 6 UTC
+    on *that same labelled date* through 6 UTC the next calendar day.
+  - **Conclusion:** `reference_timestamp` D's `d0` value covers
+    `[D 06:00 UTC, (D+1) 06:00 UTC)`. This is the **start** of the
+    6 UTC-6 UTC window, not its end. This matches, and confirms, the
+    alignment already implemented in `eval/backtest.py`
+    (`load_open_meteo_api_daily`): Open-Meteo hourly rows are shifted
+    back 6 hours before flooring to a calendar day, so API(D) is built
+    from exactly `[D 06:00 UTC, (D+1) 06:00 UTC)`, the same window as
+    Observed(D) from MeteoSwiss. No code change was needed; this entry
+    records the verification and its source.
 - **Cache:** `data/cache/meteoswiss_<station>_daily.csv`, columns
   `date_utc_6_6,birch_no_m3,grass_no_m3`, filtered to 2021-01-01..2025-12-31.
   PBS: 1,574 rows. PZH: 1,612 rows. (Some dates missing a value for one or
