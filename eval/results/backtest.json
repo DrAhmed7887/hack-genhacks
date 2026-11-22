@@ -1,0 +1,1185 @@
+{
+  "thresholds_status": "pending_signoff",
+  "thresholds_used": {
+    "olive": 162,
+    "grass": 35,
+    "birch": 30
+  },
+  "thresholds_note": "Proposed values from CRITERIA_FOR_SIGNOFF rows 1-4 (EVIDENCE T1-T4). Not signed. Do not present as clinical guidance.",
+  "years": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "cities_scored": [
+    "madrid",
+    "basel",
+    "zurich"
+  ],
+  "valencia_scored": false,
+  "rules_evaluated": [
+    "P0",
+    "P1",
+    "P2",
+    "R1",
+    "C0",
+    "R2"
+  ],
+  "results": [
+    {
+      "city": "madrid",
+      "species": "olive",
+      "threshold": 162,
+      "season_bounds_doy": {
+        "start_doy": 91,
+        "end_doy": 323
+      },
+      "day_rules": {
+        "P0": {
+          "tp": 10,
+          "fp": 12,
+          "fn": 12,
+          "tn": 1739,
+          "n_events": 22,
+          "n_evaluated_days": 1773,
+          "recall": 0.45454545454545453,
+          "precision": 0.45454545454545453,
+          "csi": 0.29411764705882354,
+          "false_alert_days": 12,
+          "recall_ci95": [
+            0.16666666666666666,
+            0.6666666666666666
+          ]
+        },
+        "P1": {
+          "tp": 1,
+          "fp": 8,
+          "fn": 21,
+          "tn": 1288,
+          "n_events": 22,
+          "n_evaluated_days": 1318,
+          "recall": 0.045454545454545456,
+          "precision": 0.1111111111111111,
+          "csi": 0.03333333333333333,
+          "false_alert_days": 8,
+          "recall_ci95": [
+            0.0,
+            0.09090909090909091
+          ]
+        },
+        "P2": {
+          "tp": 3,
+          "fp": 6,
+          "fn": 19,
+          "tn": 1291,
+          "n_events": 22,
+          "n_evaluated_days": 1319,
+          "recall": 0.13636363636363635,
+          "precision": 0.3333333333333333,
+          "csi": 0.10714285714285714,
+          "false_alert_days": 6,
+          "recall_ci95": [
+            0.0,
+            0.2727272727272727
+          ]
+        },
+        "R1": {
+          "tp": 2,
+          "fp": 5,
+          "fn": 20,
+          "tn": 1288,
+          "n_events": 22,
+          "n_evaluated_days": 1315,
+          "recall": 0.09090909090909091,
+          "precision": 0.2857142857142857,
+          "csi": 0.07407407407407407,
+          "false_alert_days": 5,
+          "recall_ci95": [
+            0.0,
+            0.18181818181818182
+          ]
+        },
+        "C0": {
+          "tp": 1,
+          "fp": 22,
+          "fn": 21,
+          "tn": 1782,
+          "n_events": 22,
+          "n_evaluated_days": 1826,
+          "recall": 0.045454545454545456,
+          "precision": 0.043478260869565216,
+          "csi": 0.022727272727272728,
+          "false_alert_days": 22,
+          "recall_ci95": [
+            0.0,
+            0.16666666666666666
+          ]
+        }
+      },
+      "onset_by_year": {
+        "2021": {
+          "observed_onset": "2021-05-08",
+          "R2_onset": "2021-05-05",
+          "P2_onset": "2021-05-08",
+          "C0_onset": null,
+          "R2_lead_days": 3,
+          "P2_lead_days": 0,
+          "C0_lead_days": null,
+          "R2_fired_before_onset": true,
+          "R2_missed_season": false
+        },
+        "2022": {
+          "observed_onset": "2022-05-12",
+          "R2_onset": "2022-05-11",
+          "P2_onset": "2022-05-14",
+          "C0_onset": "2022-05-08",
+          "R2_lead_days": 1,
+          "P2_lead_days": -2,
+          "C0_lead_days": 4,
+          "R2_fired_before_onset": true,
+          "R2_missed_season": false
+        },
+        "2023": {
+          "observed_onset": "2023-05-03",
+          "R2_onset": "2023-04-25",
+          "P2_onset": "2023-04-28",
+          "C0_onset": "2023-05-08",
+          "R2_lead_days": 8,
+          "P2_lead_days": 5,
+          "C0_lead_days": -5,
+          "R2_fired_before_onset": true,
+          "R2_missed_season": false
+        },
+        "2024": {
+          "observed_onset": "2024-05-28",
+          "R2_onset": null,
+          "P2_onset": null,
+          "C0_onset": "2024-05-20",
+          "R2_lead_days": null,
+          "P2_lead_days": null,
+          "C0_lead_days": 8,
+          "R2_fired_before_onset": false,
+          "R2_missed_season": true
+        },
+        "2025": {
+          "observed_onset": "2025-05-28",
+          "R2_onset": null,
+          "P2_onset": null,
+          "C0_onset": "2025-05-21",
+          "R2_lead_days": null,
+          "P2_lead_days": null,
+          "C0_lead_days": 7,
+          "R2_fired_before_onset": false,
+          "R2_missed_season": true
+        }
+      }
+    },
+    {
+      "city": "madrid",
+      "species": "grass",
+      "threshold": 35,
+      "season_bounds_doy": {
+        "start_doy": 1,
+        "end_doy": 358
+      },
+      "day_rules": {
+        "P0": {
+          "tp": 52,
+          "fp": 18,
+          "fn": 18,
+          "tn": 976,
+          "n_events": 70,
+          "n_evaluated_days": 1064,
+          "recall": 0.7428571428571429,
+          "precision": 0.7428571428571429,
+          "csi": 0.5909090909090909,
+          "false_alert_days": 18,
+          "recall_ci95": [
+            0.0,
+            0.8285714285714286
+          ]
+        },
+        "P1": {
+          "tp": 21,
+          "fp": 16,
+          "fn": 49,
+          "tn": 1300,
+          "n_events": 70,
+          "n_evaluated_days": 1386,
+          "recall": 0.3,
+          "precision": 0.5675675675675675,
+          "csi": 0.2441860465116279,
+          "false_alert_days": 16,
+          "recall_ci95": [
+            0.0,
+            0.3333333333333333
+          ]
+        },
+        "P2": {
+          "tp": 22,
+          "fp": 15,
+          "fn": 48,
+          "tn": 1302,
+          "n_events": 70,
+          "n_evaluated_days": 1387,
+          "recall": 0.3142857142857143,
+          "precision": 0.5945945945945946,
+          "csi": 0.25882352941176473,
+          "false_alert_days": 15,
+          "recall_ci95": [
+            0.0,
+            0.36363636363636365
+          ]
+        },
+        "R1": {
+          "tp": 21,
+          "fp": 14,
+          "fn": 49,
+          "tn": 1299,
+          "n_events": 70,
+          "n_evaluated_days": 1383,
+          "recall": 0.3,
+          "precision": 0.6,
+          "csi": 0.25,
+          "false_alert_days": 14,
+          "recall_ci95": [
+            0.0,
+            0.3333333333333333
+          ]
+        },
+        "C0": {
+          "tp": 24,
+          "fp": 13,
+          "fn": 46,
+          "tn": 1743,
+          "n_events": 70,
+          "n_evaluated_days": 1826,
+          "recall": 0.34285714285714286,
+          "precision": 0.6486486486486487,
+          "csi": 0.2891566265060241,
+          "false_alert_days": 13,
+          "recall_ci95": [
+            0.0,
+            0.6857142857142857
+          ]
+        }
+      },
+      "onset_by_year": {
+        "2023": {
+          "observed_onset": "2023-07-03",
+          "R2_onset": null,
+          "P2_onset": null,
+          "C0_onset": null,
+          "R2_lead_days": null,
+          "P2_lead_days": null,
+          "C0_lead_days": null,
+          "R2_fired_before_onset": false,
+          "R2_missed_season": true
+        },
+        "2024": {
+          "observed_onset": "2024-05-03",
+          "R2_onset": "2024-05-06",
+          "P2_onset": "2024-05-09",
+          "C0_onset": "2024-07-02",
+          "R2_lead_days": -3,
+          "P2_lead_days": -6,
+          "C0_lead_days": -60,
+          "R2_fired_before_onset": false,
+          "R2_missed_season": false
+        },
+        "2025": {
+          "observed_onset": "2025-05-09",
+          "R2_onset": "2025-05-14",
+          "P2_onset": "2025-05-17",
+          "C0_onset": "2025-05-04",
+          "R2_lead_days": -5,
+          "P2_lead_days": -8,
+          "C0_lead_days": 5,
+          "R2_fired_before_onset": false,
+          "R2_missed_season": false
+        }
+      }
+    },
+    {
+      "city": "basel",
+      "species": "birch",
+      "threshold": 30,
+      "season_bounds_doy": {
+        "start_doy": 52,
+        "end_doy": 205
+      },
+      "day_rules": {
+        "P0": {
+          "tp": 96,
+          "fp": 31,
+          "fn": 27,
+          "tn": 1403,
+          "n_events": 123,
+          "n_evaluated_days": 1557,
+          "recall": 0.7804878048780488,
+          "precision": 0.7559055118110236,
+          "csi": 0.6233766233766234,
+          "false_alert_days": 31,
+          "recall_ci95": [
+            0.75,
+            0.8
+          ]
+        },
+        "P1": {
+          "tp": 66,
+          "fp": 26,
+          "fn": 61,
+          "tn": 1142,
+          "n_events": 127,
+          "n_evaluated_days": 1295,
+          "recall": 0.5196850393700787,
+          "precision": 0.717391304347826,
+          "csi": 0.43137254901960786,
+          "false_alert_days": 26,
+          "recall_ci95": [
+            0.4230769230769231,
+            0.6081081081081081
+          ]
+        },
+        "P2": {
+          "tp": 70,
+          "fp": 22,
+          "fn": 57,
+          "tn": 1147,
+          "n_events": 127,
+          "n_evaluated_days": 1296,
+          "recall": 0.5511811023622047,
+          "precision": 0.7608695652173914,
+          "csi": 0.4697986577181208,
+          "false_alert_days": 22,
+          "recall_ci95": [
+            0.4607954545454546,
+            0.6486486486486487
+          ]
+        },
+        "R1": {
+          "tp": 70,
+          "fp": 27,
+          "fn": 57,
+          "tn": 1138,
+          "n_events": 127,
+          "n_evaluated_days": 1292,
+          "recall": 0.5511811023622047,
+          "precision": 0.7216494845360825,
+          "csi": 0.45454545454545453,
+          "false_alert_days": 27,
+          "recall_ci95": [
+            0.4788732394366197,
+            0.6486486486486487
+          ]
+        },
+        "C0": {
+          "tp": 65,
+          "fp": 55,
+          "fn": 62,
+          "tn": 1644,
+          "n_events": 127,
+          "n_evaluated_days": 1826,
+          "recall": 0.5118110236220472,
+          "precision": 0.5416666666666666,
+          "csi": 0.35714285714285715,
+          "false_alert_days": 55,
+          "recall_ci95": [
+            0.30985915492957744,
+            0.7073170731707317
+          ]
+        }
+      },
+      "onset_by_year": {
+        "2021": {
+          "observed_onset": "2021-03-30",
+          "R2_onset": "2021-03-29",
+          "P2_onset": "2021-04-01",
+          "C0_onset": null,
+          "R2_lead_days": 1,
+          "P2_lead_days": -2,
+          "C0_lead_days": null,
+          "R2_fired_before_onset": true,
+          "R2_missed_season": false
+        },
+        "2022": {
+          "observed_onset": "2022-03-23",
+          "R2_onset": "2022-03-23",
+          "P2_onset": "2022-03-26",
+          "C0_onset": "2022-03-30",
+          "R2_lead_days": 0,
+          "P2_lead_days": -3,
+          "C0_lead_days": -7,
+          "R2_fired_before_onset": true,
+          "R2_missed_season": false
+        },
+        "2023": {
+          "observed_onset": "2023-03-27",
+          "R2_onset": "2023-03-22",
+          "P2_onset": "2023-03-25",
+          "C0_onset": "2023-03-23",
+          "R2_lead_days": 5,
+          "P2_lead_days": 2,
+          "C0_lead_days": 4,
+          "R2_fired_before_onset": true,
+          "R2_missed_season": false
+        },
+        "2024": {
+          "observed_onset": "2024-03-19",
+          "R2_onset": "2024-03-16",
+          "P2_onset": "2024-03-19",
+          "C0_onset": "2024-03-26",
+          "R2_lead_days": 3,
+          "P2_lead_days": 0,
+          "C0_lead_days": -7,
+          "R2_fired_before_onset": true,
+          "R2_missed_season": false
+        },
+        "2025": {
+          "observed_onset": "2025-03-25",
+          "R2_onset": "2025-03-25",
+          "P2_onset": "2025-03-28",
+          "C0_onset": "2025-03-23",
+          "R2_lead_days": 0,
+          "P2_lead_days": -3,
+          "C0_lead_days": 2,
+          "R2_fired_before_onset": true,
+          "R2_missed_season": false
+        }
+      }
+    },
+    {
+      "city": "basel",
+      "species": "grass",
+      "threshold": 35,
+      "season_bounds_doy": {
+        "start_doy": 29,
+        "end_doy": 285
+      },
+      "day_rules": {
+        "P0": {
+          "tp": 203,
+          "fp": 47,
+          "fn": 45,
+          "tn": 1262,
+          "n_events": 248,
+          "n_evaluated_days": 1557,
+          "recall": 0.8185483870967742,
+          "precision": 0.812,
+          "csi": 0.688135593220339,
+          "false_alert_days": 47,
+          "recall_ci95": [
+            0.7983870967741935,
+            0.8313253012048193
+          ]
+        },
+        "P1": {
+          "tp": 97,
+          "fp": 17,
+          "fn": 153,
+          "tn": 1121,
+          "n_events": 250,
+          "n_evaluated_days": 1388,
+          "recall": 0.388,
+          "precision": 0.8508771929824561,
+          "csi": 0.36329588014981273,
+          "false_alert_days": 17,
+          "recall_ci95": [
+            0.32,
+            0.456
+          ]
+        },
+        "P2": {
+          "tp": 100,
+          "fp": 14,
+          "fn": 150,
+          "tn": 1125,
+          "n_events": 250,
+          "n_evaluated_days": 1389,
+          "recall": 0.4,
+          "precision": 0.8771929824561403,
+          "csi": 0.3787878787878788,
+          "false_alert_days": 14,
+          "recall_ci95": [
+            0.33007636751124797,
+            0.488
+          ]
+        },
+        "R1": {
+          "tp": 99,
+          "fp": 13,
+          "fn": 151,
+          "tn": 1122,
+          "n_events": 250,
+          "n_evaluated_days": 1385,
+          "recall": 0.396,
+          "precision": 0.8839285714285714,
+          "csi": 0.376425855513308,
+          "false_alert_days": 13,
+          "recall_ci95": [
+            0.35480920535011806,
+            0.456
+          ]
+        },
+        "C0": {
+          "tp": 137,
+          "fp": 62,
+          "fn": 113,
+          "tn": 1514,
+          "n_events": 250,
+          "n_evaluated_days": 1826,
+          "recall": 0.548,
+          "precision": 0.6884422110552764,
+          "csi": 0.4391025641025641,
+          "false_alert_days": 62,
+          "recall_ci95": [
+            0.3790322580645161,
+            0.6666666666666666
+          ]
+        }
+      },
+      "onset_by_year": {
+        "2021": {
+          "observed_onset": "2021-05-28",
+          "R2_onset": "2021-05-28",
+          "P2_onset": "2021-05-31",
+          "C0_onset": null,
+          "R2_lead_days": 0,
+          "P2_lead_days": -3,
+          "C0_lead_days": null,
+          "R2_fired_before_onset": true,
+          "R2_missed_season": false
+        },
+        "2022": {
+          "observed_onset": "2022-05-09",
+          "R2_onset": "2022-05-21",
+          "P2_onset": "2022-05-24",
+          "C0_onset": "2022-05-28",
+          "R2_lead_days": -12,
+          "P2_lead_days": -15,
+          "C0_lead_days": -19,
+          "R2_fired_before_onset": false,
+          "R2_missed_season": false
+        },
+        "2023": {
+          "observed_onset": "2023-05-01",
+          "R2_onset": "2023-05-25",
+          "P2_onset": "2023-05-28",
+          "C0_onset": "2023-05-09",
+          "R2_lead_days": -24,
+          "P2_lead_days": -27,
+          "C0_lead_days": -8,
+          "R2_fired_before_onset": false,
+          "R2_missed_season": false
+        },
+        "2024": {
+          "observed_onset": "2024-05-09",
+          "R2_onset": "2024-05-25",
+          "P2_onset": "2024-05-28",
+          "C0_onset": "2024-05-08",
+          "R2_lead_days": -16,
+          "P2_lead_days": -19,
+          "C0_lead_days": 1,
+          "R2_fired_before_onset": false,
+          "R2_missed_season": false
+        },
+        "2025": {
+          "observed_onset": "2025-04-24",
+          "R2_onset": "2025-05-24",
+          "P2_onset": "2025-05-27",
+          "C0_onset": "2025-05-09",
+          "R2_lead_days": -30,
+          "P2_lead_days": -33,
+          "C0_lead_days": -15,
+          "R2_fired_before_onset": false,
+          "R2_missed_season": false
+        }
+      }
+    },
+    {
+      "city": "zurich",
+      "species": "birch",
+      "threshold": 30,
+      "season_bounds_doy": {
+        "start_doy": 21,
+        "end_doy": 256
+      },
+      "day_rules": {
+        "P0": {
+          "tp": 112,
+          "fp": 28,
+          "fn": 28,
+          "tn": 1440,
+          "n_events": 140,
+          "n_evaluated_days": 1608,
+          "recall": 0.8,
+          "precision": 0.8,
+          "csi": 0.6666666666666666,
+          "false_alert_days": 28,
+          "recall_ci95": [
+            0.7763157894736842,
+            0.828125
+          ]
+        },
+        "P1": {
+          "tp": 76,
+          "fp": 14,
+          "fn": 64,
+          "tn": 1141,
+          "n_events": 140,
+          "n_evaluated_days": 1295,
+          "recall": 0.5428571428571428,
+          "precision": 0.8444444444444444,
+          "csi": 0.4935064935064935,
+          "false_alert_days": 14,
+          "recall_ci95": [
+            0.45454545454545453,
+            0.6352941176470588
+          ]
+        },
+        "P2": {
+          "tp": 79,
+          "fp": 11,
+          "fn": 61,
+          "tn": 1145,
+          "n_events": 140,
+          "n_evaluated_days": 1296,
+          "recall": 0.5642857142857143,
+          "precision": 0.8777777777777778,
+          "csi": 0.5231788079470199,
+          "false_alert_days": 11,
+          "recall_ci95": [
+            0.48863636363636365,
+            0.6352941176470588
+          ]
+        },
+        "R1": {
+          "tp": 82,
+          "fp": 8,
+          "fn": 58,
+          "tn": 1144,
+          "n_events": 140,
+          "n_evaluated_days": 1292,
+          "recall": 0.5857142857142857,
+          "precision": 0.9111111111111111,
+          "csi": 0.5540540540540541,
+          "false_alert_days": 8,
+          "recall_ci95": [
+            0.5,
+            0.6588235294117647
+          ]
+        },
+        "C0": {
+          "tp": 83,
+          "fp": 36,
+          "fn": 57,
+          "tn": 1650,
+          "n_events": 140,
+          "n_evaluated_days": 1826,
+          "recall": 0.5928571428571429,
+          "precision": 0.6974789915966386,
+          "csi": 0.4715909090909091,
+          "false_alert_days": 36,
+          "recall_ci95": [
+            0.4189189189189189,
+            0.7701149425287356
+          ]
+        }
+      },
+      "onset_by_year": {
+        "2021": {
+          "observed_onset": "2021-03-31",
+          "R2_onset": "2021-04-14",
+          "P2_onset": "2021-04-17",
+          "C0_onset": null,
+          "R2_lead_days": -14,
+          "P2_lead_days": -17,
+          "C0_lead_days": null,
+          "R2_fired_before_onset": false,
+          "R2_missed_season": false
+        },
+        "2022": {
+          "observed_onset": "2022-03-25",
+          "R2_onset": "2022-03-26",
+          "P2_onset": "2022-03-29",
+          "C0_onset": "2022-03-31",
+          "R2_lead_days": -1,
+          "P2_lead_days": -4,
+          "C0_lead_days": -6,
+          "R2_fired_before_onset": false,
+          "R2_missed_season": false
+        },
+        "2023": {
+          "observed_onset": "2023-03-29",
+          "R2_onset": "2023-03-26",
+          "P2_onset": "2023-03-29",
+          "C0_onset": "2023-03-25",
+          "R2_lead_days": 3,
+          "P2_lead_days": 0,
+          "C0_lead_days": 4,
+          "R2_fired_before_onset": true,
+          "R2_missed_season": false
+        },
+        "2024": {
+          "observed_onset": "2024-03-22",
+          "R2_onset": "2024-03-19",
+          "P2_onset": "2024-03-22",
+          "C0_onset": "2024-03-28",
+          "R2_lead_days": 3,
+          "P2_lead_days": 0,
+          "C0_lead_days": -6,
+          "R2_fired_before_onset": true,
+          "R2_missed_season": false
+        },
+        "2025": {
+          "observed_onset": "2025-03-27",
+          "R2_onset": "2025-03-30",
+          "P2_onset": "2025-04-02",
+          "C0_onset": "2025-03-27",
+          "R2_lead_days": -3,
+          "P2_lead_days": -6,
+          "C0_lead_days": 0,
+          "R2_fired_before_onset": false,
+          "R2_missed_season": false
+        }
+      }
+    },
+    {
+      "city": "zurich",
+      "species": "grass",
+      "threshold": 35,
+      "season_bounds_doy": {
+        "start_doy": 20,
+        "end_doy": 277
+      },
+      "day_rules": {
+        "P0": {
+          "tp": 197,
+          "fp": 57,
+          "fn": 57,
+          "tn": 1297,
+          "n_events": 254,
+          "n_evaluated_days": 1608,
+          "recall": 0.7755905511811023,
+          "precision": 0.7755905511811023,
+          "csi": 0.6334405144694534,
+          "false_alert_days": 57,
+          "recall_ci95": [
+            0.7183098591549296,
+            0.813953488372093
+          ]
+        },
+        "P1": {
+          "tp": 81,
+          "fp": 13,
+          "fn": 173,
+          "tn": 1121,
+          "n_events": 254,
+          "n_evaluated_days": 1388,
+          "recall": 0.3188976377952756,
+          "precision": 0.8617021276595744,
+          "csi": 0.30337078651685395,
+          "false_alert_days": 13,
+          "recall_ci95": [
+            0.2733812949640288,
+            0.3618421052631579
+          ]
+        },
+        "P2": {
+          "tp": 85,
+          "fp": 9,
+          "fn": 169,
+          "tn": 1126,
+          "n_events": 254,
+          "n_evaluated_days": 1389,
+          "recall": 0.3346456692913386,
+          "precision": 0.9042553191489362,
+          "csi": 0.3231939163498099,
+          "false_alert_days": 9,
+          "recall_ci95": [
+            0.2949640287769784,
+            0.3826086956521739
+          ]
+        },
+        "R1": {
+          "tp": 80,
+          "fp": 8,
+          "fn": 174,
+          "tn": 1123,
+          "n_events": 254,
+          "n_evaluated_days": 1385,
+          "recall": 0.31496062992125984,
+          "precision": 0.9090909090909091,
+          "csi": 0.3053435114503817,
+          "false_alert_days": 8,
+          "recall_ci95": [
+            0.26618705035971224,
+            0.3618421052631579
+          ]
+        },
+        "C0": {
+          "tp": 134,
+          "fp": 67,
+          "fn": 120,
+          "tn": 1505,
+          "n_events": 254,
+          "n_evaluated_days": 1826,
+          "recall": 0.5275590551181102,
+          "precision": 0.6666666666666666,
+          "csi": 0.4174454828660436,
+          "false_alert_days": 67,
+          "recall_ci95": [
+            0.3902439024390244,
+            0.643312101910828
+          ]
+        }
+      },
+      "onset_by_year": {
+        "2021": {
+          "observed_onset": "2021-05-08",
+          "R2_onset": "2021-05-29",
+          "P2_onset": "2021-06-01",
+          "C0_onset": null,
+          "R2_lead_days": -21,
+          "P2_lead_days": -24,
+          "C0_lead_days": null,
+          "R2_fired_before_onset": false,
+          "R2_missed_season": false
+        },
+        "2022": {
+          "observed_onset": "2022-05-09",
+          "R2_onset": "2022-06-01",
+          "P2_onset": "2022-06-04",
+          "C0_onset": "2022-05-08",
+          "R2_lead_days": -23,
+          "P2_lead_days": -26,
+          "C0_lead_days": 1,
+          "R2_fired_before_onset": false,
+          "R2_missed_season": false
+        },
+        "2023": {
+          "observed_onset": "2023-04-29",
+          "R2_onset": "2023-05-26",
+          "P2_onset": "2023-05-29",
+          "C0_onset": "2023-05-08",
+          "R2_lead_days": -27,
+          "P2_lead_days": -30,
+          "C0_lead_days": -9,
+          "R2_fired_before_onset": false,
+          "R2_missed_season": false
+        },
+        "2024": {
+          "observed_onset": "2024-05-09",
+          "R2_onset": "2024-05-25",
+          "P2_onset": "2024-05-28",
+          "C0_onset": "2024-05-11",
+          "R2_lead_days": -16,
+          "P2_lead_days": -19,
+          "C0_lead_days": -2,
+          "R2_fired_before_onset": false,
+          "R2_missed_season": false
+        },
+        "2025": {
+          "observed_onset": "2025-04-29",
+          "R2_onset": "2025-05-26",
+          "P2_onset": "2025-05-29",
+          "C0_onset": "2025-05-10",
+          "R2_lead_days": -27,
+          "P2_lead_days": -30,
+          "C0_lead_days": -11,
+          "R2_fired_before_onset": false,
+          "R2_missed_season": false
+        }
+      }
+    }
+  ],
+  "kill_check": {
+    "check1_observed_counts_exist": {
+      "passed": true,
+      "note": "Madrid (D1), Basel and Zurich (D2) observed counts downloaded and cached; see data/DATA_CARD.md."
+    },
+    "size_check": {
+      "total_observed_events_P2_denominator": 863,
+      "total_evaluated_city_days_P2_denominator": 8076,
+      "passed": true
+    },
+    "check2_beats_api": {
+      "pooled_r1": {
+        "tp": 354,
+        "n_events": 863,
+        "recall": 0.4101969872537659,
+        "false_alert_days": 75
+      },
+      "pooled_p2": {
+        "tp": 359,
+        "n_events": 863,
+        "recall": 0.4159907300115875,
+        "false_alert_days": 77
+      },
+      "r1_beats_p2_pooled_recall_at_equal_or_fewer_false_alerts": false,
+      "r2_minus_p2_lead_days_bootstrap": {
+        "mean_diff": 3.0,
+        "ci95": [
+          3.0,
+          3.0
+        ],
+        "excludes_zero": true,
+        "n_pairs": 25
+      },
+      "r2_minus_c0_lead_days_bootstrap": {
+        "mean_diff": -1.5,
+        "ci95": [
+          -8.301250000000001,
+          6.651249999999994
+        ],
+        "excludes_zero": false,
+        "n_pairs": 20
+      },
+      "r2_beats_p2_on_lead_days_with_ci_excluding_zero": true,
+      "r2_beats_c0_on_lead_days_with_ci_excluding_zero": false,
+      "onset_rows_used": [
+        {
+          "city": "madrid",
+          "species": "olive",
+          "year": "2021",
+          "R2_lead_days": 3,
+          "P2_lead_days": 0,
+          "C0_lead_days": null
+        },
+        {
+          "city": "madrid",
+          "species": "olive",
+          "year": "2022",
+          "R2_lead_days": 1,
+          "P2_lead_days": -2,
+          "C0_lead_days": 4
+        },
+        {
+          "city": "madrid",
+          "species": "olive",
+          "year": "2023",
+          "R2_lead_days": 8,
+          "P2_lead_days": 5,
+          "C0_lead_days": -5
+        },
+        {
+          "city": "madrid",
+          "species": "olive",
+          "year": "2024",
+          "R2_lead_days": null,
+          "P2_lead_days": null,
+          "C0_lead_days": 8
+        },
+        {
+          "city": "madrid",
+          "species": "olive",
+          "year": "2025",
+          "R2_lead_days": null,
+          "P2_lead_days": null,
+          "C0_lead_days": 7
+        },
+        {
+          "city": "madrid",
+          "species": "grass",
+          "year": "2023",
+          "R2_lead_days": null,
+          "P2_lead_days": null,
+          "C0_lead_days": null
+        },
+        {
+          "city": "madrid",
+          "species": "grass",
+          "year": "2024",
+          "R2_lead_days": -3,
+          "P2_lead_days": -6,
+          "C0_lead_days": -60
+        },
+        {
+          "city": "madrid",
+          "species": "grass",
+          "year": "2025",
+          "R2_lead_days": -5,
+          "P2_lead_days": -8,
+          "C0_lead_days": 5
+        },
+        {
+          "city": "basel",
+          "species": "birch",
+          "year": "2021",
+          "R2_lead_days": 1,
+          "P2_lead_days": -2,
+          "C0_lead_days": null
+        },
+        {
+          "city": "basel",
+          "species": "birch",
+          "year": "2022",
+          "R2_lead_days": 0,
+          "P2_lead_days": -3,
+          "C0_lead_days": -7
+        },
+        {
+          "city": "basel",
+          "species": "birch",
+          "year": "2023",
+          "R2_lead_days": 5,
+          "P2_lead_days": 2,
+          "C0_lead_days": 4
+        },
+        {
+          "city": "basel",
+          "species": "birch",
+          "year": "2024",
+          "R2_lead_days": 3,
+          "P2_lead_days": 0,
+          "C0_lead_days": -7
+        },
+        {
+          "city": "basel",
+          "species": "birch",
+          "year": "2025",
+          "R2_lead_days": 0,
+          "P2_lead_days": -3,
+          "C0_lead_days": 2
+        },
+        {
+          "city": "basel",
+          "species": "grass",
+          "year": "2021",
+          "R2_lead_days": 0,
+          "P2_lead_days": -3,
+          "C0_lead_days": null
+        },
+        {
+          "city": "basel",
+          "species": "grass",
+          "year": "2022",
+          "R2_lead_days": -12,
+          "P2_lead_days": -15,
+          "C0_lead_days": -19
+        },
+        {
+          "city": "basel",
+          "species": "grass",
+          "year": "2023",
+          "R2_lead_days": -24,
+          "P2_lead_days": -27,
+          "C0_lead_days": -8
+        },
+        {
+          "city": "basel",
+          "species": "grass",
+          "year": "2024",
+          "R2_lead_days": -16,
+          "P2_lead_days": -19,
+          "C0_lead_days": 1
+        },
+        {
+          "city": "basel",
+          "species": "grass",
+          "year": "2025",
+          "R2_lead_days": -30,
+          "P2_lead_days": -33,
+          "C0_lead_days": -15
+        },
+        {
+          "city": "zurich",
+          "species": "birch",
+          "year": "2021",
+          "R2_lead_days": -14,
+          "P2_lead_days": -17,
+          "C0_lead_days": null
+        },
+        {
+          "city": "zurich",
+          "species": "birch",
+          "year": "2022",
+          "R2_lead_days": -1,
+          "P2_lead_days": -4,
+          "C0_lead_days": -6
+        },
+        {
+          "city": "zurich",
+          "species": "birch",
+          "year": "2023",
+          "R2_lead_days": 3,
+          "P2_lead_days": 0,
+          "C0_lead_days": 4
+        },
+        {
+          "city": "zurich",
+          "species": "birch",
+          "year": "2024",
+          "R2_lead_days": 3,
+          "P2_lead_days": 0,
+          "C0_lead_days": -6
+        },
+        {
+          "city": "zurich",
+          "species": "birch",
+          "year": "2025",
+          "R2_lead_days": -3,
+          "P2_lead_days": -6,
+          "C0_lead_days": 0
+        },
+        {
+          "city": "zurich",
+          "species": "grass",
+          "year": "2021",
+          "R2_lead_days": -21,
+          "P2_lead_days": -24,
+          "C0_lead_days": null
+        },
+        {
+          "city": "zurich",
+          "species": "grass",
+          "year": "2022",
+          "R2_lead_days": -23,
+          "P2_lead_days": -26,
+          "C0_lead_days": 1
+        },
+        {
+          "city": "zurich",
+          "species": "grass",
+          "year": "2023",
+          "R2_lead_days": -27,
+          "P2_lead_days": -30,
+          "C0_lead_days": -9
+        },
+        {
+          "city": "zurich",
+          "species": "grass",
+          "year": "2024",
+          "R2_lead_days": -16,
+          "P2_lead_days": -19,
+          "C0_lead_days": -2
+        },
+        {
+          "city": "zurich",
+          "species": "grass",
+          "year": "2025",
+          "R2_lead_days": -27,
+          "P2_lead_days": -30,
+          "C0_lead_days": -11
+        }
+      ],
+      "note": "Per DATA_PLAN 2.5 rule 2: if R1 does not beat P2 on pooled recall at equal-or-fewer false-alert days, or R2 does not beat both P2 and C0 on mean lead days with a season-block bootstrap interval (resampling city-species-year onset rows) that excludes zero, then no 'beats the API' claim is made. The headline becomes the measured P2 skill.",
+      "passed_beats_api_claim": false
+    },
+    "check3_madrid_p2_recall": {
+      "madrid_p2_recall_by_species": {
+        "olive": 0.13636363636363635,
+        "grass": 0.3142857142857143
+      },
+      "both_below_50pct": true,
+      "note": "If true, DATA_PLAN 2.5 rule 3 requires the app's alert level be lowered only with Ahmed's re-sign-off; otherwise the headline is reported as a 'limits' number."
+    },
+    "check4_valencia_never_scored": {
+      "passed": true,
+      "note": "Valencia is excluded from CITY_SPECIES and never appears in results."
+    },
+    "overall_headline": "measured_P2_skill_only_no_beats_api_claim"
+  }
+}

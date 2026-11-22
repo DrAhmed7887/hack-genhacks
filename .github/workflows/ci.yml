@@ -1,10 +1,13 @@
 name: ci
 on: [push, pull_request]
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: make || echo "no Makefile yet"
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install numpy pandas pytest requests
+      - run: python -m pytest -q tests && python eval/backtest.py
       - uses: gitleaks/gitleaks-action@v2
         env: {GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"}
