@@ -1,11 +1,11 @@
 {
-  "thresholds_status": "pending_signoff",
+  "thresholds_status": "signed",
   "thresholds_used": {
     "olive": 162,
     "grass": 35,
     "birch": 30
   },
-  "thresholds_note": "Proposed values from CRITERIA_FOR_SIGNOFF rows 1-4 (EVIDENCE T1-T4). Not signed. Do not present as clinical guidance.",
+  "thresholds_note": "Signed 22 Nov 2026 by Ahmed Zayed: CRITERIA_FOR_SIGNOFF rows 1-4 as proposed (EVIDENCE T1-T4). Single-centre values; retrospective use only.",
   "years": [
     2021,
     2022,

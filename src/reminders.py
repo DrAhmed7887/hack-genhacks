@@ -2,7 +2,7 @@
 """PollenPlan reminder eligibility and message rules.
 
 Implements DATA_PLAN.md section 3, "Reminder rules (tested by unit tests,
-all pending sign-off)":
+signed 22 Nov 2026)":
 
   1. A patient is *eligible* only if sensitised to the alerting species
      AND has a medicine on file.
@@ -23,17 +23,17 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-# Text pending clinician sign-off, per .kiro/steering/rules.md
-# ("rules/thresholds.json is status pending_signoff"). This is a
-# placeholder safety line, not clinical guidance, and is marked as such.
+# Signed text (CRITERIA_FOR_SIGNOFF row 9, approved 22 Nov 2026 by Ahmed Zayed),
+# per .kiro/steering/rules.md ("rules/thresholds.json is status signed").
 SAFETY_LINE = (
-    "This is an automated reminder, not medical advice. If your symptoms "
-    "change or you are worried, contact your clinic or pharmacist. "
-    "(Message pending clinician sign-off.)"
+    "Pollen levels do not diagnose anything. If you are wheezy or short "
+    "of breath, follow your asthma plan or call your clinic; if severe, "
+    "call emergency services."
 )
 ASTHMA_LINE = (
     "You have an asthma flag on file: please follow your own asthma "
-    "action plan and seek care if you have breathing difficulty."
+    "action plan and seek care if you have breathing difficulty. "
+    "Keep your reliever with you."
 )
 
 MED_CLASS_LABELS = {

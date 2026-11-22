@@ -1,7 +1,7 @@
 {
-  "status": "pending_signoff",
-  "signed_by": null,
-  "note": "Proposed values from CRITERIA_FOR_SIGNOFF rows 1-4 (EVIDENCE T1-T4). Not signed. Do not present as clinical guidance.",
+  "status": "signed",
+  "signed_by": "Ahmed Zayed",
+  "note": "Signed 22 Nov 2026 by Ahmed Zayed: CRITERIA_FOR_SIGNOFF rows 1-4 as proposed (EVIDENCE T1-T4). Single-centre values; retrospective use only.",
   "unit": "grains/m3, daily mean",
   "alert": {"olive": 162, "grass": 35, "birch": 30},
   "watch": {"grass": 20},

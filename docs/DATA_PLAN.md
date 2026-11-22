@@ -1,6 +1,6 @@
 # PollenPlan: DATA_PLAN.md (Phase 0.5, data pack design only; nothing is built or downloaded into a repo)
 
-Written 20 Nov 2026 from `EVIDENCE.md` (rows cited as T1, O3, D1 ...). Thresholds below are **pending Ahmed's sign-off**; code must read them from one config file marked `pending_signoff` until he signs.
+Written 20 Nov 2026 from `EVIDENCE.md` (rows cited as T1, O3, D1 ...). Thresholds below were signed 22 Nov 2026; code reads them from one config file marked `signed`.
 
 ## 1. What is real and what is synthetic
 
@@ -74,7 +74,7 @@ Season means: olive Apr-Jun, grass Mar-Jul, birch Mar-Apr, as defined from obser
 | `asthma_flag` | yes/no (assumed 25%); drives the red-flag line in the message |
 | `language` | es / en |
 
-**Reminder rules (tested by unit tests, all pending sign-off):**
+**Reminder rules (tested by unit tests, all signed 22 Nov 2026):**
 1. A patient is *eligible* only if sensitised to the alerting species **and** has a medicine on file.
 2. The message may name only the medicine **class already on file**. It never adds a drug, a dose or a diagnosis.
 3. Every message carries the same fixed safety line (text to be signed), and asthma-flag patients also get the asthma-plan line.
