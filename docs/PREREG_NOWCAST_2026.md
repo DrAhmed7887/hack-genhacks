@@ -64,4 +64,4 @@ Before any 2026 file is downloaded, commit `eval/results/nowcast_lock.json` with
 
 ## 9. Deviations
 
-(none yet)
+1. **23 Nov 2026, before any 2026 data was loaded: feature 5 (CAMS forecast for D+1) is dropped from F1 and F2.** The archived Open-Meteo value for D+1 is stitched from a later forecast run, so on the morning of D it would not be known in that form: the same look-ahead documented for R2 in the backtest. F1 keeps features 1–4, 6 and 7.
