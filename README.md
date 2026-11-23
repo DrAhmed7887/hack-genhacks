@@ -2,6 +2,14 @@
 
 A minimal static demo for GitHub Pages visualizing the pre-registered backtest results for the PollenPlan alert system.
 
+**Headline:** on 863 observed high-pollen days (Madrid, Basel, Zurich, 2021–2025), the free CAMS forecast caught **41.6%**; our pre-registered alert rule caught 41.0%, so we make no "beats the API" claim. An exploratory NASA POWER weather rule also lost to its own no-NASA control (held-out CSI 0.434 vs 0.486). The app uses the forecast and puts a nurse in front of every reminder batch.
+
+**Live demo, no account:** <https://drahmed7887.github.io/hack-genhacks/> · **Reproduce with no keys (the backtest reads committed data; only the install needs a network):**
+
+```bash
+python -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/python -m pytest -q && .venv/bin/python eval/verify_claims.py
+```
+
 ## Important Disclaimers
 
 - **Retrospective analysis only** - Results are from historical data and do not predict future performance

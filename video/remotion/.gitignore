@@ -7,3 +7,4 @@ out/chk/
 public/audio/
 public/sfx/
 
+out/*.srt
