@@ -22,9 +22,9 @@ ffmpeg -v error -y -i "$RAW" -i "$BED" -filter_complex "
   -map 0:v -map "[mix]" -c:v copy -c:a pcm_s16le "$OUT/mix_v5.mov"
 
 # 2. two-pass loudnorm to -16 LUFS integrated, -1.5 dBTP
-read -r I TP LRA THRESH OFFSET < <(ffmpeg -hide_banner -i "$OUT/mix_v5.mov" -af loudnorm=I=-16:TP=-1.5:LRA=11:print_format=json -f null - 2>&1 \
+read -r I TP LRA THRESH OFFSET < <(ffmpeg -hide_banner -i "$OUT/mix_v5.mov" -af loudnorm=I=-16:TP=-2.0:LRA=11:print_format=json -f null - 2>&1 \
   | python3 -c "import sys,json,re; t=sys.stdin.read(); i=t.rindex('{'); d=json.loads(t[i:t.index('}', i)+1]); print(d['input_i'],d['input_tp'],d['input_lra'],d['input_thresh'],d['target_offset'])")
-ffmpeg -v error -y -i "$OUT/mix_v5.mov" -af "loudnorm=I=-16:TP=-1.5:LRA=11:measured_I=$I:measured_TP=$TP:measured_LRA=$LRA:measured_thresh=$THRESH:offset=$OFFSET:linear=true,aresample=48000" \
+ffmpeg -v error -y -i "$OUT/mix_v5.mov" -af "loudnorm=I=-16:TP=-2.0:LRA=11:measured_I=$I:measured_TP=$TP:measured_LRA=$LRA:measured_thresh=$THRESH:offset=$OFFSET:linear=true,aresample=48000" \
   -c:v libx264 -preset slow -crf 17 -pix_fmt yuv420p -movflags +faststart -c:a aac -b:a 192k "$FINAL"
 
 # 3. SRT from the approved script captions (data.json), absolute times
