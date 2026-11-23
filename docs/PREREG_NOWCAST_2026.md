@@ -65,3 +65,7 @@ Before any 2026 file is downloaded, commit `eval/results/nowcast_lock.json` with
 ## 9. Deviations
 
 1. **23 Nov 2026, before any 2026 data was loaded: feature 5 (CAMS forecast for D+1) is dropped from F1 and F2.** The archived Open-Meteo value for D+1 is stitched from a later forecast run, so on the morning of D it would not be known in that form: the same look-ahead documented for R2 in the backtest. F1 keeps features 1–4, 6 and 7.
+
+## 10. Lock record
+
+23 Nov 2026, before any 2026 file was downloaded (`data/cache_2026/` did not exist): `eval/results/nowcast_lock.json` written by `eval/nowcast.py --lock`. Chosen on development CV: F1 C = 10, p* = 0.45; F2 C = 10, p* = 0.30. Development CV (optimistic, not evidence), pooled CSI: P2 0.392 · C0 0.407 · P0 0.639 · F1 0.667 · F2 0.673 (`eval/results/nowcast_dev.json`). Implementation notes, fixed at lock: C0 undefined (no prior-year reading) counts as no alert; F1/F2 never alert on a day with no D-1 trap reading; the bootstrap resamples 7-day blocks within each city × species 2026 series (1 Jan–31 Oct). The 2026 download (`data/fetch_2026.py`) and the scoring (`eval/nowcast.py --test-2026`) refuse to run unless this lock is committed, pushed, and both scripts are byte-identical to their locked SHA-256.
