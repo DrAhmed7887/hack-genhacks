@@ -1,4 +1,4 @@
-"""Tests for demo/index.html data and rendering.
+"""Tests for demo/backtest.html data and rendering.
 
 The demo embeds a rounded copy of eval/results/backtest.json (P2 table) and
 static onset rows written by eval/render_demo.py. These tests parse the actual
@@ -61,7 +61,7 @@ def parse_onset_rows(html: str) -> list[list[str]]:
 
 def embedded_backtest_data(html: str) -> dict:
     match = re.search(r"const backtestData = (\{.*?\n    \});", html, re.S)
-    assert match, "backtestData block not found in demo/index.html"
+    assert match, "backtestData block not found in demo/backtest.html"
     return json.loads(match.group(1))
 
 
@@ -85,8 +85,8 @@ def load_backtest_data():
 
 
 def load_demo_html():
-    """Load demo/index.html."""
-    demo_path = DEMO_DIR / "index.html"
+    """Load demo/backtest.html."""
+    demo_path = DEMO_DIR / "backtest.html"
     if not demo_path.exists():
         raise FileNotFoundError(f"Demo HTML not found: {demo_path}")
     return demo_path.read_text()
@@ -129,7 +129,7 @@ class TestDemoRendering:
 
     def test_demo_html_exists(self):
         """Demo HTML file must exist."""
-        assert DEMO_DIR.joinpath("index.html").exists()
+        assert DEMO_DIR.joinpath("backtest.html").exists()
 
     def test_demo_html_loads(self):
         """Demo HTML must be readable."""
@@ -255,7 +255,7 @@ class TestRenderedValues:
         assert not any(c == "N/A" for r in rows for c in r)
 
     def test_onset_html_is_current(self):
-        """demo/index.html must equal what eval/render_demo.py renders now."""
+        """demo/backtest.html must equal what eval/render_demo.py renders now."""
         assert render_demo.main(["--check"]) == 0
 
     def test_no_js_overwrites_onset_rows(self):
@@ -550,7 +550,7 @@ def test_alerting_species_simultaneous_crossing_raises():
 
 
 def test_approve_batch_scope_disclosure_in_demo():
-    page = (DEMO_DIR / "index.html").read_text()
+    page = (DEMO_DIR / "backtest.html").read_text()
     assert "Approve Entire Scenario Batch (" in page
     assert "hidden by filter" in page
     assert "hidden by filter at sign-off" in page

@@ -1,10 +1,10 @@
 """Render the demo onset table from eval/results/backtest.json.
 
 Pure Python, no browser. The rows are written as static HTML between two
-marker comments in demo/index.html, so the page shows them without JS and
+marker comments in demo/backtest.html, so the page shows them without JS and
 the tests can parse them back out of the HTML.
 
-    .venv/bin/python eval/render_demo.py           # rewrite demo/index.html
+    .venv/bin/python eval/render_demo.py           # rewrite demo/backtest.html
     .venv/bin/python eval/render_demo.py --check   # exit 1 if the HTML is stale
 """
 from __future__ import annotations
@@ -22,7 +22,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 BACKTEST_JSON = REPO_ROOT / "eval" / "results" / "backtest.json"
-DEMO_HTML = REPO_ROOT / "demo" / "index.html"
+DEMO_HTML = REPO_ROOT / "demo" / "backtest.html"
 PATIENTS_CSV = REPO_ROOT / "data" / "patients.csv"
 THRESHOLDS_JSON = REPO_ROOT / "rules" / "thresholds.json"
 CACHE_DIR = REPO_ROOT / "data" / "cache"
@@ -402,7 +402,7 @@ def inject_backtest_data(page: str, backtest: dict) -> str:
     """Refresh the page's embedded backtestData snapshot and static metric spans from backtest.json."""
     m = BACKTEST_DATA_RE.search(page)
     if not m:
-        raise ValueError("backtestData block not found in demo/index.html")
+        raise ValueError("backtestData block not found in demo/backtest.html")
     fresh = _refresh(json.loads(m.group(2)), backtest)
     body = json.dumps(fresh, indent=2, ensure_ascii=False).replace("</", "<\\/").replace("\n", "\n    ")
     page = page[:m.start(2)] + body + page[m.end(2):]
@@ -413,13 +413,13 @@ def inject_backtest_data(page: str, backtest: dict) -> str:
         shown = f"{val:.3f}" if isinstance(val, float) else str(val)
         page, n = re.subn(rf'(<span class="metric-value" id="{span_id}">)[^<]*(</span>)', lambda mm: mm.group(1) + html.escape(shown) + mm.group(2), page)
         if n != 1:
-            raise ValueError(f"metric span #{span_id} matched {n} times in demo/index.html")
+            raise ValueError(f"metric span #{span_id} matched {n} times in demo/backtest.html")
     return page
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--check", action="store_true", help="fail if demo/index.html is stale")
+    parser.add_argument("--check", action="store_true", help="fail if demo/backtest.html is stale")
     args = parser.parse_args(argv)
 
     backtest = json.loads(BACKTEST_JSON.read_text())
@@ -427,7 +427,7 @@ def main(argv: list[str] | None = None) -> int:
     new_page = inject_backtest_data(inject_nasa_eval(inject_console(inject(page, render_tbody(onset_rows(backtest)))), backtest), backtest)
     if args.check:
         if new_page != page:
-            print("demo/index.html generated blocks are stale: run eval/render_demo.py", file=sys.stderr)
+            print("demo/backtest.html generated blocks are stale: run eval/render_demo.py", file=sys.stderr)
             return 1
         return 0
     DEMO_HTML.write_text(new_page)

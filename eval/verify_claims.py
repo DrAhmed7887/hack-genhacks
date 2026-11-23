@@ -49,6 +49,24 @@ checks.update({
  "K10 exploratory": ne["status"].startswith("exploratory"),
 })
 
+nc = json.load(open("eval/results/nowcast_2026.json"))
+P, H = nc["pooled"], nc["hypotheses"]
+def r3(x): return round(x, 3)
+checks.update({
+ "N1 2026 scale": (P["P0"]["n_events"], P["P0"]["n_days"]) == (215, 1706),
+ "N2 trap": (P["P0"]["tp"], P["P0"]["fp"], r3(P["P0"]["recall"]), r3(P["P0"]["csi"])) == (164, 40, 0.763, 0.643),
+ "N3 CAMS": (P["P2"]["tp"], P["P2"]["fp"], r3(P["P2"]["recall"]), r3(P["P2"]["csi"])) == (70, 10, 0.326, 0.311),
+ "N4 H1": (r3(H["H1"]["csi_diff"]), [r3(x) for x in H["H1"]["ci95"]], H["H1"]["passes"]) == (0.332, [0.203, 0.457], True),
+ "N5 H2-H4": [(r3(H[k]["csi_diff"]), [r3(x) for x in H[k]["ci95"]], H[k]["passes"]) for k in ("H2", "H3", "H4")]
+             == [(0.291, [0.176, 0.406], True), (-0.041, [-0.117, 0.028], False), (0.02, [-0.021, 0.064], False)],
+ "N6 D-2": (P["P0_D2"]["tp"], r3(P["P0_D2"]["csi"]), [r3(x) for x in H["sensitivity_P0_D2_vs_P2"]["ci95"]]) == (151, 0.572, [0.134, 0.384]),
+ "N7 others": [(P[k]["tp"], r3(P[k]["csi"])) for k in ("F1", "F2", "C0")] == [(159, 0.602), (181, 0.622), (118, 0.449)],
+ "N8 misses": (P["P2"]["fn"], P["P0"]["fn"]) == (145, 51),
+ "N9 all six cells": sum(c["P0"]["csi"] > c["P2"]["csi"] for c in nc["per_cell"].values()) == 6 == len(nc["per_cell"]),
+ "N10 2021-2025": (sum(r["day_rules"]["P0"]["tp"] for r in d["results"]), sum(r["day_rules"]["P0"]["tp"] + r["day_rules"]["P0"]["fn"] for r in d["results"])) == (670, 857),
+ "N lock commit": nc["lock_commit"].startswith("6ac1700"),
+})
+
 CLAIMS_TEXT = [  # value as CLAIMS.md prints it; each must be present
     "| 863 observed high-pollen events |", "| A2 | 7,373 evaluated city-days", "| 7373 (= " + " + ".join(str(p2(*k)["n_evaluated_days"]) for k in R) + ",",
     "| 28 |", "tp 359, n_events 863", "`kill_check.check2_beats_api.pooled_p2.false_alert_days` | 53 |",
@@ -58,6 +76,8 @@ CLAIMS_TEXT = [  # value as CLAIMS.md prints it; each must be present
     "N1 MAE 4.8 d from 14 d, 70% in 7-28 d", "N1 21.9 d MAE, 30% hit; C0_14d 12.5 d MAE, 60% hit",
     "P2 CSI 0.382 → N2 0.434", "CSI 0.486; recall 54.6% (215/394); 48 false-alert days; precision 81.7%",
     "`nasa_evaluation.no_nasa_control.nasa_adds_skill_heldout` | `false` |",
+    "| 215, 1706 |", "tp 164, fp 40, recall 0.763, csi 0.643", "tp 70, fp 10, recall 0.326, csi 0.311",
+    "csi_diff 0.332, ci95 [0.203, 0.457], passes true", "| 145, 51 |", "| 670/857, 359/863 |", "| 104, 19.5, 79 |",
 ]
 _claims_md = open("CLAIMS.md", encoding="utf-8").read()
 checks.update({f"CLAIMS.md says: {t[:60]}": t in _claims_md for t in CLAIMS_TEXT})

@@ -1,42 +1,71 @@
-# PollenPlan - Static Backtest Demo (GitHub Pages)
+# PollenPlan: read the trap, not the forecast
 
-A minimal static demo for GitHub Pages visualizing the pre-registered backtest results for the PollenPlan alert system.
+**Headline (pre-registered, untouched 2026 season):** on 215 high-pollen days in Madrid, Basel and Zürich (1 Jan – 31 Oct 2026, 1,706 city-days), **yesterday's count from the local pollen trap flagged 164 (76.3%)**. Europe's free CAMS forecast for the same day flagged **70 (32.6%)**. The CSI difference is +0.332, with a 95% CI of 0.203 to 0.457. The model and rules were locked, committed and pushed ([`6ac1700`](https://github.com/DrAhmed7887/hack-genhacks/commit/6ac1700)) before any 2026 file was downloaded ([pre-registration](docs/PREREG_NOWCAST_2026.md)). A fusion model and a NASA-weather variant did not beat the simple rule, so the product ships the simple rule.
 
-**Headline:** on 863 observed high-pollen days (Madrid, Basel, Zurich, 2021–2025), the free CAMS forecast caught **41.6%**; our pre-registered alert rule caught 41.0%, so we make no "beats the API" claim. An exploratory NASA POWER weather rule also lost to its own no-NASA control (held-out CSI 0.434 vs 0.486). The app uses the forecast and puts a nurse in front of every reminder batch.
-
-**Live demo, no account:** <https://drahmed7887.github.io/hack-genhacks/> · **Reproduce with no keys (the backtest reads committed data; only the install needs a network):**
+**Live demo, no account:** <https://drahmed7887.github.io/hack-genhacks/> · **Reproduce with no keys:**
 
 ```bash
 python -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/python -m pytest -q && .venv/bin/python eval/verify_claims.py
 ```
 
-## Important Disclaimers
+## What it is
 
-- **Retrospective analysis only** - Results are from historical data and do not predict future performance
-- **Not a clinical tool** - This demo does NOT provide medical advice or clinical guidance
-- **No "beats the API" claim** - The backtest shows measured P2 skill without evidence it outperforms the API's own forecast
-- **Thresholds signed 22 Nov 2026** - Alert thresholds in `rules/thresholds.json` (olive 162, grass 35, birch 30 grains/m³, daily mean) are status `signed` (CRITERIA_FOR_SIGNOFF rows 1–4 as proposed); retrospective use, not clinical guidance
-- **Model vs reality** - CAMS is an 11 km grid model; ground truth comes from point traps. This mismatch affects accuracy.
+An allergy clinic has patients with a known pollen allergy who are already on treatment. Each morning it needs one answer: is today a high-pollen day, so that these patients should use the medicine already on file? PollenPlan answers that from the clinic's own trap reading for yesterday (`src/alert_rule.py`). It then drafts a reminder for every eligible patient: sensitised to that species, with a medicine on file (`src/reminders.py`). A nurse approves the batch. Nothing is sent without that click. Each draft names only the medicine class on file and carries the signed safety line.
+
+## 2026 result (`eval/results/nowcast_2026.json`)
+
+| Rule | High days flagged | Recall | False-alert days | CSI |
+|---|---|---|---|---|
+| **Yesterday's trap count (P0, shipped)** | **164 / 215** | **76.3%** | 40 | **0.643** |
+| Trap count from two days ago (sensitivity) | 151 / 215 | 70.2% | 49 | 0.572 |
+| Fusion model F1 (trap + forecast, logistic) | 159 / 215 | 74.0% | 49 | 0.602 |
+| F2 = F1 + NASA POWER weather | 181 / 215 | 84.2% | 76 | 0.622 |
+| Last year's calendar (C0) | 118 / 215 | 54.9% | 48 | 0.449 |
+| CAMS forecast for the day (P2, the API) | 70 / 215 | 32.6% | 10 | 0.311 |
+
+| Hypothesis (pre-registered) | CSI difference | 95% CI | Result |
+|---|---|---|---|
+| H1: yesterday's trap beats the forecast | +0.332 | 0.203 to 0.457 | **Passed** |
+| H2: fusion model beats the forecast | +0.291 | 0.176 to 0.406 | Passed |
+| H3: fusion model beats yesterday's trap | −0.041 | −0.117 to 0.028 | **Failed**, so we ship P0 |
+| H4: NASA weather improves the fusion model | +0.020 | −0.021 to 0.064 | **Failed**, so NASA is not used |
+| Sensitivity: two-day-old reading beats the forecast | +0.261 | 0.134 to 0.384 | Passed |
+
+Yesterday's trap beats the forecast in all six city × species series in 2026. It did the same in 2021–2025, flagging 670 of 857 high days against 359 of 863 for the forecast (`eval/results/backtest.json`). The 2026 test was written to check whether that holds on a season we had not seen.
+
+## Where a forecast does not reach
+
+The CAMS European pollen forecast covers 25° W–45° E and 30° N–72° N ([CAMS dataset page](https://ads.atmosphere.copernicus.eu/datasets/cams-europe-air-quality-forecasts)). Open-Meteo states that its pollen data are "Only available in Europe as provided by CAMS European Air Quality forecast" ([docs](https://open-meteo.com/en/docs/air-quality-api)). The trap-first rule needs a local trap and no forecast. In Egypt, a one-year volumetric trap study in Alexandria (May 2019 – April 2020; Taia & Bassiouni, *Acta Scientific Microbiology* 2022) shows the measurement can be made. We found no routine public network there. **The rule is not yet tested outside Madrid, Basel and Zürich.**
+
+## Limits
+
+- **Scale:** three trap sites, six series and 215 high days in 2026. Madrid olive had only 11 high days.
+- **Study type:** this is retrospective scoring of a pre-registered rule, not a prospective trial. No patient outcome was measured.
+- **Late onsets:** yesterday's count cannot see the first high day of a burst, so on a sudden rise the rule alerts one day late. Those days count as misses above.
+- **Reading delay:** the rule needs yesterday's count by morning.
+  - MeteoSwiss publishes files "up to yesterday".
+  - Madrid publishes daily from January to June and weekly after that.
+  - The two-day-old reading also beat the forecast.
+- **Thresholds:** single-centre values (`rules/thresholds.json`, signed 22 Nov 2026).
+- **Data:** the patients are synthetic. Nothing is sent.
 
 ![PollenPlan Workflow](docs/flow.svg)
 
-## What's in This Repo
+## What's in this repo
 
 | Component | Description |
 |-----------|-------------|
-| `eval/backtest.py` | Pre-registered backtest script (DATA_PLAN 2.3) |
-| `eval/results/backtest.json` | Full machine-readable backtest results |
-| `eval/results/misses.csv` | Every missed observed high day |
-| `docs/results_table.md` | Human-readable results table |
-| `demo/index.html` | **This demo** - static visualization for GitHub Pages |
-| `demo/index.html` (`#nurse-console`) | **Nurse Briefing & Batch Approval Console** - replays four scenarios (Valencia control: 0 drafted; Madrid grass, Basel birch, olive simulation) over 200 synthetic patients; shows drafts and code-filtered patients, and approval writes an in-page audit line. 0 external sends; nothing leaves the browser |
-| `CLAIMS.md` | Every public number and feature claim with its source key and command |
-| `JUDGES.md` | Guide for judges mapped to the four criteria, with honest limits and review backlog |
-| `docs/flow.svg` | Workflow diagram (embedded above) |
-| `eval/render_demo.py` | Writes the demo's onset table (all 28 seasons) from `backtest.json`; `--check` fails if the HTML is stale |
+| `docs/PREREG_NOWCAST_2026.md` | Pre-registration: hypotheses, features, lock, endpoints, deviations, review |
+| `eval/nowcast.py` | Development CV (`nowcast_dev.json`), `--lock`, and the one-shot `--test-2026` scoring |
+| `data/fetch_2026.py` | 2026 download; refuses to run without the committed, pushed lock |
+| `eval/results/nowcast_lock.json` · `nowcast_2026.json` | Locked models · the 2026 result |
+| `src/alert_rule.py` | The shipped rule (yesterday's trap ≥ signed threshold) |
+| `src/reminders.py` | Reminder eligibility and message rules (signed 22 Nov 2026) |
+| `demo/index.html` | Front page, written by `eval/render_site.py` (`--check` fails if stale) |
+| `demo/backtest.html` | The 2021–2025 backtest page and nurse console, written by `eval/render_demo.py` |
+| `eval/backtest.py` · `eval/results/backtest.json` | The 2021–2025 pre-registered backtest |
+| `CLAIMS.md` · `JUDGES.md` | Every public number with its source, and the judge guide |
 | `rules/thresholds.json` | Alert thresholds (signed 22 Nov 2026) |
-| `tests/` | Unit tests for backtest rules and reminder logic |
-| `src/reminders.py` | Reminder eligibility rules (signed 22 Nov 2026) |
 
 ## Quick Start
 
@@ -142,7 +171,7 @@ Season windows are derived from training years (2021-2023) only:
 3. If P2 recall <50% in Madrid for both species, alert level only lowered with re-sign-off
 4. Valencia never scored
 
-**Current verdict**: R1 did not beat P2 on pooled recall → **no "beats the API" claim allowed**
+**2021–2025 kill-check verdict (R1 only)**: R1 did not beat P2 on pooled recall, so no claim is made for R1. The current headline is the separate, pre-registered 2026 test of P0 (top of this README).
 
 ## Results Summary
 

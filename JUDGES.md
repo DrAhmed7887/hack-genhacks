@@ -2,7 +2,9 @@
 
 GenHacks (Devpost), track **Healthcare & Environmental**. Live demo, no account: <https://drahmed7887.github.io/hack-genhacks/>. Code: <https://github.com/DrAhmed7887/hack-genhacks>.
 
-**What it is.** A pre-registered backtest of hay-fever alert rules against real observed pollen counts (Madrid, Basel, Zurich), plus a static demo that turns the result into a nurse-approved reminder batch for a synthetic clinic. **What the result says.** The API's own forecast (rule P2) caught 0.416 of 863 observed high days. Our day rule (R1) caught 0.410. R1 did not beat the API, so the headline is the measured skill, not a better predictor. Every number is traced to its source in [`CLAIMS.md`](CLAIMS.md).
+**What it is.** A clinic aid for hay-fever patients who are already on treatment. Each morning it reads the clinic's own pollen trap for yesterday. If the count is at or above the signed threshold, it drafts reminders, and a nurse approves them.
+
+**What the result says.** We ran a pre-registered test on the untouched 2026 season: Madrid, Basel and Zürich, 215 high-pollen days. Yesterday's trap count flagged 164 of them (76.3%). Europe's CAMS forecast for the same day flagged 70 (32.6%). The CSI difference is +0.332, 95% CI 0.203 to 0.457. The lock was committed and pushed (`6ac1700`) before any 2026 file was downloaded. Our fusion model did not beat the simple rule (H3 failed), and NASA weather added nothing (H4 failed). So the product ships the simple rule. Every number is traced in [`CLAIMS.md`](CLAIMS.md) §N, and `eval/verify_claims.py` checks it.
 
 The four criteria below are the verbatim list from the official page (`https://genhacks-open.devpost.com/`, read 19 Nov 2026 and recorded in the project SPEC): four criteria, 25% each.
 
@@ -10,9 +12,11 @@ The four criteria below are the verbatim list from the official page (`https://g
 
 | Evidence | Where |
 |---|---|
+| **Headline, pre-registered and replicated on an unseen season:** yesterday's trap 164/215 high days vs CAMS forecast 70/215 (2026); 670/857 vs 359/863 (2021–2025); trap wins in all 6 series both times | `eval/results/nowcast_2026.json`, `docs/PREREG_NOWCAST_2026.md`, `CLAIMS.md` §N |
+| Reach: the free CAMS pollen forecast covers Europe only (30° N–72° N), so outside it there is no forecast to compare against, and a local trap is the only input this rule needs. Not yet tested outside the three cities | demo `#where`, README "Where a forecast does not reach" |
 | Problem: hay-fever patients start treatment late because nobody tells them the season began. The first question was whether a simple alert rule beats the forecast it is built on. | `DEVPOST_DRAFT.md` (Problem), `docs/DATA_PLAN.md` §2.5 |
 | Scale of the test: 863 observed high-pollen events, 7,373 city-days, 28 city-species-year seasons, six pre-registered rules | `eval/results/backtest.json` → `kill_check.size_check`; `docs/results_table.md` |
-| The answer is published even though it is negative: no "beats the API" claim | `kill_check.overall_headline` = `measured_P2_skill_only_no_beats_api_claim`; `README.md` disclaimers |
+| Negative results are published too: in 2021–2025 our first day rule R1 did not beat the API (no claim for R1), and in 2026 the fusion model and the NASA variant failed their pre-registered tests | `kill_check.overall_headline` = `measured_P2_skill_only_no_beats_api_claim`; `README.md` disclaimers |
 | Delivery layer: a nurse reviews a draft batch of reminders that name only a medicine class the patient already has on file. Nothing is sent. | `demo/index.html` (`#nurse-console`), `src/reminders.py`, `tests/test_reminders.py` (14 tests) |
 | Per-city skill, including the weak cities, so a clinic can see where the alert is unreliable | `docs/results_table.md`; demo results table |
 
@@ -27,6 +31,8 @@ The four criteria below are the verbatim list from the official page (`https://g
 
 | Evidence | Where |
 |---|---|
+| Pre-registration with an enforced lock: `eval/nowcast.py --lock` writes coefficients, C, p* and the SHA-256 of the scoring and download scripts. `data/fetch_2026.py` and `--test-2026` refuse to run unless the lock is committed and pushed and both scripts are byte-identical. Two deviations are logged, both before scoring. An independent review after scoring found no result-changing bug | `docs/PREREG_NOWCAST_2026.md` §6, §9, §10; `eval/results/nowcast_lock.json`; `tests/test_nowcast.py` |
+| Shipped rule = the tested rule: `src/alert_rule.py` reproduces P0's 164 hits on 2026 exactly | `tests/test_alert_rule.py` |
 | Reproduces from a fresh clone, offline: `.venv/bin/python eval/backtest.py` rewrites `eval/results/backtest.json`, `eval/results/misses.csv` and `docs/results_table.md` from `data/cache/`. On 22 Nov 2026 the re-run left `git status` clean for those files. | `eval/backtest.py` (1,285 lines), `data/cache/` (15 files, 5.2 MB) |
 | Tests: `.venv/bin/pytest -q` → all pass. At commit `6a9bbb1`: 86 passed (24 hand-worked rule tests, 41 demo-vs-JSON tests, 7 patient-generator tests, 14 reminder-rule tests). The working tree has more tests (112 passed on 22 Nov 2026: 38 backtest rules, 53 demo, 7 patients, 14 reminders). | `tests/` |
 | The demo's onset table is generated from the JSON, and a check fails if it is stale: `.venv/bin/python eval/render_demo.py --check` | `eval/render_demo.py` |
