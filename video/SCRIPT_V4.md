@@ -1,6 +1,6 @@
 # PollenPlan film V4: narration changes from V2 (23 Nov 2026)
 
-V4 = the V2 Director's Cut (128.6 s, approved structure, voice "Daniel", `eleven_multilingual_v2`, speed 1.08) with two changes. Every number below is checked by `eval/verify_claims.py` and by `evidence.py gate` against `eval/results/backtest.json`.
+V4 = the V2 Director's Cut (128.6 s, approved structure, voice "Daniel", `eleven_multilingual_v2`, speed 1.08) with three changes. Every number below is checked by `eval/verify_claims.py` and by `evidence.py gate` against `eval/results/backtest.json`.
 
 ## New slot s7n (inside the dark "Honest limits" scene, after "Valencia is never scored.")
 
@@ -9,6 +9,12 @@ V4 = the V2 Director's Cut (128.6 s, approved structure, voice "Daniel", `eleven
 Spoken form (numbers as words for the voice): see `video/remotion/scripts/vo_v4.json`.
 
 On screen: "NASA POWER test · held-out 2024–25 (exploratory)"; two bars (14-day warning in window: NASA 30% vs calendar 60%); three bars (CSI: API forecast 0.382 · NASA rule 0.434 · same rule, no NASA 0.486); verdict chip "NASA adds skill? No".
+
+## Changed slot s3 (scale)
+
+> ... against Madrid, Basel, and Zürich traps — seven thousand three hundred seventy-three city-days.
+
+(V2 said 8,076. The 23 Nov 2026 code review found that days with no trap reading had been counted; see `CLAIMS.md` correction note. On screen: 7,373 in s3, s5 and s8.)
 
 ## Changed slot s8 (close)
 

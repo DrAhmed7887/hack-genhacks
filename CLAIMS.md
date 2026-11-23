@@ -14,6 +14,11 @@ git diff --stat eval/results docs/results_table.md   # empty output = the re-run
 
 On 22 Nov 2026 the backtest re-run left `git status` clean for `eval/`, `docs/` and `data/`, so the committed results are reproducible.
 
+### Correction, 23 Nov 2026 (independent code review, Codex CLI)
+
+1. **Missing trap readings were scored as "not high" days.** `run_city_species` built `obs_high = obs >= threshold`, which turns a missing reading into `False`, so `day_alert_metrics` (whose docstring already says it counts only days where both sides are defined) scored those days. Now `obs_high` keeps them as NaN. Effect: evaluated city-days 8,076 → 7,373; P2 false-alert days 77 → 53; R1 75 → 51; per-cell precision and CSI change (mostly Madrid grass, which has 310 in-season days with no reading). Recall, the 863 events, every C and D row and the verdict are unchanged.
+2. **N1 read same-day temperatures.** Cumulative degree days for an N1 alert on day D included day D's NASA POWER Tmax/Tmin. It now uses values through D-1. Effect: K2 in-sample 80% → 70% in window (MAE 5.1 → 4.8 d); K3 held-out MAE 21.5 → 21.9 d; held-out hit rate unchanged at 30% (calendar 60%).
+
 ### One-shot check of every number in the tables below
 
 Run `.venv/bin/python eval/verify_claims.py` from the repo root (offline, no keys). It exits 0 only if every value in sections A–D and K matches the JSON; `tests/test_verify_claims.py` runs it in CI.
@@ -25,7 +30,7 @@ Shorthand used in the tables: `BT` = `eval/results/backtest.json`. `cell(city, s
 | # | Claim | Where it appears | Source file and key path | Exact value | Command |
 |---|---|---|---|---|---|
 | A1 | 863 observed high-pollen events | README, DEVPOST, demo (`#total-events`), video proof scene, `docs/results_table.md` | `BT` → `kill_check.size_check.total_observed_events_P2_denominator` | 863 (= 22 + 70 + 127 + 250 + 140 + 254, the `P2.n_events` of the six cells) | `.venv/bin/python eval/backtest.py` |
-| A2 | 8,076 evaluated city-days | same | `BT` → `kill_check.size_check.total_evaluated_city_days_P2_denominator` | 8076 (= 1319 + 1387 + 1296 + 1389 + 1296 + 1389, the `P2.n_evaluated_days` of the six cells) | same |
+| A2 | 7,373 evaluated city-days (corrected 23 Nov 2026 from 8,076, see the correction note) | same | `BT` → `kill_check.size_check.total_evaluated_city_days_P2_denominator` | 7373 (= 1279 + 932 + 1224 + 1315 + 1265 + 1358, the `P2.n_evaluated_days` of the six cells) | same |
 | A3 | 28 seasons | DEVPOST, README (onset table), demo onset table, video product scene | `BT` → count of `results[].onset_by_year` entries (Madrid olive 5, Madrid grass 3, Basel birch 5, Basel grass 5, Zurich birch 5, Zurich grass 5). Table rows in `docs/results_table.md` and the demo's `#onset-table-body`. | 28 | `.venv/bin/python eval/render_demo.py --check` and `.venv/bin/pytest -q tests/test_demo.py` (`EXPECTED_ONSET_ROWS = 28`) |
 | A4 | Pre-registered size minimum met (>= 100 events, >= 1,000 city-days) | `docs/results_table.md`, demo kill-check | `BT` → `kill_check.size_check.passed`; minimum written in `docs/DATA_PLAN.md` §2.1 | `true` | `.venv/bin/python eval/backtest.py` |
 | A5 | 6 rules pre-registered: P0, P1, P2, R1, R2, C0 | README, DEVPOST, video run scene | `BT` → `rules_evaluated`; definitions in `docs/DATA_PLAN.md` §2.3 | `["P0","P1","P2","R1","C0","R2"]` | `.venv/bin/pytest -q tests/test_backtest_rules.py` |
@@ -39,13 +44,13 @@ Note on A3: "28 seasons" means 28 city × species × year onset rows. It does no
 | # | Claim | Where it appears | Source file and key path | Exact value | Command |
 |---|---|---|---|---|---|
 | B1 | P2 recall 0.416 (359 of 863) | README, DEVPOST ("41.6%"), demo (`#p2-recall`), video proof scene ("forty-one point six") | `BT` → `kill_check.check2_beats_api.pooled_p2.{tp, n_events, recall}` | tp 359, n_events 863, recall 0.4159907300115875 | `.venv/bin/python eval/backtest.py` |
-| B2 | P2 77 false-alert days | `docs/results_table.md` kill-check | `BT` → `kill_check.check2_beats_api.pooled_p2.false_alert_days` | 77 | same |
+| B2 | P2 53 false-alert days (was 77 before the 23 Nov 2026 fix) | `docs/results_table.md` kill-check | `BT` → `kill_check.check2_beats_api.pooled_p2.false_alert_days` | 53 | same |
 | B3 | R1 recall 0.410 (354 of 863) | README, DEVPOST ("41.0%"), video proof scene ("forty-one") | `BT` → `kill_check.check2_beats_api.pooled_r1.{tp, n_events, recall}` | tp 354, n_events 863, recall 0.4101969872537659 | same |
-| B4 | R1 75 false-alert days | `docs/results_table.md` kill-check | `BT` → `kill_check.check2_beats_api.pooled_r1.false_alert_days` | 75 | same |
+| B4 | R1 51 false-alert days (was 75 before the 23 Nov 2026 fix) | `docs/results_table.md` kill-check | `BT` → `kill_check.check2_beats_api.pooled_r1.false_alert_days` | 51 | same |
 | B5 | R1 does not beat P2 (verdict "No") | README, DEVPOST, demo (`#r1-vs-p2`), video | `BT` → `kill_check.check2_beats_api.r1_beats_p2_pooled_recall_at_equal_or_fewer_false_alerts` | `false` (0.410 < 0.416 on recall; R1 has 2 fewer false-alert days, but recall is lower) | same |
 | B6 | Headline: measured P2 skill only | README, DEVPOST, demo, video claim scene | `BT` → `kill_check.overall_headline`; `kill_check.check2_beats_api.passed_beats_api_claim` | `"measured_P2_skill_only_no_beats_api_claim"`; `false` | same |
 
-The pooled tp and false-alert counts equal the sums of the six per-cell values (P2: 3 + 22 + 70 + 100 + 79 + 85 = 359 true positives and 6 + 15 + 22 + 14 + 11 + 9 = 77 false-alert days; R1: 2 + 21 + 70 + 99 + 82 + 80 = 354 and 5 + 14 + 27 + 13 + 8 + 8 = 75). The verification block checks this.
+The pooled tp and false-alert counts equal the sums of the six per-cell values (P2: 3 + 22 + 70 + 100 + 79 + 85 = 359 true positives and 6 + 0 + 13 + 14 + 11 + 9 = 53 false-alert days; R1: 2 + 21 + 70 + 99 + 82 + 80 = 354 and 5 + 1 + 16 + 13 + 8 + 8 = 51). The verification block checks this.
 
 ## C. Per-city P2 recall
 
@@ -106,7 +111,7 @@ F8 caveat: the module docstring says the approve step and the `approved_at` log 
 |---|---|---|---|
 | G1 | Duration 2:16 | `ffprobe` duration 136.3 s | `ffprobe -v error -show_entries format=duration -of csv=p=0 video/film/renders/film_2026-11-22_21-15-36.mp4` |
 | G2 | "Eighty-six tests, green" | `pytest -q` summary line. 86 passed at commit `6a9bbb1`, which is the state the video was filmed on. Re-run on 22 Nov 2026 after the final console edits: `pytest -q` = 112 passed (`tests/test_demo.py` grew from 41 to 53 tests with the nurse console, threshold-boundary and NASA telemetry tests; `tests/test_backtest_rules.py` has 38). | `PY=$PWD/.venv/bin/python; git worktree add /tmp/pp 6a9bbb1 && (cd /tmp/pp && $PY -m pytest -q tests)`; run on 22 Nov 2026 gives 86 passed. Remove with `git worktree remove --force /tmp/pp`. |
-| G3 | "863 events, 8,076 city-days", "41.6" / "41", "13.6" / "31.4", "+2.88" | rows A1, A2, B1, B3, C1, C2, D1 above | `.venv/bin/python eval/verify_claims.py` |
+| G3 | "863 events, 7,373 city-days", "41.6" / "41", "13.6" / "31.4", "+2.88" | rows A1, A2, B1, B3, C1, C2, D1 above | `.venv/bin/python eval/verify_claims.py` |
 | G4 | "Six rules, frozen before the run" | row A5. `docs/DATA_PLAN.md` first entered git in `705451d` (22 Nov 2026 18:28 +0100); `eval/backtest.py` first entered in `bb879ed` (19:12 +0100). Git order shows the plan came first. It cannot prove nobody looked at results in between. | `git log --follow --format='%h %ad %s' --date=iso docs/DATA_PLAN.md eval/backtest.py` |
 | G5 | "-13.6 LUFS" note: removed from `DEVPOST_DRAFT.md` on 22 Nov 2026 (unverified). Re-measure with `ffmpeg -i <mp4> -af ebur128 -f null -` before any re-use. | see left |
 
@@ -132,8 +137,8 @@ All values: `BT` → `nasa_evaluation`; reproduce with `.venv/bin/python eval/ba
 | # | Claim | Source key path | Exact value |
 |---|---|---|---|
 | K1 | NASA POWER fields (T2M, T2M_MAX, T2M_MIN, PRECTOTCORR, ALLSKY_SFC_SW_DWN, RH2M, GWETROOT, WS2M) and MODIS MOD13Q1 250 m 16-day NDVI cached for all 4 cities, 2021-2025; NDVI used only from `calendar_date + 16 days` | `data/DATA_CARD.md` §5; `load_nasa_daily` | 4 + 4 cache files |
-| K2 | N1 (steroid nasal spray priming 14 days before onset), in-sample fit 2021-2023, paired rows | `nasa_evaluation.N1_pooled.train_2021_2023.paired_common_rows` | n=10, N1 MAE 5.1 d from 14 d, 80% in 7-28 d (in-sample fit, not evidence of skill) |
-| K3 | N1 held-out 2024-2025, paired rows | `N1_pooled.heldout_2024_2025.paired_common_rows` | n=10; N1 21.5 d MAE, 30% hit; C0_14d 12.5 d MAE, 60% hit; R2 (Europe's 4-day CAMS pollen forecast) mean lead -9.7 d, 0.0% hit |
+| K2 | N1 (steroid nasal spray priming 14 days before onset), in-sample fit 2021-2023, paired rows | `nasa_evaluation.N1_pooled.train_2021_2023.paired_common_rows` | n=10, N1 MAE 4.8 d from 14 d, 70% in 7-28 d (in-sample fit, not evidence of skill) |
+| K3 | N1 held-out 2024-2025, paired rows | `N1_pooled.heldout_2024_2025.paired_common_rows` | n=10; N1 21.9 d MAE, 30% hit; C0_14d 12.5 d MAE, 60% hit; R2 (Europe's 4-day CAMS pollen forecast) mean lead -9.7 d, 0.0% hit |
 | K4 | N2 held-out 2024-2025; N2 on day D uses prior-day (D-1) NASA POWER only | `N2_pooled.heldout_2024_2025` | 394 events; P2 CSI 0.382 → N2 0.434 (+0.052); recall 40.4% → 47.5% (159 → 187); false-alert days 22 → 37; precision 87.8% → 83.5% |
 | K5 | N2 pooled 2021-2025 | `N2_pooled.all_evaluable` | 863 events; CSI 0.392 → 0.454; recall 41.6% → 50.9% (359 → 439); false-alert days 53 → 105 |
 | K6 | Madrid olive held-out spikes caught | `per_city_species[madrid/olive].N2.splits.heldout_2024_2025` | N2 5/8, P2 0/8 (N2 has 4 false-alert days there) |

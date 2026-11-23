@@ -72,7 +72,7 @@ export const S2: React.FC = () => {
 // ───────── s3 · dark · grid vs traps
 export const S3: React.FC = () => {
   const t = useSec();
-  const tPeople = W('s3', 'people'), tWe = W('s3', 'we'), tMad = W('s3', 'madrid'), tFive = W('s3', 'five'), tEight = W('s3', 'eight');
+  const tPeople = W('s3', 'people'), tWe = W('s3', 'we'), tMad = W('s3', 'madrid'), tFive = W('s3', 'five'), tEight = W('s3', 'seven');
   const badge = (txt: string, sub: string, at: number, y: number, col: string) => (
     <Glass style={{left: 1160, top: y, width: 696, padding: '18px 26px', ...appear(t, at, 0.5)}}>
       <div style={{fontSize: 40, fontWeight: 800, color: col}}>{txt}</div>
@@ -101,7 +101,7 @@ export const S3: React.FC = () => {
         <div style={{fontSize: 30, fontWeight: 700, lineHeight: 1.25, marginTop: 6}}>EPOCHAL n=396 found no threshold</div>
         <div style={{fontSize: 26, color: '#C5D1E0', lineHeight: 1.25, marginTop: 6}}>No safe or unsafe level exists for every person</div>
       </Glass>
-      {counter(64, `${fmt(countTo(t, tEight, tEight + 1.6, 8076))}`, 'city-days', tEight - 0.2)}
+      {counter(64, `${fmt(countTo(t, tEight, tEight + 1.6, 7373))}`, 'city-days', tEight - 0.2)}
       {counter(412, `${fmt(countTo(t, tMad, tMad + 1.2, 863))}`, 'events', tMad - 0.2)}
       {counter(760, `${fmt(countTo(t, tFive, tFive + 0.8, 5))}`, 'years', tFive - 0.2)}
     </AbsoluteFill>
@@ -178,7 +178,7 @@ export const S5: React.FC = () => {
   return (
     <AbsoluteFill>
       <div style={{position: 'absolute', left: 64, top: 52, fontFamily: SANS, fontSize: 34, fontWeight: 700, color: '#9FB0C5', ...appear(t, 0.2)}}>
-        863 high-pollen events · 8,076 city-days · frozen in DATA_PLAN.md before scoring</div>
+        863 high-pollen events · 7,373 city-days · frozen in DATA_PLAN.md before scoring</div>
       {card(64, 'API Forecast (P2)', 41.6, 359, tApi, '#5EEAD4')}
       {card(996, 'Our Rule (R1)', 41.0, 354, tOur, '#93C5FD')}
       {(() => {
@@ -257,7 +257,7 @@ export const S7: React.FC = () => {
           {bar("Last year's calendar", '60%', 0.6, C.accent, W7N('last'), 192)}
         </Glass>
         <Glass style={{left: 120, top: 490, width: 1680, height: 345, ...appear(t, W7N('a', 3) - 0.2, 0.5, 20)}}>
-          <div style={{position: 'absolute', left: 44, top: 26, fontSize: 36, fontWeight: 800}}>Alert score (CSI) on 394 high-pollen days</div>
+          <div style={{position: 'absolute', left: 44, top: 26, fontSize: 36, fontWeight: 800}}>Alert score (CSI) · higher is better</div>
           {bar('API forecast alone', '0.382', 0.382 / 0.5, '#5A6672', W7N('score'), 105)}
           {bar('+ NASA weather rule', '0.434', 0.434 / 0.5, AMBER, W7N('four', 1), 180)}
           {bar('Same rule, no NASA', '0.486', 0.486 / 0.5, C.accent, W7N('without'), 255)}
@@ -289,7 +289,7 @@ export const S8: React.FC = () => {
       <div style={{position: 'absolute', left: 64, top: 570, padding: '14px 34px', borderRadius: 14, background: AMBER, color: '#1A1203', fontFamily: SANS, fontSize: 36, fontWeight: 800, ...appear(t, tN + 0.8, 0.5)}}>
         🔒 Claim Locked (R1 Lost)</div>
       <div style={{position: 'absolute', left: 64, right: 64, top: 690, padding: '22px 36px', borderRadius: 18, background: C.ink, color: '#fff', fontFamily: SANS, ...appear(t, tO - 0.3, 0.6)}}>
-        <div style={{fontSize: 34, fontWeight: 700, color: '#9FB0C5'}}>863 events · 8,076 city-days</div>
+        <div style={{fontSize: 34, fontWeight: 700, color: '#9FB0C5'}}>863 events · 7,373 city-days</div>
         <div style={{fontSize: 44, fontWeight: 800, marginTop: 6, color: '#5EEAD4'}}>drahmed7887.github.io/hack-genhacks</div>
         <div style={{fontSize: 34, fontFamily: MONO, marginTop: 6}}>github.com/DrAhmed7887/hack-genhacks</div>
       </div>

@@ -11,7 +11,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 V2 = json.loads((HERE / "timeline_v2.json").read_text())
 ORDER = ["s1", "s2", "s3", "s4", "s5a", "s5b", "s6", "s7", "s7n", "s8"]
-NEW = {"s7n", "s8"}
+NEW = {"s3", "s7n", "s8"}
 AUDIO_AT, TAIL, MAX_CHARS = 0.35, 0.55, 36
 
 

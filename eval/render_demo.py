@@ -13,6 +13,7 @@ import argparse
 import csv
 import html
 import json
+import re
 import sys
 
 import pandas as pd
@@ -378,6 +379,42 @@ def inject_nasa_eval(page: str, backtest: dict) -> str:
     return page[:line_start] + render_nasa_eval(backtest) + page[stop:]
 
 
+BACKTEST_DATA_RE = re.compile(r"(const backtestData = )(\{.*?\n    \});", re.S)
+STATIC_METRICS = {  # span id -> key path in backtest.json
+    "p2-recall": ("kill_check", "check2_beats_api", "pooled_p2", "recall"),
+    "total-events": ("kill_check", "size_check", "total_observed_events_P2_denominator"),
+    "total-days": ("kill_check", "size_check", "total_evaluated_city_days_P2_denominator"),
+}
+
+
+def _refresh(shape, source):
+    """Copy `source` values into the keys already present in `shape`; floats to 3 dp."""
+    if isinstance(shape, dict) and isinstance(source, dict):
+        return {k: (_refresh(v, source[k]) if k in source else v) for k, v in shape.items()}
+    if isinstance(shape, list) and isinstance(source, list) and len(shape) == len(source):
+        return [_refresh(a, b) for a, b in zip(shape, source)]
+    if isinstance(source, float):
+        return round(source, 3)
+    return source
+
+
+def inject_backtest_data(page: str, backtest: dict) -> str:
+    """Refresh the page's embedded backtestData snapshot and static metric spans from backtest.json."""
+    m = BACKTEST_DATA_RE.search(page)
+    if not m:
+        raise ValueError("backtestData block not found in demo/index.html")
+    fresh = _refresh(json.loads(m.group(2)), backtest)
+    body = json.dumps(fresh, indent=2, ensure_ascii=False).replace("</", "<\\/").replace("\n", "\n    ")
+    page = page[:m.start(2)] + body + page[m.end(2):]
+    for span_id, path in STATIC_METRICS.items():
+        val = backtest
+        for k in path:
+            val = val[k]
+        shown = f"{val:.3f}" if isinstance(val, float) else str(val)
+        page = re.sub(rf'(<span class="metric-value" id="{span_id}">)[^<]*(</span>)', lambda mm: mm.group(1) + html.escape(shown) + mm.group(2), page)
+    return page
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--check", action="store_true", help="fail if demo/index.html is stale")
@@ -385,7 +422,7 @@ def main(argv: list[str] | None = None) -> int:
 
     backtest = json.loads(BACKTEST_JSON.read_text())
     page = DEMO_HTML.read_text()
-    new_page = inject_nasa_eval(inject_console(inject(page, render_tbody(onset_rows(backtest)))), backtest)
+    new_page = inject_backtest_data(inject_nasa_eval(inject_console(inject(page, render_tbody(onset_rows(backtest)))), backtest), backtest)
     if args.check:
         if new_page != page:
             print("demo/index.html generated blocks are stale: run eval/render_demo.py", file=sys.stderr)

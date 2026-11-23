@@ -1,7 +1,9 @@
-"""Check every number in CLAIMS.md against the committed results.
+"""Check the numbers CLAIMS.md publishes against the committed results.
 
+Two halves: (1) the expected values below must equal `eval/results/backtest.json`
+and `rules/thresholds.json`; (2) each of those values, as written in CLAIMS.md,
+must appear in CLAIMS.md, so a number edited in the doc alone fails too.
 Run from the repo root: `.venv/bin/python eval/verify_claims.py`. Offline, no keys.
-Exits 0 only if every value matches `eval/results/backtest.json` and `rules/thresholds.json`.
 """
 import json
 d = json.load(open("eval/results/backtest.json"))
@@ -11,14 +13,14 @@ kc = d["kill_check"]; c2 = kc["check2_beats_api"]
 def p2(c, s): return R[(c, s)]["P2"]
 checks = {
  "events": kc["size_check"]["total_observed_events_P2_denominator"] == 863,
- "city_days": kc["size_check"]["total_evaluated_city_days_P2_denominator"] == 8076,
+ "city_days": kc["size_check"]["total_evaluated_city_days_P2_denominator"] == 7373,
  "seasons": sum(len(r["onset_by_year"]) for r in d["results"]) == 28,
- "P2 pooled": (c2["pooled_p2"]["tp"], c2["pooled_p2"]["n_events"], round(c2["pooled_p2"]["recall"], 3), c2["pooled_p2"]["false_alert_days"]) == (359, 863, 0.416, 77),
- "R1 pooled": (c2["pooled_r1"]["tp"], c2["pooled_r1"]["n_events"], round(c2["pooled_r1"]["recall"], 3), c2["pooled_r1"]["false_alert_days"]) == (354, 863, 0.410, 75),
+ "P2 pooled": (c2["pooled_p2"]["tp"], c2["pooled_p2"]["n_events"], round(c2["pooled_p2"]["recall"], 3), c2["pooled_p2"]["false_alert_days"]) == (359, 863, 0.416, 53),
+ "R1 pooled": (c2["pooled_r1"]["tp"], c2["pooled_r1"]["n_events"], round(c2["pooled_r1"]["recall"], 3), c2["pooled_r1"]["false_alert_days"]) == (354, 863, 0.410, 51),
  "pooled P2 tp = sum of cells": sum(p2(*k)["tp"] for k in R) == 359,
- "pooled P2 false alerts = sum of cells": sum(p2(*k)["false_alert_days"] for k in R) == 77,
+ "pooled P2 false alerts = sum of cells": sum(p2(*k)["false_alert_days"] for k in R) == 53,
  "pooled R1 tp = sum of cells": sum(R[k]["R1"]["tp"] for k in R) == 354,
- "pooled R1 false alerts = sum of cells": sum(R[k]["R1"]["false_alert_days"] for k in R) == 75,
+ "pooled R1 false alerts = sum of cells": sum(R[k]["R1"]["false_alert_days"] for k in R) == 51,
  "madrid olive": (p2("madrid","olive")["tp"], p2("madrid","olive")["n_events"], round(p2("madrid","olive")["recall"], 3)) == (3, 22, 0.136),
  "madrid grass": (p2("madrid","grass")["tp"], p2("madrid","grass")["n_events"], round(p2("madrid","grass")["recall"], 3)) == (22, 70, 0.314),
  "basel birch": round(p2("basel","birch")["recall"], 3) == 0.551,
@@ -38,12 +40,24 @@ n1 = ne["N1_pooled"]["heldout_2024_2025"]["paired_common_rows"]
 n2 = ne["N2_pooled"]["heldout_2024_2025"]
 ctl = ne["no_nasa_control"]
 checks.update({
- "K3 N1 held-out": (n1["n"], n1["N1"]["mae_from_14d"], n1["N1"]["share_in_7_to_28d"], n1["C0_14d"]["mae_from_14d"], n1["C0_14d"]["share_in_7_to_28d"]) == (10, 21.5, 0.3, 12.5, 0.6),
+ "K3 N1 held-out": (n1["n"], n1["N1"]["mae_from_14d"], n1["N1"]["share_in_7_to_28d"], n1["C0_14d"]["mae_from_14d"], n1["C0_14d"]["share_in_7_to_28d"]) == (10, 21.9, 0.3, 12.5, 0.6),
  "K4 N2 held-out": (n2["N2"]["n_events"], round(n2["P2"]["csi"], 3), round(n2["N2"]["csi"], 3), n2["P2"]["tp"], n2["N2"]["tp"], n2["P2"]["false_alert_days"], n2["N2"]["false_alert_days"]) == (394, 0.382, 0.434, 159, 187, 22, 37),
  "K8 no-NASA control held-out": (round(ctl["heldout_2024_2025"]["csi"], 3), ctl["heldout_2024_2025"]["tp"], ctl["heldout_2024_2025"]["n_events"], ctl["heldout_2024_2025"]["false_alert_days"], round(ctl["heldout_2024_2025"]["precision"], 3)) == (0.486, 215, 394, 48, 0.817),
  "K9 NASA adds no skill": ctl["nasa_adds_skill_heldout"] is False and ctl["heldout_2024_2025"]["csi"] > n2["N2"]["csi"],
  "K10 exploratory": ne["status"].startswith("exploratory"),
 })
+
+CLAIMS_TEXT = [  # value as CLAIMS.md prints it; each must be present
+    "| 863 observed high-pollen events |", "| A2 | 7,373 evaluated city-days", "| 7373 (= 1279 + 932 + 1224 + 1315 + 1265 + 1358,",
+    "| 28 |", "tp 359, n_events 863", "`kill_check.check2_beats_api.pooled_p2.false_alert_days` | 53 |",
+    "tp 354, n_events 863", "`kill_check.check2_beats_api.pooled_r1.false_alert_days` | 51 |",
+    "6 + 0 + 13 + 14 + 11 + 9 = 53", "5 + 1 + 16 + 13 + 8 + 8 = 51",
+    "N1 MAE 4.8 d from 14 d, 70% in 7-28 d", "N1 21.9 d MAE, 30% hit; C0_14d 12.5 d MAE, 60% hit",
+    "P2 CSI 0.382 → N2 0.434", "CSI 0.486; recall 54.6% (215/394); 48 false-alert days; precision 81.7%",
+    "`nasa_evaluation.no_nasa_control.nasa_adds_skill_heldout` | `false` |",
+]
+_claims_md = open("CLAIMS.md", encoding="utf-8").read()
+checks.update({f"CLAIMS.md says: {t[:60]}": t in _claims_md for t in CLAIMS_TEXT})
 
 if __name__ == "__main__":
     for k, v in checks.items():

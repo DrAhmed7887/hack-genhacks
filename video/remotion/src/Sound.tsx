@@ -30,7 +30,7 @@ const CUES: Cue[] = [
   ['click', at('s2', 'approves'), 0.8],
   ['chime', at('s2', 'batch'), 0.3],
   ['tick', at('s3', 'five'), 0.4],
-  ['tick', at('s3', 'eight'), 0.4],
+  ['tick', at('s3', 'seven'), 0.4],
   ['tick', at('s4', 'frozen'), 0.4],
   ['tick', at('s4', 'twenty-eight', 0, 0), 0.4],
   ['tick', at('s5a', 'api', 0.1, 0), 0.4],
