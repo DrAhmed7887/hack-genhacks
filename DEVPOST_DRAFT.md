@@ -15,7 +15,7 @@ beats the raw forecast it is built on.
 **What we did.** PollenPlan pre-registered 6 alert rules (persistence, API
 persistence, the API's own forecast P2, a 2-day exposure rule R1, a pre-peak
 rule R2, climatology C0) and ran them against observed pollen counts in Madrid,
-Basel and Zurich — 863 high-pollen events over 8,076 city-days, 28 seasons.
+Basel and Zurich — 863 high-pollen events over 7,373 city-days, 28 seasons.
 
 **Result.** The API's own forecast (P2) caught 41.6% of high days. Our day
 rule (R1) caught 41.0% — it did not beat the API. So the headline is the
@@ -29,8 +29,8 @@ MODIS MOD13Q1 (250 m 16-day NDVI, lagged +16 days for strict causality),
 cached offline for all four cities (2021–2025), and tested two extra rules
 calibrated on 2021–2023 only. *Negative finding (N1, priming a steroid nasal
 spray, an intranasal corticosteroid, 14 days before onset):* thermal
-accumulation hit the 7–28 d window 80% in-sample (5.1 d MAE from 14 d) but only
-30% on held-out 2024–2025 (n=10 paired rows; 21.5 d MAE), versus 12.5 d
+accumulation hit the 7–28 d window 70% in-sample (4.8 d MAE from 14 d) but only
+30% on held-out 2024–2025 (n=10 paired rows; 21.9 d MAE), versus 12.5 d
 and 60% for the prior-year calendar rule; R2 (Europe's 4-day CAMS pollen forecast) fired
 9.7 d after onset (0.0% hit). Warm Feb/Mar springs triggered it before
 flowering. *Second negative finding (N2, prior-day D-1 NASA solar/warm/dry

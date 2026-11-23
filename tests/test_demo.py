@@ -311,7 +311,7 @@ class TestRenderedValues:
         assert "863" in html
         
         # Total days  
-        assert "8076" in html
+        assert "7373" in html
         
         # Madrid P2 recall values
         assert "0.136" in html  # olive
@@ -607,7 +607,7 @@ def test_nasa_eval_summary_matches_backtest_json():
     assert f"{paired['R2']['mean_lead_days']:.1f}d" in text
     # Headline figures as stated in CLAIMS.md section K.
     for literal in ("0.382 → 0.434", "40.4% → 47.5%", "159 → 187 of 394", "0/8 → 5/8", "22 → 37",
-                    "87.8% → 83.5%", "21.5d", "12.5d", "30%", "60%", "0.0%", "-9.7d"):
+                    "87.8% → 83.5%", "21.9d", "12.5d", "30%", "60%", "0.0%", "-9.7d"):
         assert literal in text, literal
     for label in ("R2 (4-day CAMS pollen forecast)", "N1 (NASA GDD, 7–28d pre-peak start)",
                   "Held-Out 2024–25 Prior-Day (D-1) NASA + CAMS (N2) vs API Forecast (P2)"):

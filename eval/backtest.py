@@ -550,7 +550,9 @@ def season_block_bootstrap_recall(obs_high: pd.Series, alert: pd.Series, years: 
 def run_city_species(city: str, species: str, threshold: float, rng: np.random.Generator) -> dict:
     frame = build_city_frame(city)
     obs = frame[f"obs_{species}"]
-    obs_high = obs >= threshold
+    # Missing trap readings stay NaN so day_alert_metrics excludes them
+    # (fixed 23 Nov 2026: `obs >= threshold` had scored them as non-events).
+    obs_high = (obs >= threshold).where(obs.notna(), other=np.nan)
 
     season_bounds = compute_season_bounds(frame, species)
     season_mask = in_season_mask(frame.index, season_bounds)
@@ -932,11 +934,14 @@ EVAL_SPLITS = {
 
 
 def cum_gdd_series(frame: pd.DataFrame, species: str) -> pd.Series:
-    """Cumulative growing degree days from Jan 1 within each calendar year.
+    """Cumulative growing degree days from Jan 1 within each calendar year,
+    through the day BEFORE each date (D-1), so an N1 alert on day D never reads
+    day D's own NASA temperatures (fixed 23 Nov 2026; was inclusive of D).
     gdd_day = max(0, (Tmax+Tmin)/2 - base). Missing days add 0."""
     base = GDD_BASE[species]
-    gdd_day = np.maximum(0.0, 0.5 * (frame["nasa_t2m_max"] + frame["nasa_t2m_min"]) - base)
-    return gdd_day.fillna(0.0).groupby(frame.index.year).cumsum()
+    gdd_day = np.maximum(0.0, 0.5 * (frame["nasa_t2m_max"] + frame["nasa_t2m_min"]) - base).fillna(0.0)
+    years = frame.index.year
+    return gdd_day.groupby(years).cumsum().groupby(years).shift(1).fillna(0.0)
 
 
 def calibrate_n1(frame: pd.DataFrame, species: str, threshold: float) -> dict:
