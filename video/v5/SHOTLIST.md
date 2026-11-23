@@ -92,3 +92,9 @@ R13 Tape colour: the tape is neutral warm grey so green reads as "trap result" o
 - Music: Flow Music (flowmusic.app, Lyria 3 Pro), "Morning Clarity", 180.98 s WAV, prompt in the hand-over notes; mixed at volume 0.20 with sidechain ducking under the voice (`video/v5/master.sh`).
 - Close card: 239 tests (pytest collection, all passing), not the script's 137, which was out of date.
 - Real-screen fine print (chart axis dates, card footers, table chips) sits at 22–27 px after zoom. All film-authored text is ≥ 28 px.
+
+## 8. v5.1 (23 Nov 2026, after Ahmed: "no animation or omni or flow")
+
+- Three Gemini Omni 1.2 Flash clips made in Flow (8 s, 720p generation, free "1080p Upscaled" download, 24 points each, 1,020 → 948): meadow pollen under the title (s1), empty clinic desk under the batch header (s6), pollen in a sunbeam behind the close (s9). Each is labelled on screen "AI-generated footage · Gemini Omni (Flow)". No people, screens or readable text. The sunbeam grains are spiky, not grass-like, so they're generic b-roll and never presented as grass pollen.
+- Animation layer: seeded pollen drift on every paper scene, a slow 2.5% camera drift, a tape-strip wipe over all 9 scene cuts (root level, so sequences stay non-overlapping), and word-by-word titles.
+- Same narration and timing: 2:56.6, −16.0 LUFS, −1.9 dBTP.

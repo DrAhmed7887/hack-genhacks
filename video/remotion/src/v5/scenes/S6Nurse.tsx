@@ -1,7 +1,7 @@
 import React from 'react';
 import {interpolate, useCurrentFrame, Easing} from 'remotion';
 import {C, cue, scene} from '../theme';
-import {Paper, Shot, Title, ramp} from '../ui';
+import {Broll, Paper, Shot, Title, ramp} from '../ui';
 import shots from '../../../public/v5/shots/shots.json';
 
 const s = scene('s6');
@@ -38,6 +38,7 @@ export const S6Nurse: React.FC = () => {
     const Z = 3.3;
     return (
       <Paper>
+        <Broll src="v5/flow/clinic_desk.mp4" scrim="center" />
         <Title text="The morning batch" />
         <Shot name="console_bar" x={960 - (HEAD.w * Z) / 2 - 16} y={420} zoom={Z} shadow={false}
           crop={{x: HEAD.x - 4, y: HEAD.y - 4, w: HEAD.w + 8, h: HEAD.h + 10}} />

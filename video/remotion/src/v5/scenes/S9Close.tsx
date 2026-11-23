@@ -1,7 +1,7 @@
 import React from 'react';
 import {useCurrentFrame} from 'remotion';
 import {C, D, cue, scene} from '../theme';
-import {Mono, Paper, ramp} from '../ui';
+import {Broll, Mono, Paper, ramp} from '../ui';
 
 const s = scene('s9');
 const P = D.pooled;
@@ -14,6 +14,7 @@ export const S9Close: React.FC = () => {
   const W = COLS * PITCH;
   return (
     <Paper>
+      <Broll src="v5/flow/pollen_beam.mp4" scrim="center" opacity={1 - ramp(f, kOpen - 10, kOpen + 8)} />
       <div style={{position: 'absolute', left: 0, right: 0, top: 150, textAlign: 'center', fontSize: 40, fontWeight: 700}}>
         3 cities · 1 season · a pre-registered test
       </div>

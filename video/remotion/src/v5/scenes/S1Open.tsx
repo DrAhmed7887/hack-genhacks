@@ -1,7 +1,7 @@
 import React from 'react';
 import {useCurrentFrame} from 'remotion';
 import {C, D, F, cue, scene} from '../theme';
-import {Paper, ramp} from '../ui';
+import {Broll, Paper, ramp} from '../ui';
 
 const s = scene('s1');
 const days = D.madridGrass.days as [string, number, number, number, number, number][];
@@ -14,11 +14,13 @@ export const S1Open: React.FC = () => {
   const vmax = Math.max(...days.map((d) => d[1]));
   const bw = (X1 - X0) / days.length;
   const Y = (v: number) => BASE - (v / vmax) * H;
-  const drawA = 6, drawB = cue(s, 'question', 0, 0.6);
+  const clipOut = cue(s, 'is', 0, 0.2);             // the meadow gives way to the real counts on "Is today..."
+  const drawA = clipOut + 6, drawB = cue(s, 'have', 0, 0.2);
   const shown = ramp(f, drawA, drawB) * days.length;
   const lineO = ramp(f, cue(s, 'high-pollen', 0, -0.2), cue(s, 'high-pollen', 0, 0.3));
   return (
     <Paper>
+      <Broll src="v5/flow/meadow.mp4" scrim="left" opacity={1 - ramp(f, clipOut - 6, clipOut + 12)} />
       <div style={{position: 'absolute', left: 120, top: 96}}>
         <div style={{fontSize: 30, fontWeight: 700, letterSpacing: 2.5, color: C.green, textTransform: 'uppercase'}}>PollenPlan</div>
         <div style={{fontSize: 128, fontWeight: 800, letterSpacing: -4, lineHeight: 0.98, marginTop: 14}}>
@@ -37,7 +39,7 @@ export const S1Open: React.FC = () => {
           <line x1={X0} x2={X1} y1={Y(T)} y2={Y(T)} stroke={C.ink} strokeWidth={2.5} strokeDasharray="10 8" />
           <text x={X0} y={Y(T) - 14} fontFamily={F.sans} fontSize={28} fill={C.ink2}>alert line {T} grains/m³</text>
         </g>
-        <text x={X0} y={BASE + 44} fontFamily={F.sans} fontSize={28} fill={C.ink2}>Madrid · grass pollen · each bar is one day of 2026, read from the trap</text>
+        <text x={X0} y={BASE + 44} fontFamily={F.sans} fontSize={28} fill={C.ink2} opacity={ramp(f, drawA, drawA + 12)}>Madrid · grass pollen · each bar is one day of 2026, read from the trap</text>
       </svg>
     </Paper>
   );
