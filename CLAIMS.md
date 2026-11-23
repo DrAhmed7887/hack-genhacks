@@ -16,42 +16,7 @@ On 22 Nov 2026 the backtest re-run left `git status` clean for `eval/`, `docs/` 
 
 ### One-shot check of every number in the tables below
 
-Save as `verify_claims.py` (not committed; it is the block below) and run `.venv/bin/python verify_claims.py`. It exits 0 only if every value in this file matches the JSON.
-
-```python
-import json
-d = json.load(open("eval/results/backtest.json"))
-t = json.load(open("rules/thresholds.json"))
-R = {(r["city"], r["species"]): r["day_rules"] for r in d["results"]}
-kc = d["kill_check"]; c2 = kc["check2_beats_api"]
-def p2(c, s): return R[(c, s)]["P2"]
-checks = {
- "events": kc["size_check"]["total_observed_events_P2_denominator"] == 863,
- "city_days": kc["size_check"]["total_evaluated_city_days_P2_denominator"] == 8076,
- "seasons": sum(len(r["onset_by_year"]) for r in d["results"]) == 28,
- "P2 pooled": (c2["pooled_p2"]["tp"], c2["pooled_p2"]["n_events"], round(c2["pooled_p2"]["recall"], 3), c2["pooled_p2"]["false_alert_days"]) == (359, 863, 0.416, 77),
- "R1 pooled": (c2["pooled_r1"]["tp"], c2["pooled_r1"]["n_events"], round(c2["pooled_r1"]["recall"], 3), c2["pooled_r1"]["false_alert_days"]) == (354, 863, 0.410, 75),
- "pooled P2 tp = sum of cells": sum(p2(*k)["tp"] for k in R) == 359,
- "pooled P2 false alerts = sum of cells": sum(p2(*k)["false_alert_days"] for k in R) == 77,
- "pooled R1 tp = sum of cells": sum(R[k]["R1"]["tp"] for k in R) == 354,
- "pooled R1 false alerts = sum of cells": sum(R[k]["R1"]["false_alert_days"] for k in R) == 75,
- "madrid olive": (p2("madrid","olive")["tp"], p2("madrid","olive")["n_events"], round(p2("madrid","olive")["recall"], 3)) == (3, 22, 0.136),
- "madrid grass": (p2("madrid","grass")["tp"], p2("madrid","grass")["n_events"], round(p2("madrid","grass")["recall"], 3)) == (22, 70, 0.314),
- "basel birch": round(p2("basel","birch")["recall"], 3) == 0.551,
- "basel grass": round(p2("basel","grass")["recall"], 3) == 0.400,
- "zurich birch": round(p2("zurich","birch")["recall"], 3) == 0.564,
- "zurich grass": round(p2("zurich","grass")["recall"], 3) == 0.335,
- "R2-P2": (c2["r2_minus_p2_lead_days_bootstrap"]["mean_diff"], c2["r2_minus_p2_lead_days_bootstrap"]["ci95"]) == (2.88, [2.64, 3.0]),
- "R2-C0": (c2["r2_minus_c0_lead_days_bootstrap"]["mean_diff"], c2["r2_minus_c0_lead_days_bootstrap"]["ci95"]) == (-1.55, [-7.75, 6.0]),
- "no beats-the-API claim": c2["passed_beats_api_claim"] is False and kc["overall_headline"] == "measured_P2_skill_only_no_beats_api_claim",
- "valencia not scored": d["valencia_scored"] is False and "valencia" not in d["cities_scored"] and all(r["city"] != "valencia" for r in d["results"]),
- "thresholds": t["status"] == "signed" and t["alert"] == {"olive": 162, "grass": 35, "birch": 30} and t["watch"] == {"grass": 20} and d["thresholds_used"] == t["alert"],
- "signed note": "22 Nov 2026" in t["note"] and t["signed_by"] == "Ahmed Zayed",
- "rules": d["rules_evaluated"] == ["P0", "P1", "P2", "R1", "C0", "R2"],
-}
-for k, v in checks.items(): print("OK  " if v else "FAIL", k)
-raise SystemExit(0 if all(checks.values()) else 1)
-```
+Run `.venv/bin/python eval/verify_claims.py` from the repo root (offline, no keys). It exits 0 only if every value in sections A–D and K matches the JSON; `tests/test_verify_claims.py` runs it in CI.
 
 Shorthand used in the tables: `BT` = `eval/results/backtest.json`. `cell(city, species)` = the element of `BT.results[]` whose `city` and `species` fields match. `kc` = `BT.kill_check`. Recall values are shown rounded to 3 decimals; the JSON holds the full float.
 
@@ -141,7 +106,7 @@ F8 caveat: the module docstring says the approve step and the `approved_at` log 
 |---|---|---|---|
 | G1 | Duration 2:16 | `ffprobe` duration 136.3 s | `ffprobe -v error -show_entries format=duration -of csv=p=0 video/film/renders/film_2026-11-22_21-15-36.mp4` |
 | G2 | "Eighty-six tests, green" | `pytest -q` summary line. 86 passed at commit `6a9bbb1`, which is the state the video was filmed on. Re-run on 22 Nov 2026 after the final console edits: `pytest -q` = 112 passed (`tests/test_demo.py` grew from 41 to 53 tests with the nurse console, threshold-boundary and NASA telemetry tests; `tests/test_backtest_rules.py` has 38). | `PY=$PWD/.venv/bin/python; git worktree add /tmp/pp 6a9bbb1 && (cd /tmp/pp && $PY -m pytest -q tests)`; run on 22 Nov 2026 gives 86 passed. Remove with `git worktree remove --force /tmp/pp`. |
-| G3 | "863 events, 8,076 city-days", "41.6" / "41", "13.6" / "31.4", "+2.88" | rows A1, A2, B1, B3, C1, C2, D1 above | `.venv/bin/python verify_claims.py` (the block above) |
+| G3 | "863 events, 8,076 city-days", "41.6" / "41", "13.6" / "31.4", "+2.88" | rows A1, A2, B1, B3, C1, C2, D1 above | `.venv/bin/python eval/verify_claims.py` |
 | G4 | "Six rules, frozen before the run" | row A5. `docs/DATA_PLAN.md` first entered git in `705451d` (22 Nov 2026 18:28 +0100); `eval/backtest.py` first entered in `bb879ed` (19:12 +0100). Git order shows the plan came first. It cannot prove nobody looked at results in between. | `git log --follow --format='%h %ad %s' --date=iso docs/DATA_PLAN.md eval/backtest.py` |
 | G5 | "-13.6 LUFS" note: removed from `DEVPOST_DRAFT.md` on 22 Nov 2026 (unverified). Re-measure with `ffmpeg -i <mp4> -af ebur128 -f null -` before any re-use. | see left |
 
