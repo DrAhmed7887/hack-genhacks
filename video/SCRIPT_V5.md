@@ -34,7 +34,7 @@ Built from scratch around the pre-registered 2026 result. V4 and earlier are ret
 - **Scene 1 wording:** "so our patients should use the medicine they already have." This is the same intent as the signed message rules (DATA_PLAN §3): the message names only the medicine class on file.
 - **Scene 8 wording, corrected 23 Nov after review:** the earlier draft said Egypt had no forecast. That was wrong: Alexandria (31.2° N) and Cairo (30.0° N) sit inside the CAMS box and get values. The script now says only what WR1 (the domain) and WR6/WR7 (our API query: Alexandria and Cairo get values, Asyut none) support. "We found no one who has checked them against a trap" is a negative search result, not a survey of the field.
 
-## Amendment A1 (23 Nov 2026), for approval: AI layer scene 6b, inserted after scene 6 (about +16 s, total about 2:52)
+## Amendment A1 (23 Nov 2026), APPROVED by Ahmed 23 Nov 2026 ("Approve A1"): AI layer scene 6b, inserted after scene 6 (about +16 s, total about 2:52)
 
 | # | Time | Narration (voice) | On screen |
 |---|---|---|---|
