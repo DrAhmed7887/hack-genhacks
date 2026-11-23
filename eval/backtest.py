@@ -153,6 +153,47 @@ def load_observed_meteoswiss(station: str) -> pd.DataFrame:
     return df.set_index("date")[["obs_birch", "obs_grass"]]
 
 
+NASA_CITY_KEYS = {"madrid": "madrid_facf", "basel": "basel_pbs", "zurich": "zurich_pzh"}
+NASA_POWER_RENAME = {
+    "t2m": "nasa_t2m", "t2m_max": "nasa_t2m_max", "t2m_min": "nasa_t2m_min",
+    "prectotcorr": "nasa_precip", "allsky_sfc_sw_dwn": "nasa_solar",
+    "rh2m": "nasa_rh2m", "gwetroot": "nasa_gwetroot", "ws2m": "nasa_ws2m",
+}
+MODIS_COMPOSITE_DAYS = 16
+NASA_COLUMNS = list(NASA_POWER_RENAME.values()) + ["nasa_ndvi"]
+
+
+def load_nasa_daily(city_key: str) -> pd.DataFrame:
+    """Daily NASA POWER weather/soil + causally forward-filled MODIS NDVI.
+
+    city_key is a cache key (madrid_facf, basel_pbs, zurich_pzh,
+    valencia_demo). NDVI: a MOD13Q1 composite stamped calendar_date covers
+    the following 16 days, so it is only treated as available on
+    avail_date = calendar_date + 16 days. Date D sees the latest composite
+    with avail_date <= D (merge_asof, direction="backward"), which removes
+    the 16-day lookahead entirely. Composites whose NDVI is a fill value
+    (empty) are dropped first, so D falls back to the last valid composite,
+    never a future one. The Dec-2020 composites are in the cache so 1 Jan
+    2021 has a value (2020-12-02 + 16d = 2020-12-18 <= 2021-01-01).
+    """
+    full_index = pd.date_range("2021-01-01", "2025-12-31", freq="D")
+    power = pd.read_csv(CACHE_DIR / f"nasa_power_{city_key}.csv", parse_dates=["date"])
+    power = power.rename(columns=NASA_POWER_RENAME).set_index("date")
+    power = power.reindex(full_index)
+    modis = pd.read_csv(CACHE_DIR / f"nasa_modis_{city_key}.csv", parse_dates=["date"])
+    modis = modis.dropna(subset=["ndvi"]).copy()
+    modis["avail_date"] = modis["date"] + pd.Timedelta(days=MODIS_COMPOSITE_DAYS)
+    modis = modis.sort_values("avail_date")
+    left = pd.DataFrame({"date": full_index})
+    merged = pd.merge_asof(
+        left, modis[["avail_date", "ndvi"]].rename(columns={"ndvi": "nasa_ndvi"}),
+        left_on="date", right_on="avail_date", direction="backward",
+    ).set_index("date")
+    out = power.join(merged)
+    out.index.name = "date"
+    return out[NASA_COLUMNS]
+
+
 def build_city_frame(city: str) -> pd.DataFrame:
     api = load_open_meteo_api_daily(city)
     if city == "madrid":
@@ -167,6 +208,7 @@ def build_city_frame(city: str) -> pd.DataFrame:
     full_index = pd.date_range("2021-01-01", "2025-12-31", freq="D")
     frame = pd.DataFrame(index=full_index)
     frame = frame.join(api).join(obs)
+    frame = frame.join(load_nasa_daily(NASA_CITY_KEYS[city]))
     frame.index.name = "date"
     return frame
 
@@ -868,6 +910,359 @@ def write_results_table_md(results: list[dict], kc: dict, thresholds: dict) -> N
     print(f"Wrote {out_path}")
 
 
+# ---------------------------------------------------------------------------
+# NASA Earth-observation rules N1 (phenology priming) and N2 (multi-sensor
+# daily spike). Pre-registered; calibrated on TRAINING_YEARS only; added
+# alongside, never replacing, P0-R2/C0 (rules/thresholds.json untouched).
+# ---------------------------------------------------------------------------
+
+GDD_BASE = {"olive": 7.0, "birch": 5.0, "grass": 5.0}  # pre-registered botanical base temps (deg C)
+PRIMING_LEAD_DAYS = 14  # signed Row 6: INCS on file 14 days before onset
+N1_SEARCH_START = (1, 15)
+N2_K_GRID = [1.0, 1.25, 1.5, 2.0, 2.5, 3.0]
+N2_WASHOUT_GRID = [False, True]  # False: no suppression; True: precip >= 5 mm -> no alert
+N2_DRY_MM = 2.0
+N2_WASHOUT_MM = 5.0
+N2_PRECISION_FLOOR = 0.8  # train precision must be >= 0.8 x P2's train precision
+EVAL_SPLITS = {
+    "all_evaluable": YEARS,
+    "train_2021_2023": [2021, 2022, 2023],
+    "heldout_2024_2025": [2024, 2025],
+}
+
+
+def cum_gdd_series(frame: pd.DataFrame, species: str) -> pd.Series:
+    """Cumulative growing degree days from Jan 1 within each calendar year.
+    gdd_day = max(0, (Tmax+Tmin)/2 - base). Missing days add 0."""
+    base = GDD_BASE[species]
+    gdd_day = np.maximum(0.0, 0.5 * (frame["nasa_t2m_max"] + frame["nasa_t2m_min"]) - base)
+    return gdd_day.fillna(0.0).groupby(frame.index.year).cumsum()
+
+
+def calibrate_n1(frame: pd.DataFrame, species: str, threshold: float) -> dict:
+    """gdd_target = median over TRAINING years of cum_gdd(observed_onset - 14d).
+    Reads rows from TRAINING_YEARS only."""
+    train = frame[frame.index.year.isin(TRAINING_YEARS)]
+    bounds = compute_season_bounds(train, species)
+    season_mask = in_season_mask(train.index, bounds)
+    cum = cum_gdd_series(train, species)
+    used, vals, gw, nd = [], [], [], []
+    for y in TRAINING_YEARS:
+        ymask = (train.index.year == y)
+        if train.loc[ymask, f"obs_{species}"].notna().sum() == 0:
+            continue
+        onset = observed_onset_day(train, species, threshold, season_mask & ymask)
+        if onset is None:
+            continue
+        prime = onset - pd.Timedelta(days=PRIMING_LEAD_DAYS)
+        if prime.year != y or prime not in train.index:
+            continue
+        used.append(y)
+        vals.append(float(cum.loc[prime]))
+        gw.append(train.loc[prime, "nasa_gwetroot"])
+        nd.append(train.loc[prime, "nasa_ndvi"])
+    if not vals:
+        return {"gdd_base": GDD_BASE[species], "gdd_target": None, "train_years_used": []}
+    return {
+        "gdd_base": GDD_BASE[species],
+        "gdd_target": float(np.median(vals)),
+        "train_years_used": used,
+        "train_cum_gdd_at_priming": [round(v, 2) for v in vals],
+        "train_mean_gwetroot_at_priming": float(np.nanmean(gw)) if not np.all(np.isnan(gw)) else None,
+        "train_mean_ndvi_at_priming": float(np.nanmean(nd)) if not np.all(np.isnan(nd)) else None,
+    }
+
+
+def n1_onset_day(frame: pd.DataFrame, species: str, gdd_target: float | None, year: int, season_end: pd.Timestamp) -> pd.Timestamp | None:
+    """First date in [Jan 15, season_end] of `year` with cum_gdd >= gdd_target."""
+    if gdd_target is None:
+        return None
+    cum = cum_gdd_series(frame, species)
+    window = cum[(cum.index >= pd.Timestamp(year, *N1_SEARCH_START)) & (cum.index <= season_end)]
+    hit = window[window >= gdd_target]
+    return hit.index[0] if len(hit) else None
+
+
+def c0_14d_alert_day(onset_by_year: dict[int, pd.Timestamp | None], year: int) -> pd.Timestamp | None:
+    """Prior-years median (month, day) of observed onset, minus 14 days.
+    Strictly prior years only, so the first evaluable year has no value."""
+    doys = [pd.Timestamp(2001, o.month, 1 if (o.month == 2 and o.day == 29) else o.day).dayofyear
+            for py, o in onset_by_year.items() if py < year and o is not None]
+    if not doys:
+        return None
+    med = int(round(float(np.median(doys))))
+    return pd.Timestamp(year, 1, 1) + pd.Timedelta(days=med - 1 - PRIMING_LEAD_DAYS)
+
+
+def _lead_metrics(lead: int | None) -> dict:
+    if lead is None:
+        return {"lead_days": None, "abs_error_from_14d": None, "in_7_to_28d_window": None, "fired_before_onset": None}
+    return {
+        "lead_days": int(lead),
+        "abs_error_from_14d": abs(int(lead) - PRIMING_LEAD_DAYS),
+        "in_7_to_28d_window": bool(7 <= lead <= 28),
+        "fired_before_onset": bool(lead >= 1),
+    }
+
+
+def _pool_lead(rows: list[dict], key: str) -> dict:
+    ms = [r[key] for r in rows if r[key]["lead_days"] is not None]
+    n = len(ms)
+    if n == 0:
+        return {"n": 0, "mean_lead_days": None, "mae_from_14d": None, "share_in_7_to_28d": None, "share_fired_before_onset": None}
+    return {
+        "n": n,
+        "mean_lead_days": float(np.mean([m["lead_days"] for m in ms])),
+        "mae_from_14d": float(np.mean([m["abs_error_from_14d"] for m in ms])),
+        "share_in_7_to_28d": float(np.mean([m["in_7_to_28d_window"] for m in ms])),
+        "share_fired_before_onset": float(np.mean([m["fired_before_onset"] for m in ms])),
+    }
+
+
+def evaluate_n1(frame: pd.DataFrame, species: str, threshold: float, r2_onsets: dict[int, str | None]) -> dict:
+    calib = calibrate_n1(frame, species, threshold)
+    bounds = compute_season_bounds(frame, species)
+    season_mask = in_season_mask(frame.index, bounds)
+    obs = frame[f"obs_{species}"]
+    onsets: dict[int, pd.Timestamp | None] = {}
+    for y in YEARS:
+        ymask = frame.index.year == y
+        if obs[ymask].notna().sum() == 0:
+            continue
+        onsets[y] = observed_onset_day(frame, species, threshold, season_mask & ymask)
+    by_year = {}
+    for y, onset in onsets.items():
+        if onset is None:
+            continue
+        season_days = frame.index[season_mask & (frame.index.year == y)]
+        n1 = n1_onset_day(frame, species, calib["gdd_target"], y, season_days.max())
+        c0 = c0_14d_alert_day(onsets, y)
+        r2_str = r2_onsets.get(y)
+        r2 = pd.Timestamp(r2_str) if r2_str else None
+        def ld(a): return None if a is None else int((onset - a).days)
+        by_year[str(y)] = {
+            "observed_onset": onset.strftime("%Y-%m-%d"),
+            "N1_alert_day": n1.strftime("%Y-%m-%d") if n1 is not None else None,
+            "C0_14d_alert_day": c0.strftime("%Y-%m-%d") if c0 is not None else None,
+            "R2_alert_day": r2_str,
+            "N1": _lead_metrics(ld(n1)),
+            "C0_14d": _lead_metrics(ld(c0)),
+            "R2": _lead_metrics(ld(r2)),
+            "N1_in_sample": y in calib["train_years_used"],
+        }
+    return {"calibration": calib, "by_year": by_year}
+
+
+N2_LAG_DAYS = 1  # strictly causal: day D uses NASA POWER from D-1 (never D)
+N2_LATENCY_LAG_DAYS = 3  # sensitivity: MERRA-2 / POWER publication latency ~2-3 days
+
+
+def _lagged_nasa(frame: pd.DataFrame, lag: int) -> pd.DataFrame:
+    """Prior-day NASA POWER predictors: value at D is the observation of D-lag."""
+    return pd.DataFrame({
+        "solar": frame["nasa_solar"].shift(lag),
+        "tmax": frame["nasa_t2m_max"].shift(lag),
+        "precip": frame["nasa_precip"].shift(lag),
+    }, index=frame.index)
+
+
+def calibrate_n2(frame: pd.DataFrame, species: str, threshold: float, lag: int = N2_LAG_DAYS) -> dict:
+    """Pick (k, washout) on TRAINING years only, maximising CSI subject to
+    train precision >= 0.8 x P2's train precision. Reads TRAINING_YEARS rows only.
+    Medians are taken over prior-day (D-lag) NASA POWER solar and Tmax on
+    in-season training rows (lag=1 by default: strictly causal)."""
+    train = frame[frame.index.year.isin(TRAINING_YEARS)]
+    bounds = compute_season_bounds(train, species)
+    sm = in_season_mask(train.index, bounds)
+    lagged = _lagged_nasa(frame, lag).loc[train.index]
+    solar_med = float(lagged.loc[sm, "solar"].median())
+    tmax_med = float(lagged.loc[sm, "tmax"].median())
+    obs_high = train[f"obs_{species}"] >= threshold
+    obs_high = obs_high.where(train[f"obs_{species}"].notna(), other=np.nan)
+    p2_m = day_alert_metrics(obs_high, rule_P2(train, species, threshold))
+    p2_prec = p2_m["precision"]
+    trials = []
+    for wash in N2_WASHOUT_GRID:
+        for k in N2_K_GRID:
+            m = day_alert_metrics(obs_high, rule_N2(train, species, threshold, k, wash, solar_med, tmax_med, lag))
+            ok = p2_prec is None or (m["precision"] is not None and m["precision"] >= N2_PRECISION_FLOOR * p2_prec)
+            trials.append({"k": k, "washout": wash, "csi": m["csi"], "precision": m["precision"], "recall": m["recall"], "feasible": bool(ok)})
+    feas = [t for t in trials if t["feasible"] and t["csi"] is not None]
+    if feas:
+        # best CSI; ties -> smaller k, then no washout (simplest rule)
+        best = sorted(feas, key=lambda t: (-t["csi"], t["k"], t["washout"]))[0]
+        fallback = False
+    else:
+        best = {"k": 1.0, "washout": False}
+        fallback = True
+    return {
+        "k": best["k"], "washout": best["washout"], "fallback_to_identity": fallback,
+        "train_solar_median": solar_med, "train_tmax_median": tmax_med,
+        "train_P2_precision": p2_prec, "train_P2_csi": p2_m["csi"], "grid_trials": trials,
+    }
+
+
+def rule_N2(frame: pd.DataFrame, species: str, threshold: float, k: float, washout: bool, solar_med: float, tmax_med: float, lag: int = N2_LAG_DAYS) -> pd.Series:
+    """adj = API(D) * k when prior-day (D-1) NASA POWER solar >= train median,
+    Tmax >= train median and precip < 2.0 mm (dry), else API(D). Optional
+    washout: prior-day precip >= 5 mm -> no alert. No same-day NASA value is
+    read. NaN API stays NaN; a missing prior-day NASA field (e.g. 2021-01-01
+    after shift) counts as False for boost/washout, so API(D) is unscaled."""
+    api = frame[f"api_{species}"]
+    prev = _lagged_nasa(frame, lag)
+    boost = ((prev["solar"] >= solar_med) & (prev["tmax"] >= tmax_med) & (prev["precip"] < N2_DRY_MM)).fillna(False).astype(bool)
+    adj = api * np.where(boost, k, 1.0)
+    alert = _ge_threshold_preserving_nan(adj, threshold)
+    if washout:
+        wash = (prev["precip"] >= N2_WASHOUT_MM).fillna(False).astype(bool)
+        alert = alert.where(~wash | alert.isna(), other=False)
+    return alert
+
+
+def _sum_conf(ms: list[dict]) -> dict:
+    tp = sum(m["tp"] for m in ms); fp = sum(m["fp"] for m in ms); fn = sum(m["fn"] for m in ms)
+    ev = sum(m["n_events"] for m in ms)
+    return {
+        "tp": tp, "fp": fp, "fn": fn, "n_events": ev,
+        "recall": tp / ev if ev else None,
+        "precision": tp / (tp + fp) if (tp + fp) else None,
+        "csi": tp / (tp + fp + fn) if (tp + fp + fn) else None,
+        "false_alert_days": fp,
+    }
+
+
+def evaluate_n2(frame: pd.DataFrame, species: str, threshold: float, lag: int = N2_LAG_DAYS) -> dict:
+    calib = calibrate_n2(frame, species, threshold, lag)
+    obs = frame[f"obs_{species}"]
+    obs_high = (obs >= threshold).where(obs.notna(), other=np.nan)
+    n2 = rule_N2(frame, species, threshold, calib["k"], calib["washout"], calib["train_solar_median"], calib["train_tmax_median"], lag)
+    p2 = rule_P2(frame, species, threshold)
+    splits = {}
+    for name, years in EVAL_SPLITS.items():
+        mk = frame.index.year.isin(years)
+        splits[name] = {
+            "P2": day_alert_metrics(obs_high[mk], p2[mk]),
+            "N2": day_alert_metrics(obs_high[mk], n2[mk]),
+        }
+    calib_public = {k: v for k, v in calib.items() if k != "grid_trials"}
+    calib_public["grid_trials"] = calib["grid_trials"]
+    return {"calibration": calib_public, "splits": splits}
+
+
+def run_nasa_evaluation(results: list[dict], thresholds: dict) -> dict:
+    """Run N1 and N2 for every scored (city, species). `results` is the
+    existing run_city_species output (used for the R2 comparator)."""
+    per_pair = []
+    lag3_pairs = []
+    for r in results:
+        city, species = r["city"], r["species"]
+        threshold = thresholds["alert"][species]
+        frame = build_city_frame(city)
+        r2_onsets = {int(y): o["R2_onset"] for y, o in r["onset_by_year"].items()}
+        per_pair.append({
+            "city": city, "species": species, "threshold": threshold,
+            "N1": evaluate_n1(frame, species, threshold, r2_onsets),
+            "N2": evaluate_n2(frame, species, threshold),
+        })
+        lag3_pairs.append({"city": city, "species": species, "N2": evaluate_n2(frame, species, threshold, N2_LATENCY_LAG_DAYS)})
+
+    n1_pooled, n2_pooled = {}, {}
+    for split, years in EVAL_SPLITS.items():
+        rows = []
+        for p in per_pair:
+            for y, row in p["N1"]["by_year"].items():
+                if int(y) in years:
+                    rows.append(row)
+        common = [r for r in rows if all(r[k]["lead_days"] is not None for k in ("N1", "C0_14d", "R2"))]
+        n1_pooled[split] = {
+            "n_onset_rows": len(rows),
+            "N1_all_rows": _pool_lead(rows, "N1"),
+            "paired_common_rows": {
+                "n": len(common),
+                "N1": _pool_lead(common, "N1"),
+                "C0_14d": _pool_lead(common, "C0_14d"),
+                "R2": _pool_lead(common, "R2"),
+            },
+        }
+        n2_pooled[split] = {
+            "P2": _sum_conf([p["N2"]["splits"][split]["P2"] for p in per_pair]),
+            "N2": _sum_conf([p["N2"]["splits"][split]["N2"] for p in per_pair]),
+        }
+    lag3 = {
+        "lag_days": N2_LATENCY_LAG_DAYS,
+        "note": "N2 recalibrated and re-scored with D-3 NASA POWER predictors (MERRA-2 publication latency ~2-3 days).",
+        "N2_pooled": {
+            split: {
+                "P2": _sum_conf([p["N2"]["splits"][split]["P2"] for p in lag3_pairs]),
+                "N2": _sum_conf([p["N2"]["splits"][split]["N2"] for p in lag3_pairs]),
+            } for split in EVAL_SPLITS
+        },
+        "madrid_olive": next((p["N2"]["splits"]["heldout_2024_2025"] for p in lag3_pairs if p["city"] == "madrid" and p["species"] == "olive"), None),
+    }
+    return {
+        "rule_definitions": {
+            "N1": "cum GDD from Jan 1 (base olive 7C, birch/grass 5C) reaches the TRAINING-year median of cum GDD at (observed_onset - 14d); first date in [Jan 15, season_end].",
+            "N2": "API(D) x k when prior-day (D-1) NASA POWER solar (>= train median), Tmax (>= train median), and dry (< 2.0 mm precip); optional washout (prior-day precip >= 5 mm -> no alert); no same-day NASA value is used; (k, washout) chosen on 2021-2023 by CSI subject to precision >= 0.8 x P2 train precision.",
+        },
+        "training_years": TRAINING_YEARS,
+        "n2_k_grid": N2_K_GRID,
+        "n2_washout_grid": N2_WASHOUT_GRID,
+        "splits": {k: v for k, v in EVAL_SPLITS.items()},
+        "per_city_species": per_pair,
+        "N1_pooled": n1_pooled,
+        "N2_pooled": n2_pooled,
+        "latency_sensitivity_lag3": lag3,
+    }
+
+
+def _f(x, nd=3):
+    return "n/a" if x is None else (f"{x:.{nd}f}" if isinstance(x, float) else str(x))
+
+
+def append_nasa_section_md(nasa: dict) -> None:
+    out_path = DOCS_DIR / "results_table.md"
+    L = ["", "## NASA Earth-Observation Evaluation (POWER + MODIS NDVI)", "",
+         "Pre-registered N1/N2 rules calibrated on 2021-2023 only; `heldout_2024_2025` never influences any parameter. "
+         "Added alongside the original rules; the kill-check verdict above is unchanged.", "",
+         "### N1: 14-day pre-season priming (lead = observed onset - alert day; target 14)", "",
+         "| City | Species | gdd_base | gdd_target | Train years used |", "|---|---|---|---|---|"]
+    for p in nasa["per_city_species"]:
+        c = p["N1"]["calibration"]
+        L.append(f"| {p['city']} | {p['species']} | {c['gdd_base']} | {_f(c['gdd_target'], 1)} | {c['train_years_used']} |")
+    L += ["", "Pooled over city-species-years where N1, C0_14d and R2 are all evaluable:", "",
+          "| Split | Method | n | Mean lead | MAE from 14d | In 7-28d window | Fired before onset |", "|---|---|---|---|---|---|---|"]
+    for split, d in nasa["N1_pooled"].items():
+        for m in ("N1", "C0_14d", "R2"):
+            x = d["paired_common_rows"][m]
+            L.append(f"| {split} | {m} | {x['n']} | {_f(x['mean_lead_days'], 1)} | {_f(x['mae_from_14d'], 1)} | {_f(x['share_in_7_to_28d'])} | {_f(x['share_fired_before_onset'])} |")
+    L += ["", "### N1 per city-species-year", "",
+          "| City | Species | Year | Observed onset | N1 alert | N1 lead | C0_14d alert | C0_14d lead | R2 lead | N1 in-sample |", "|---|---|---|---|---|---|---|---|---|---|"]
+    for p in nasa["per_city_species"]:
+        for y, r in p["N1"]["by_year"].items():
+            L.append(f"| {p['city']} | {p['species']} | {y} | {r['observed_onset']} | {r['N1_alert_day']} | {_f(r['N1']['lead_days'])} | {r['C0_14d_alert_day']} | {_f(r['C0_14d']['lead_days'])} | {_f(r['R2']['lead_days'])} | {r['N1_in_sample']} |")
+    L += ["", "### N2: Prior-day (D-1) NASA POWER + CAMS daily rule vs P2", "",
+          "| City | Species | k | Washout | Train P2 CSI |", "|---|---|---|---|---|"]
+    for p in nasa["per_city_species"]:
+        c = p["N2"]["calibration"]
+        L.append(f"| {p['city']} | {p['species']} | {c['k']} | {c['washout']} | {_f(c['train_P2_csi'])} |")
+    L += ["", "Pooled over all scored city-species:", "",
+          "| Split | Rule | Recall | Precision | CSI | TP | FP | FN |", "|---|---|---|---|---|---|---|---|"]
+    for split, d in nasa["N2_pooled"].items():
+        for rule in ("P2", "N2"):
+            x = d[rule]
+            L.append(f"| {split} | {rule} | {_f(x['recall'])} | {_f(x['precision'])} | {_f(x['csi'])} | {x['tp']} | {x['fp']} | {x['fn']} |")
+    lg = nasa["latency_sensitivity_lag3"]
+    L += ["", f"Latency sensitivity (D-{lg['lag_days']} NASA POWER, recalibrated; MERRA-2 publication lag ~2-3 days):", "",
+          "| Split | Rule | Recall | Precision | CSI | TP | FP | FN |", "|---|---|---|---|---|---|---|---|"]
+    for split, d in lg["N2_pooled"].items():
+        for rule in ("P2", "N2"):
+            x = d[rule]
+            L.append(f"| {split} | {rule} | {_f(x['recall'])} | {_f(x['precision'])} | {_f(x['csi'])} | {x['tp']} | {x['fp']} | {x['fn']} |")
+    L.append("")
+    out_path.write_text(out_path.read_text(encoding="utf-8").rstrip("\n") + "\n" + "\n".join(L), encoding="utf-8")
+    print(f"Appended NASA section to {out_path}")
+
+
 def main() -> int:
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     thresholds = load_thresholds()
@@ -911,6 +1306,7 @@ def main() -> int:
         "rules_evaluated": RULE_IDS + ["R2"],
         "results": results_public,
         "kill_check": kc,
+        "nasa_evaluation": run_nasa_evaluation(results, thresholds),
     }
 
     out_json = RESULTS_DIR / "backtest.json"
@@ -919,6 +1315,7 @@ def main() -> int:
 
     write_misses_csv(results)
     write_results_table_md(results, kc, thresholds)
+    append_nasa_section_md(output["nasa_evaluation"])
 
     return 0
 

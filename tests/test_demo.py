@@ -552,3 +552,65 @@ def test_approve_batch_scope_disclosure_in_demo():
     assert "Approve Entire Scenario Batch (" in page
     assert "hidden by filter" in page
     assert "hidden by filter at sign-off" in page
+
+
+# ---------------------------------------------------------------------------
+# NASA telemetry panel and NASA evaluation summary (Figma Board 1)
+# ---------------------------------------------------------------------------
+
+def test_nasa_panel_and_summary_elements_exist():
+    html = load_demo_html()
+    for el_id in ("nasa-telemetry-panel", "nasa-eval-summary", "nasa-gdd", "nasa-solar",
+                  "nasa-precip", "nasa-soil", "nasa-ndvi"):
+        assert f'id="{el_id}"' in html, el_id
+
+
+def test_nasa_telemetry_matches_load_nasa_daily():
+    import pandas as pd
+    import backtest as bt
+
+    data = embedded_console_data(load_demo_html())
+    for s in data["scenarios"]:
+        key, date, species, _ = render_demo.NASA_SCENARIOS[s["id"]]
+        frame = bt.load_nasa_daily(key)
+        ts = pd.Timestamp(date)
+        row = frame.loc[ts]
+        t = s["nasa_telemetry"]
+        assert t["gdd_base_c"] == bt.GDD_BASE[species]
+        assert t["cum_gdd"] == round(float(bt.cum_gdd_series(frame, species).loc[ts]), 1)
+        assert t["solar_mj_m2"] == round(float(row["nasa_solar"]), 2)
+        assert t["precip_mm"] == round(float(row["nasa_precip"]), 2)
+        assert t["gwetroot"] == round(float(row["nasa_gwetroot"]), 2)
+        assert t["ndvi_causal"] == round(float(row["nasa_ndvi"]), 4)
+        assert t["t2m_max_c"] == round(float(row["nasa_t2m_max"]), 1)
+    sim = next(s for s in data["scenarios"] if s["id"] == "olive_sim")
+    assert sim["nasa_telemetry"]["source_label"] == "Simulated olive spike over Valencia 2025-05-28 NASA telemetry"
+
+
+def test_nasa_eval_summary_matches_backtest_json():
+    html = load_demo_html()
+    m = re.search(r'<div class="section" id="nasa-eval-summary">(.*?)<!-- NASA_EVAL:END -->', html, re.S)
+    assert m
+    text = re.sub(r"<[^>]+>", " ", m.group(1))
+    backtest = json.loads((EVAL_RESULTS_DIR / "backtest.json").read_text())
+    ho = backtest["nasa_evaluation"]["N2_pooled"]["heldout_2024_2025"]
+    # Independent derivation from the JSON (not via render_demo's formatter).
+    assert f"{ho['P2']['csi']:.3f} → {ho['N2']['csi']:.3f}" in text
+    assert f"{ho['P2']['recall']*100:.1f}% → {ho['N2']['recall']*100:.1f}%" in text
+    assert f"{ho['P2']['tp']} → {ho['N2']['tp']} of {ho['N2']['n_events']}" in text
+    assert f"{ho['P2']['fp']} → {ho['N2']['fp']}" in text
+    assert f"{ho['P2']['precision']*100:.1f}% → {ho['N2']['precision']*100:.1f}%" in text
+    paired = backtest["nasa_evaluation"]["N1_pooled"]["heldout_2024_2025"]["paired_common_rows"]
+    assert f"{paired['N1']['mae_from_14d']:.1f}d" in text
+    assert f"{paired['C0_14d']['mae_from_14d']:.1f}d" in text
+    assert f"{paired['N1']['share_in_7_to_28d']*100:.0f}%" in text
+    assert f"{paired['R2']['mean_lead_days']:.1f}d" in text
+    # Headline figures as stated in CLAIMS.md section K.
+    for literal in ("0.382 → 0.434", "40.4% → 47.5%", "159 → 187 of 394", "0/8 → 5/8", "22 → 37",
+                    "87.8% → 83.5%", "21.5d", "12.5d", "30%", "60%", "0.0%", "-9.7d"):
+        assert literal in text, literal
+    for label in ("R2 (4-day CAMS pollen forecast)", "N1 (NASA GDD, 7–28d pre-peak start)",
+                  "Held-Out 2024–25 Prior-Day (D-1) NASA + CAMS (N2) vs API Forecast (P2)"):
+        assert label in text, label
+    lg = backtest["nasa_evaluation"]["latency_sensitivity_lag3"]["N2_pooled"]["heldout_2024_2025"]["N2"]
+    assert "Latency check" in text and f"{lg['csi']:.3f}" in text and f"{lg['recall']*100:.1f}%" in text

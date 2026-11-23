@@ -27,17 +27,19 @@ The four criteria below are the verbatim list from the official page (`https://g
 
 | Evidence | Where |
 |---|---|
-| Reproduces from a fresh clone, offline: `.venv/bin/python eval/backtest.py` rewrites `eval/results/backtest.json`, `eval/results/misses.csv` and `docs/results_table.md` from `data/cache/`. On 22 Nov 2026 the re-run left `git status` clean for those files. | `eval/backtest.py` (927 lines), `data/cache/` (7 files, 4.8 MB) |
-| Tests: `.venv/bin/pytest -q` → all pass. At commit `6a9bbb1`: 86 passed (24 hand-worked rule tests, 41 demo-vs-JSON tests, 7 patient-generator tests, 14 reminder-rule tests). The working tree has more demo tests (91 passed on 22 Nov 2026). | `tests/` |
+| Reproduces from a fresh clone, offline: `.venv/bin/python eval/backtest.py` rewrites `eval/results/backtest.json`, `eval/results/misses.csv` and `docs/results_table.md` from `data/cache/`. On 22 Nov 2026 the re-run left `git status` clean for those files. | `eval/backtest.py` (1,285 lines), `data/cache/` (15 files, 5.2 MB) |
+| Tests: `.venv/bin/pytest -q` → all pass. At commit `6a9bbb1`: 86 passed (24 hand-worked rule tests, 41 demo-vs-JSON tests, 7 patient-generator tests, 14 reminder-rule tests). The working tree has more tests (112 passed on 22 Nov 2026: 38 backtest rules, 53 demo, 7 patients, 14 reminders). | `tests/` |
 | The demo's onset table is generated from the JSON, and a check fails if it is stale: `.venv/bin/python eval/render_demo.py --check` | `eval/render_demo.py` |
 | Every public number is mapped to a JSON key and a command; one script verifies them all | `CLAIMS.md` |
 | CI on every push (tests + backtest + gitleaks) and auto-deploy to GitHub Pages | `.github/workflows/ci.yml`, `.github/workflows/deploy-pages.yml`; last runs on `main` succeeded (22 Nov 2026) |
 | Pre-registration: the rules and kill-check were written before the backtest script entered git (`docs/DATA_PLAN.md` in `705451d`, 18:28; `eval/backtest.py` in `bb879ed`, 19:12, both 22 Nov 2026) | `git log --follow docs/DATA_PLAN.md eval/backtest.py` |
 | Data provenance: column meanings and the MeteoSwiss 6 UTC to 6 UTC window were read from the publishers' own dictionaries | `data/DATA_CARD.md` |
 | Built during the hackathon: the first commit is 22 Nov 2026, after the 1 Nov start | `git log --reverse` (5 commits at the time of writing) |
+| NASA layer: POWER weather/soil (MERRA-2 / CERES) and MODIS MOD13Q1 NDVI (lagged +16 days, strictly causal) cached offline for all 4 cities; rules N1 and N2 calibrated on 2021-2023 only, scored on 2024-2025. Reported with the negative result: N1 (steroid nasal spray priming by thermal accumulation) 21.5 d MAE and 30% hit held-out (80% in-sample) versus 12.5 d and 60% for the prior-year calendar. N2 (prior-day D-1 NASA, no same-day value) lifted held-out CSI 0.382 → 0.434 and recall 40.4% → 47.5% (394 spikes, Madrid olive 5/8 versus 0/8), with false-alert days 22 → 37 (D-3 latency check: CSI 0.405, recall 44.4%) | `eval/results/backtest.json["nasa_evaluation"]`, `CLAIMS.md` section K |
 | Guard rails: the thresholds file is read-only to the build agents; a pre-tool-use hook configured for the build agent blocks writes to `rules/`, `CLAIMS.md` and `.kiro/` | `rules/thresholds.json`, `scripts/hooks/guard_signed.py`, `.kiro/agents/genhacks-builder.json` |
 
 **Honest limits**
+- The N2 gain rests on two held-out years and costs extra false alerts (precision 87.8% → 83.5%); N1 fell from 80% in-sample to 30% held-out (7-28 d window). The kill-check verdict is unchanged: no "beats the API" claim.
 - Static GitHub Pages only. There is no server, no database and no real send path. The approve button writes an in-page audit line and nothing else.
 - Five seasons per city or fewer, so the confidence intervals are wide (Madrid olive recall CI [0.000, 0.334]).
 - R2's +2.88-day lead over P2 (95% CI [+2.64, +3.00]) comes from reading three days of archived forecast, so it is look-ahead by construction. R2 minus climatology is -1.55 days, CI [-7.75, +6.00], which includes zero.
@@ -74,14 +76,14 @@ The four criteria below are the verbatim list from the official page (`https://g
 - The video URL is not yet in `DEVPOST_DRAFT.md` (placeholder `[VIDEO_URL — … pending Ahmed's Unlisted upload]`). Nothing is submitted.
 - The live site served on 22 Nov 2026 does not yet contain the nurse console (`#nurse-console` is absent from the deployed HTML). It is in the working tree, uncommitted, and appears on the live URL after the next push to `main`.
 - Devpost draft now says "5 years of real pollen counts (2021–2025)". The storyboard draft voice-over (`video/STORYBOARD.md` line 34) still says three years. See `CLAIMS.md` row I1.
-- The video says "Eighty-six tests". The working tree now has 91. See `CLAIMS.md` row I2.
+- The video says "Eighty-six tests". The working tree now has 112. See `CLAIMS.md` row I2.
 
 ## Review backlog (dated 22 Nov 2026)
 
 | # | Item | Found | Owner | Status | Where |
 |---|---|---|---|---|---|
 | 1 | "3 years of real pollen counts" is wrong; data are 2021 to 2025 (5 years, 3 cities). Fixed in `DEVPOST_DRAFT.md` 22 Nov 2026; `video/STORYBOARD.md` line 34 still says three years | 22 Nov 2026 | Ahmed | Done (Devpost); storyboard line open | `DEVPOST_DRAFT.md` line 8, `video/STORYBOARD.md`; `CLAIMS.md` I1 |
-| 2 | Video line "Eighty-six tests" becomes stale when the nurse-console tests are committed (91 passed, re-run 22 Nov 2026) | 22 Nov 2026 | Ahmed | Open | `video/film/script.json` (scene `run`), `video/film/compositions/run.html`; `CLAIMS.md` I2 |
+| 2 | Video line "Eighty-six tests" becomes stale when the nurse-console tests are committed (112 passed, re-run 22 Nov 2026) | 22 Nov 2026 | Ahmed | Open | `video/film/script.json` (scene `run`), `video/film/compositions/run.html`; `CLAIMS.md` I2 |
 | 3 | Upload the video Unlisted, check it in a private window, paste the URL | 22 Nov 2026 | Ahmed | Open | `DEVPOST_DRAFT.md` checklist |
 | 4 | Re-check `CLAIMS.md` F9 and F10 against the final HTML: done 22 Nov 2026 (all DOM ids present, `--check` exit 0, 91 passed). **Still open:** push the nurse console so the live URL matches the local demo (live site not updated until the push) | 22 Nov 2026 | Ahmed (push) | F9/F10 re-check Done; push Open | `demo/index.html`, `eval/render_demo.py`, `tests/test_demo.py` |
 | 5 | Re-record or re-check the video if the demo page changes visibly (the film captures the page) | 22 Nov 2026 | Ahmed | Open | `video/capture_shots.mjs` |

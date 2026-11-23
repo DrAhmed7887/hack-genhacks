@@ -201,6 +201,47 @@
     #nurse-console button, #nurse-console select { font: inherit; padding: 6px 12px; margin-right: 8px; }
     #approve-batch-btn { background: #1a1a2e; color: #fff; border: 0; border-radius: 6px; cursor: pointer; }
     #approve-batch-btn:disabled { opacity: 0.5; cursor: default; }
+
+    /* ---- Figma Board 1 skin (page #F4F7FA, white cards, NASA blue, clinical teal) ---- */
+    body { background: #F4F7FA; color: #0F172A; padding: 24px 16px; }
+    header { background: #0F172A; border-radius: 14px; padding: 32px 28px; }
+    .disclaimer, .section, .headline { background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; box-shadow: none; }
+    .headline { color: #0F172A; border-left: 4px solid #0F766E; }
+    .headline h2, .headline p { color: #0F172A; }
+    .section h2 { color: #0F172A; border-bottom: 2px solid #0F766E; }
+    #nurse-console { border-radius: 14px; }
+    .nc-caveat { background: #FEF3C7; border: 1px solid #D97706; border-left: 6px solid #D97706; color: #78350F; border-radius: 12px; }
+    .nc-kpis { gap: 14px; }
+    .nc-kpi { background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; text-align: left; }
+    .nc-kpi span { color: #0F766E; }
+    .nc-kpi small { color: #475569; }
+    #nurse-console .results-table { border-collapse: separate; border-spacing: 0; width: 100%; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden; }
+    #nurse-console .results-table th { background: #F1F5F9; color: #0F172A; text-align: left; padding: 8px 10px; border-bottom: 1px solid #E2E8F0; }
+    #nurse-console .results-table td { padding: 8px 10px; border-bottom: 1px solid #E2E8F0; vertical-align: top; }
+    #nurse-console select, #nurse-console button { border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; color: #0F172A; }
+    #approve-batch-btn { background: #0F766E; color: #FFFFFF; border-color: #0F766E; }
+    #nurse-audit-log { list-style: none; border: 1px solid #E2E8F0; border-radius: 12px; background: #F8FAFC; padding: 8px 12px; }
+    #nurse-audit-log li { padding: 6px 0; border-bottom: 1px solid #E2E8F0; font-size: 0.85rem; color: #0F172A; }
+    #nasa-telemetry-panel { background: #eff8ff; border: 1px solid #BAE0FD; border-radius: 14px; padding: 16px; margin: 16px 0; }
+    #nasa-telemetry-panel h3 { color: #0369A1; font-size: 1.05rem; margin-bottom: 4px; }
+    #nasa-source { color: #0369A1; font-weight: 600; font-size: 0.9rem; margin-bottom: 10px; }
+    .nasa-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+    .nasa-card { background: #FFFFFF; border: 1px solid #BAE0FD; border-radius: 12px; padding: 12px; }
+    .nasa-card small { display: block; color: #475569; font-size: 0.78rem; }
+    .nasa-card strong { display: block; color: #0369A1; font-size: 1.5rem; line-height: 1.3; }
+    .nasa-card em { font-style: normal; color: #475569; font-size: 0.75rem; }
+    #nasa-eval-summary .ne-lead { color: #475569; margin-bottom: 12px; }
+    .ne-h { font-size: 1rem; margin: 16px 0 8px; }
+    .ne-h.good { color: #0F766E; } .ne-h.bad { color: #B45309; }
+    .ne-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+    .ne-card { background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px; }
+    .ne-card.good { border-top: 4px solid #0F766E; } .ne-card.warn { border-top: 4px solid #D97706; background: #FFFBEB; }
+    .ne-card small { display: block; color: #475569; font-size: 0.78rem; }
+    .ne-card span { display: block; color: #0F172A; font-size: 1.35rem; font-weight: 700; }
+    .ne-card em { font-style: normal; color: #475569; font-size: 0.75rem; }
+    #nasa-eval-n1-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+    #nasa-eval-n1-table th, #nasa-eval-n1-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #E2E8F0; }
+    #nasa-eval-n1-table th { background: #F1F5F9; }
   </style>
 </head>
 <body>
@@ -241,6 +282,17 @@
         <span class="badge badge-neutral" id="nurse-trigger-rule">Trigger: API forecast (P2)</span>
       </p>
       <p id="nurse-scenario-note" class="nc-note"></p>
+      <div id="nasa-telemetry-panel">
+        <h3>Stage 1 · NASA Satellite Phenology &amp; Microclimate Telemetry</h3>
+        <p id="nasa-source"></p>
+        <div class="nasa-grid">
+          <div class="nasa-card" id="nasa-gdd"><small>Cumulative Heat (GDD)</small><strong></strong><em></em></div>
+          <div class="nasa-card" id="nasa-solar"><small>CERES Solar Irradiance</small><strong></strong><em></em></div>
+          <div class="nasa-card" id="nasa-precip"><small>NASA Rain Washout</small><strong></strong><em></em></div>
+          <div class="nasa-card" id="nasa-soil"><small>Root-Zone Soil Wetness</small><strong></strong><em></em></div>
+          <div class="nasa-card" id="nasa-ndvi"><small>Terra MODIS 250m NDVI</small><strong></strong><em></em></div>
+        </div>
+      </div>
       <div class="nc-kpis">
         <div class="nc-kpi"><span id="kpi-roster">200</span><small>Total Clinic Roster (synthetic, P001–P200)</small></div>
         <div class="nc-kpi"><span id="kpi-eligible">0</span><small>Eligible Reminders Drafted</small></div>
@@ -362,6 +414,33 @@
         Thresholds: olive 162, grass 35, birch 30 grains/m³ (daily mean). Status: signed 22 Nov 2026 (Ahmed Zayed). Retrospective use; not clinical guidance.
       </p>
     </div>
+
+    <!-- NASA_EVAL:BEGIN (generated by eval/render_demo.py; do not edit) -->
+    <div class="section" id="nasa-eval-summary">
+      <h2>NASA Layer: What Helped and What Did Not (held-out 2024–25)</h2>
+      <p class="ne-lead">Rules N1 and N2 were calibrated on 2021–2023 only and scored on 2024–2025. Retrospective; the gain is reported together with its false-alert cost and a negative result.</p>
+      <h3 class="ne-h good">Held-Out 2024–25 Prior-Day (D-1) NASA + CAMS (N2) vs API Forecast (P2)</h3>
+      <div class="ne-grid">
+        <div class="ne-card good"><small>CSI</small><span>0.382 → 0.434</span><em>P2 → N2</em></div>
+        <div class="ne-card good"><small>Recall</small><span>40.4% → 47.5%</span><em>P2 → N2</em></div>
+        <div class="ne-card good"><small>Spikes caught</small><span>159 → 187 of 394</span><em>P2 → N2 events</em></div>
+        <div class="ne-card good"><small>Madrid olive</small><span>0/8 → 5/8</span><em>P2 → N2 spikes caught</em></div>
+        <div class="ne-card warn"><small>False-alert days</small><span>22 → 37</span><em>trade-off: more false alerts</em></div>
+        <div class="ne-card warn"><small>Precision</small><span>87.8% → 83.5%</span><em>trade-off: lower precision</em></div>
+      </div>
+      <h3 class="ne-h bad">Honest Negative Result (N1: thermal-accumulation priming, held-out)</h3>
+      <table class="results-table" id="nasa-eval-n1-table">
+        <thead><tr><th>Rule</th><th>MAE from 14d</th><th>Hit in 7–28d window</th><th>Mean lead</th></tr></thead>
+        <tbody>
+          <tr><td>N1 (NASA GDD, 7–28d pre-peak start)</td><td>21.5d</td><td>30%</td><td>n/a</td></tr>
+          <tr><td>C0_14d (calendar)</td><td>12.5d</td><td>60%</td><td>n/a</td></tr>
+          <tr><td>R2 (4-day CAMS pollen forecast)</td><td>n/a</td><td>0.0%</td><td>-9.7d (late)</td></tr>
+        </tbody>
+      </table>
+      <p class="nc-note">N1 did worse than the calendar baseline (n = 10 paired held-out onset rows). Valencia NASA telemetry in the console above is demo replay only, never scored.</p>
+      <p class="nc-note ne-latency">Latency check: NASA POWER (MERRA-2) publishes ~2–3 days late. Re-scored with D-3 predictors, N2 held-out CSI is 0.405, recall 44.4%, 38 false-alert days.</p>
+    </div>
+    <!-- NASA_EVAL:END -->
 
     <div class="section">
       <h2>Onset Comparison (R2 vs P2 vs C0)</h2>
@@ -688,7 +767,17 @@
     "med_on_file_none": 0,
     "not_sensitised": 0
    },
-   "drafts": []
+   "drafts": [],
+   "nasa_telemetry": {
+    "source_label": "Valencia demo \u00b7 2025-05-28",
+    "gdd_base_c": 7.0,
+    "cum_gdd": 954.7,
+    "solar_mj_m2": 29.8,
+    "precip_mm": 0.0,
+    "gwetroot": 0.42,
+    "ndvi_causal": 0.1475,
+    "t2m_max_c": 31.9
+   }
   },
   {
    "id": "madrid_grass",
@@ -1989,7 +2078,17 @@
      "language": "es",
      "message": "Pollen levels do not diagnose anything. If you are wheezy or short of breath, follow your asthma plan or call your clinic; if severe, call emergency services. You have an asthma flag on file: please follow your own asthma action plan and seek care if you have breathing difficulty. Keep your reliever with you."
     }
-   ]
+   ],
+   "nasa_telemetry": {
+    "source_label": "Madrid FACF \u00b7 2025-05-18",
+    "gdd_base_c": 5.0,
+    "cum_gdd": 534.8,
+    "solar_mj_m2": 27.44,
+    "precip_mm": 0.46,
+    "gwetroot": 0.69,
+    "ndvi_causal": 0.4478,
+    "t2m_max_c": 24.0
+   }
   },
   {
    "id": "basel_birch",
@@ -2215,7 +2314,17 @@
      "language": "es",
      "message": "Pollen levels do not diagnose anything. If you are wheezy or short of breath, follow your asthma plan or call your clinic; if severe, call emergency services."
     }
-   ]
+   ],
+   "nasa_telemetry": {
+    "source_label": "Basel PBS \u00b7 2025-04-05",
+    "gdd_base_c": 5.0,
+    "cum_gdd": 101.1,
+    "solar_mj_m2": 21.94,
+    "precip_mm": 0.0,
+    "gwetroot": 0.83,
+    "ndvi_causal": 0.2702,
+    "t2m_max_c": 18.7
+   }
   },
   {
    "id": "olive_sim",
@@ -3026,7 +3135,17 @@
      "language": "es",
      "message": "Pollen levels do not diagnose anything. If you are wheezy or short of breath, follow your asthma plan or call your clinic; if severe, call emergency services."
     }
-   ]
+   ],
+   "nasa_telemetry": {
+    "source_label": "Simulated olive spike over Valencia 2025-05-28 NASA telemetry",
+    "gdd_base_c": 7.0,
+    "cum_gdd": 954.7,
+    "solar_mj_m2": 29.8,
+    "precip_mm": 0.0,
+    "gwetroot": 0.42,
+    "ndvi_causal": 0.1475,
+    "t2m_max_c": 31.9
+   }
   }
  ]
 }
@@ -3076,8 +3195,19 @@
         if (!frozen) $('approve-batch-btn').textContent = hiddenUnheld() === 0 ? 'Approve Batch (Nurse Sign-Off)'
           : `Approve Entire Scenario Batch (${current.drafts.length - held.size} unheld; ${hiddenUnheld()} hidden by filter)`;
       }
+      function renderNasa() {
+        const t = current.nasa_telemetry;
+        $('nasa-source').textContent = t.source_label;
+        const set = (id, v, note) => { const c = $(id); c.querySelector('strong').textContent = v; c.querySelector('em').textContent = note; };
+        set('nasa-gdd', t.cum_gdd.toFixed(1) + ' °C-d', 'base ' + t.gdd_base_c.toFixed(1) + ' °C, Jan 1 to date');
+        set('nasa-solar', t.solar_mj_m2.toFixed(2) + ' MJ/m²', 'Tmax ' + t.t2m_max_c.toFixed(1) + ' °C');
+        set('nasa-precip', t.precip_mm.toFixed(2) + ' mm', 'POWER daily precipitation');
+        set('nasa-soil', t.gwetroot.toFixed(2), 'GWETROOT, 0 dry to 1 wet');
+        set('nasa-ndvi', t.ndvi_causal.toFixed(4), '+16d causal (MOD13Q1)');
+      }
       function renderScenario() {
         current = data.scenarios.find(s => s.id === sel.value); held = new Set(); frozen = false;
+        renderNasa();
         const m = current.means;
         $('nurse-scenario-note').textContent = (current.kind === 'simulated'
           ? 'Simulated threshold-crossing replay (olive 165.0 >= 162 grains/m³); not a real forecast. '

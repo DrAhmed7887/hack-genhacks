@@ -474,3 +474,149 @@ def test_open_meteo_basel_zurich_alignment_matches_verified_6_6_window():
     hour_six_label = shifted.iloc[6]    # 2024-06-01T06:00 -> labelled day
     assert first_hour_label == _pd.Timestamp("2024-05-31")
     assert hour_six_label == _pd.Timestamp("2024-06-01")
+
+
+# ---------------------------------------------------------------------------
+# NASA POWER + MODIS NDVI: cache integrity, causal NDVI join, and
+# training-years-only calibration for N1 and N2.
+# ---------------------------------------------------------------------------
+
+NASA_KEYS = ["madrid_facf", "basel_pbs", "zurich_pzh", "valencia_demo"]
+POWER_HEADER = ["date", "t2m", "t2m_max", "t2m_min", "prectotcorr",
+                "allsky_sfc_sw_dwn", "rh2m", "gwetroot", "ws2m"]
+
+
+@pytest.mark.parametrize("key", NASA_KEYS)
+def test_nasa_power_cache_columns_and_dates(key):
+    df = pd.read_csv(backtest.CACHE_DIR / f"nasa_power_{key}.csv", parse_dates=["date"])
+    assert list(df.columns) == POWER_HEADER
+    assert df["date"].min() == pd.Timestamp("2021-01-01")
+    assert df["date"].max() == pd.Timestamp("2025-12-31")
+    assert len(df) == 1826
+    assert df["date"].is_unique
+    # -999 fill values must have been converted to blanks
+    assert not (df.drop(columns="date") <= -998).any().any()
+
+
+@pytest.mark.parametrize("key", NASA_KEYS)
+def test_nasa_modis_cache_columns_and_dates(key):
+    df = pd.read_csv(backtest.CACHE_DIR / f"nasa_modis_{key}.csv", parse_dates=["date"])
+    assert list(df.columns) == ["date", "modis_date", "ndvi"]
+    # includes a Dec 2020 composite so 1 Jan 2021 has a prior causal value
+    assert df["date"].min() < pd.Timestamp("2021-01-01")
+    assert df["date"].min() >= pd.Timestamp("2020-12-01")
+    assert df["date"].max() <= pd.Timestamp("2025-12-31")
+    assert df["ndvi"].dropna().between(-0.2, 1.0).all()
+
+
+def test_modis_forward_fill_never_leaks_future_composites():
+    """A composite stamped T is usable only from T+16d (avail_date <= D)."""
+    lag = pd.Timedelta(days=16)
+    for key in NASA_KEYS:
+        daily = backtest.load_nasa_daily(key)
+        modis = pd.read_csv(backtest.CACHE_DIR / f"nasa_modis_{key}.csv", parse_dates=["date"]).dropna(subset=["ndvi"])
+        modis = modis.assign(avail=modis["date"] + lag).sort_values("avail")
+        # every filled value equals the latest valid composite with avail <= D
+        for d in daily.index[::37]:
+            prior = modis[modis["avail"] <= d]
+            expected = prior["ndvi"].iloc[-1] if len(prior) else np.nan
+            got = daily.loc[d, "nasa_ndvi"]
+            assert (np.isnan(expected) and np.isnan(got)) or got == pytest.approx(expected)
+        # a composite never appears before its own completion date
+        for _, row in modis[modis["avail"] >= "2021-01-02"].iterrows():
+            before = row["avail"] - pd.Timedelta(days=1)
+            if before in daily.index:
+                prev = modis[modis["avail"] <= before]["ndvi"].iloc[-1]
+                assert daily.loc[before, "nasa_ndvi"] == pytest.approx(prev)
+            if row["avail"] in daily.index:
+                assert daily.loc[row["avail"], "nasa_ndvi"] == pytest.approx(row["ndvi"])
+    # first composite 2020-12-02 is available 2020-12-18, before 2021-01-01
+    first = pd.read_csv(backtest.CACHE_DIR / "nasa_modis_madrid_facf.csv", parse_dates=["date"])["date"].min()
+    assert first + lag <= pd.Timestamp("2021-01-01")
+    assert not backtest.load_nasa_daily("madrid_facf")["nasa_ndvi"].isna().any()
+
+
+def _synthetic_nasa_frame():
+    idx = pd.date_range("2021-01-01", "2025-12-31", freq="D")
+    doy = idx.dayofyear.values
+    tmax = 10 + 15 * np.sin((doy - 100) / 365 * 2 * np.pi) + (idx.year.values - 2021) * 0.3
+    obs = np.where((doy >= 90) & (doy <= 150), 50.0, 0.0)
+    api = np.where((doy >= 92) & (doy <= 148), 30.0, 1.0)
+    return pd.DataFrame({
+        "obs_grass": obs, "api_grass": api,
+        "nasa_t2m_max": tmax, "nasa_t2m_min": tmax - 8, "nasa_t2m": tmax - 4,
+        "nasa_precip": (doy % 7 == 0) * 6.0, "nasa_solar": 15 + 5 * np.sin(doy / 58.0),
+        "nasa_gwetroot": 0.5, "nasa_ndvi": 0.4,
+    }, index=idx)
+
+
+def test_n1_n2_calibration_ignores_heldout_years():
+    base = _synthetic_nasa_frame()
+    mutated = base.copy()
+    held = mutated.index.year >= 2024
+    for col in ["obs_grass", "api_grass", "nasa_t2m_max", "nasa_t2m_min", "nasa_precip", "nasa_solar", "nasa_ndvi", "nasa_gwetroot"]:
+        mutated.loc[held, col] = np.random.default_rng(0).uniform(0, 1000, held.sum())
+    thr = 10.0
+    assert backtest.calibrate_n1(base, "grass", thr) == backtest.calibrate_n1(mutated, "grass", thr)
+    assert backtest.calibrate_n2(base, "grass", thr) == backtest.calibrate_n2(mutated, "grass", thr)
+    assert backtest.calibrate_n1(base, "grass", thr)["train_years_used"] == [2021, 2022, 2023]
+
+
+def test_n1_gdd_target_is_median_of_training_cum_gdd_at_minus_14d():
+    frame = _synthetic_nasa_frame()
+    calib = backtest.calibrate_n1(frame, "grass", 10.0)
+    cum = backtest.cum_gdd_series(frame, "grass")
+    vals = [cum.loc[pd.Timestamp(y, 1, 1) + pd.Timedelta(days=89 - 14)] for y in (2021, 2022, 2023)]
+    assert calib["gdd_target"] == pytest.approx(float(np.median(vals)))
+
+
+def test_rule_N2_washout_and_nan_handling():
+    # N2 reads PRIOR-day NASA values: row i uses the NASA fields of row i-1.
+    idx = pd.date_range("2024-04-01", periods=5, freq="D")
+    f = pd.DataFrame({
+        "api_grass": [8.0, 8.0, 8.0, 8.0, np.nan],
+        "nasa_precip": [0.0, 0.0, 0.0, 6.0, 0.0],
+        "nasa_solar": [20.0, 5.0, 20.0, 20.0, 20.0],
+        "nasa_t2m_max": [25.0, 25.0, 25.0, 25.0, 25.0],
+    }, index=idx)
+    res = backtest.rule_N2(f, "grass", 10.0, 1.5, True, 10.0, 15.0)
+    assert res.iloc[0] == False  # no prior day (NaN) -> no boost, unscaled 8 < 10  # noqa: E712
+    assert res.iloc[1] == True   # prior day dry, sunny, warm: 8*1.5=12 >= 10  # noqa: E712
+    assert res.iloc[2] == False  # prior day not sunny -> no boost  # noqa: E712
+    assert res.iloc[3] == True   # prior day dry/sunny/warm -> boost  # noqa: E712
+    assert pd.isna(res.iloc[4])  # NaN API stays NaN
+
+
+def test_rule_N2_washout_uses_prior_day_precip():
+    idx = pd.date_range("2024-04-01", periods=3, freq="D")
+    f = pd.DataFrame({
+        "api_grass": [20.0, 20.0, 20.0],
+        "nasa_precip": [6.0, 0.0, 0.0],
+        "nasa_solar": [20.0] * 3,
+        "nasa_t2m_max": [25.0] * 3,
+    }, index=idx)
+    res = backtest.rule_N2(f, "grass", 10.0, 1.0, True, 10.0, 15.0)
+    assert res.iloc[1] == False  # prior day 6 mm -> washed out despite API 20  # noqa: E712
+    assert res.iloc[2] == True   # prior day dry  # noqa: E712
+
+
+def test_rule_N2_invariant_to_same_day_nasa_power():
+    """Zero same-day hindsight: mutating NASA POWER on day D cannot change N2(D)."""
+    base = _synthetic_nasa_frame()
+    solar_med, tmax_med = 17.0, 12.0
+    ref = backtest.rule_N2(base, "grass", 10.0, 2.0, True, solar_med, tmax_med)
+    rng = np.random.default_rng(1)
+    for d in rng.choice(np.arange(1, len(base)), size=60, replace=False):
+        mutated = base.copy()
+        for col in ("nasa_solar", "nasa_t2m_max", "nasa_precip"):
+            mutated.iloc[d, mutated.columns.get_loc(col)] = rng.uniform(-50, 500)
+        out = backtest.rule_N2(mutated, "grass", 10.0, 2.0, True, solar_med, tmax_med)
+        assert out.iloc[d].__eq__(ref.iloc[d]) or (pd.isna(out.iloc[d]) and pd.isna(ref.iloc[d]))
+        # and the mutation DOES matter for day D+1 for at least some rows (sanity checked below)
+    flipped = 0
+    for d in range(1, len(base) - 1, 7):
+        mutated = base.copy()
+        mutated.iloc[d, mutated.columns.get_loc("nasa_precip")] = 100.0
+        out = backtest.rule_N2(mutated, "grass", 10.0, 2.0, True, solar_med, tmax_med)
+        flipped += int(out.iloc[d + 1] != ref.iloc[d + 1])
+    assert flipped > 0
