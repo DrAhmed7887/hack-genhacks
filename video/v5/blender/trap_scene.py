@@ -5,7 +5,7 @@ matte clay on a paper ground, no labels on the geometry.
 Run:
   blender -b -P video/v5/blender/trap_scene.py -- --out <dir> [--still 205] [--samples 96]
           [--res 1920x1080] [--device OPTIX|CUDA|METAL|CPU] [--save scene.blend]
-Animation: 210 frames at 30 fps.
+Animation: 300 frames at 30 fps, timed to the scene-2 voice (see the key() calls).
   0-80    dolly in from a 3/4 wide to the cutaway window (drum and tape visible)
   80-150  the tape peels off the drum and unrolls to the right, flat on the paper plane
   150-210 macro push along the tape, grains in focus; last 12 frames locked
@@ -24,7 +24,7 @@ ap.add_argument("--out", required=True)
 ap.add_argument("--still", type=int, default=None)
 ap.add_argument("--samples", type=int, default=96)
 ap.add_argument("--res", default="1920x1080")
-ap.add_argument("--frames", default="1-210")
+ap.add_argument("--frames", default="1-300")
 ap.add_argument("--device", default="OPTIX")
 ap.add_argument("--save", default=None)
 a = ap.parse_args(argv)
@@ -51,6 +51,8 @@ sc.frame_start, sc.frame_end = f0, f1
 sc.cycles.samples = a.samples
 sc.cycles.use_denoising = True
 sc.cycles.max_bounces = 6
+sc.render.use_motion_blur = True
+sc.render.motion_blur_shutter = 0.5
 sc.view_settings.view_transform = "Standard"   # keeps paper exact
 sc.render.image_settings.file_format = "PNG"
 sc.render.filepath = a.out.rstrip("/") + "/trap_"
@@ -166,8 +168,9 @@ strip = put(bpy.context.active_object, M_TAPE)
 strip.scale = (TAPE_L, TAPE_W * 3.0, 1)
 strip.modifiers.new("thick", "SOLIDIFY").thickness = 0.0012
 # day ticks on the flat strip
+ticks = []
 for i in range(1, 14):
-    box((0.002, TAPE_W * 3.0, 0.0008), (X0 + i * TAPE_L / 14, -0.25, 0.003), M_INK)
+    ticks.append(box((0.002, TAPE_W * 3.0, 0.0008), (X0 + i * TAPE_L / 14, -0.25, 0.003), M_INK))
 
 # grains: a deposit band along the strip (denser toward the centre line, like an impaction trace)
 bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=3, radius=1)
@@ -242,25 +245,28 @@ def key(frame, cam_loc, tgt_loc, fstop, lens):
     cam.data.keyframe_insert("lens", frame=frame)
 
 
-key(1, (1.05, -1.75, 1.42), (0.02, 0.0, 1.0), 5.6, 50)              # 3/4 wide on the trap
-key(80, (0.42, -0.78, 1.12), (0.04, -0.02, 1.03), 3.2, 55)         # into the cutaway: drum + tape
-key(112, (0.85, -1.30, 0.80), (0.45, -0.22, 0.20), 3.6, 50)
-key(150, (1.05, -1.40, 0.50), (1.25, -0.25, 0.0), 4.0, 50)        # follow the tape out onto the paper
-key(198, (1.62, -0.52, 0.11), (1.78, -0.25, 0.003), 2.8, 100)     # macro on the grains
-key(210, (1.62, -0.52, 0.11), (1.78, -0.25, 0.003), 2.8, 100)     # locked
+# timed to the s2 voice (30 fps): "pollen trap" ~f175, "read yesterday" ~f200,
+# "tested it the hard way" ~f242-280, cut to the lock timeline at f300 ("We wrote the test down")
+key(1, (1.25, -2.05, 1.55), (0.02, 0.0, 1.0), 5.6, 50)            # wide 3/4 on the trap
+key(165, (0.85, -1.45, 1.30), (0.03, 0.0, 1.02), 5.0, 50)         # slow dolly in
+key(205, (0.42, -0.78, 1.12), (0.04, -0.02, 1.03), 3.2, 55)       # the cutaway: drum + tape
+key(226, (0.40, -0.80, 1.10), (0.04, -0.02, 1.03), 3.2, 55)
+key(252, (0.90, -1.50, 0.90), (0.70, -0.25, 0.0), 4.5, 50)        # swing down to the tape coming out on the paper
+key(286, (1.55, -1.30, 0.85), (1.55, -0.25, 0.0), 5.6, 50)        # straight on: the tape is the strip
+key(300, (1.55, -1.30, 0.85), (1.55, -0.25, 0.0), 5.6, 50)        # locked for the match cut
 
-# the unrolling: strip grows from the trap to full length between 80 and 150 (scale X from 0)
+U0, U1 = 230, 282   # the unrolling: strip grows from the trap to full length (scale X from 0)
 strip.scale = (0.001, TAPE_W * 3.0, 1)
 strip.location.x = X0
-strip.keyframe_insert("scale", frame=80)
-strip.keyframe_insert("location", frame=80)
+strip.keyframe_insert("scale", frame=U0)
+strip.keyframe_insert("location", frame=U0)
 strip.scale = (TAPE_L, TAPE_W * 3.0, 1)
 strip.location.x = X0 + TAPE_L / 2
-strip.keyframe_insert("scale", frame=150)
-strip.keyframe_insert("location", frame=150)
-# grains appear behind the unrolling front
-for g in coll.objects:
-    t = 80 + int(70 * (g.location.x - X0) / TAPE_L)
+strip.keyframe_insert("scale", frame=U1)
+strip.keyframe_insert("location", frame=U1)
+# grains and day ticks appear behind the unrolling front
+for g in list(coll.objects) + ticks:
+    t = U0 + int((U1 - U0) * (g.location.x - X0) / TAPE_L)
     g.hide_render = True
     g.keyframe_insert("hide_render", frame=max(1, t - 1))
     g.hide_render = False

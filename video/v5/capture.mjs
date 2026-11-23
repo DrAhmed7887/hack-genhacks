@@ -30,12 +30,23 @@ const SHOTS = [
   ['drafts_row1', '', '#drafts'],
   ['approve_btn', '', '#approve'],
   ['console_after_click', '', '#morning .console', async (p) => { await p.click('#approve'); await p.waitForTimeout(500); }],
+  ['approve_after', '', '#approve', async (p) => { await p.click('#approve'); await p.waitForTimeout(300); }],
   ['safety', '', '#safety'],
   ['safety_table', '', '#safety table'],
   ['tests', '', '#tests'],
   ['tests_table', '', '#tests table'],
   ['where', '', '#where'],
 ];
+
+// text phrases and row selectors whose boxes (css px, relative to the shot) are saved for callouts
+const RECTS = {
+  season_card: {text: ['High day', 'Trap', 'Forecast', 'trap 29/36']},
+  draft_first: {text: ['your intranasal steroid spray', 'Grass pollen measured', 'Pollen levels do not diagnose anything.'], blocks: ['Pollen levels do not diagnose anything.', 'Grass pollen measured']},
+  console_bar: {text: ['Nurse copilot · 111 of 200 synthetic patients, highest risk first', 'Nothing is sent from this page.']},
+  console_after_click: {text: ['Approve all 111']},
+  safety_table: {rows: 'tr'},
+  tests_table: {rows: 'tr'},
+};
 
 const browser = await chromium.launch({ executablePath: CHROME, headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1280, height: 1000 }, deviceScaleFactor: SCALE });
@@ -50,8 +61,35 @@ for (const [name, q, sel, act] of SHOTS) {
   await el.scrollIntoViewIfNeeded();
   if (act) await act(page);
   const box = await el.boundingBox();
+  const spec = RECTS[name];
+  const rects = spec ? await el.evaluate((root, spec) => {
+    const R = root.getBoundingClientRect();
+    const rel = (r) => ({x: Math.round(r.left - R.left), y: Math.round(r.top - R.top), w: Math.round(r.width), h: Math.round(r.height)});
+    const out = {};
+    const walk = (needle) => {
+      const tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+        const i = n.textContent.indexOf(needle);
+        if (i >= 0) return {node: n, i};
+      }
+      return null;
+    };
+    for (const t of spec.text || []) {
+      const hit = walk(t);
+      if (!hit) { out[t] = null; continue; }
+      const r = document.createRange();
+      r.setStart(hit.node, hit.i); r.setEnd(hit.node, hit.i + t.length);
+      out[t] = rel(r.getBoundingClientRect());
+    }
+    for (const t of spec.blocks || []) {
+      const hit = walk(t);
+      out['block:' + t] = hit ? rel(hit.node.parentElement.getBoundingClientRect()) : null;
+    }
+    if (spec.rows) out.rows = [...root.querySelectorAll(spec.rows)].map((e) => ({...rel(e.getBoundingClientRect()), text: e.innerText.slice(0, 60)}));
+    return out;
+  }, spec) : undefined;
   await el.screenshot({ path: path.join(out, name + '.png') });
-  meta[name] = { selector: sel, query: q, cssW: Math.round(box.width), cssH: Math.round(box.height), scale: SCALE };
+  meta[name] = { selector: sel, query: q, cssW: Math.round(box.width), cssH: Math.round(box.height), scale: SCALE, rects };
   console.log(name.padEnd(20), sel.padEnd(30), meta[name].cssW + 'x' + meta[name].cssH);
 }
 fs.writeFileSync(path.join(out, 'shots.json'), JSON.stringify(meta, null, 1));

@@ -128,8 +128,25 @@ def main() -> None:
                     "broke": ai["red_team_heldout_summary"]["model_broke_a_rule"],
                     "reached": ai["red_team_heldout_summary"]["reached_nurse_with_violation"]},
     }
+    # lock and scoring commits, straight from git
+    def git(*args: str) -> str:
+        return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
+    sha = nc["lock_commit"]
+    data["lock"]["time"] = git("log", "-1", "--format=%cI", sha)
+    data["lock"]["subject"] = git("log", "-1", "--format=%s", sha)
+    scored = git("log", "--format=%h|%cI|%s", f"{sha}..HEAD", "--grep", "score the locked")
+    sh, st, ss = scored.splitlines()[-1].split("|", 2)
+    data["scored"] = {"short": sh, "time": st, "subject": ss}
+    # test count and the demo URL, from the repo itself
+    py = ROOT / ".venv/bin/python"
+    py = py if py.exists() else Path("/Users/ahmedzayed/Projects/hack-genhacks/.venv/bin/python")
+    coll = subprocess.run([str(py), "-m", "pytest", "--collect-only", "-q"], cwd=ROOT, capture_output=True, text=True).stdout
+    data["tests"] = int(re.search(r"(\d+) tests? collected", coll).group(1))
+    data["demoUrl"] = re.search(r"<(https://[^>]+github\.io/[^>]+)>", (ROOT / "README.md").read_text()).group(1)
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(data, indent=1, ensure_ascii=False))
+    print(f"tests {data['tests']} url {data['demoUrl']} lock {data['lock']['time']} scored {data['scored']}")
     print(f"total {total} frames = {total / FPS:.2f} s; cells won {data['cellsWon']}/6")
     for s in scenes:
         print(f"  {s['id']:4s} from {s['from'] / FPS:6.2f}s  {s['frames'] / FPS:5.2f}s")
