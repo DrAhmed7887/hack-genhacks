@@ -138,15 +138,18 @@ The signed thresholds are single-centre published values. The newest large panel
 
 F8 caveat: the module docstring says the approve step and the `approved_at` log are outside the scope of `src/reminders.py`. "0 external sends" is true because no code path in the repo can send. `#kpi-sent` is a fixed 0, not a measured count of sends. F9 and F10 were re-checked against the final HTML on 22 Nov 2026 (DOM ids present, `render_demo.py --check` exit 0, 91 passed).
 
-## G. Video claims (`video/film/renders/film_2026-11-22_21-15-36.mp4`)
+## G. Video claims (V5 film, `video/remotion/src/v5/`)
+
+Every number in the film is read at build time from `video/remotion/src/v5/data.json`, which `video/v5/build_data.py` writes from `eval/results/` and git. The film itself is not in the repo; rebuild it with `video/v5/README.md`.
 
 | # | Claim | Source | Command |
 |---|---|---|---|
-| G1 | Duration 2:16 | `ffprobe` duration 136.3 s | `ffprobe -v error -show_entries format=duration -of csv=p=0 video/film/renders/film_2026-11-22_21-15-36.mp4` |
-| G2 | "Eighty-six tests, green" | `pytest -q` summary line. 86 passed at commit `6a9bbb1`, which is the state the video was filmed on. Re-run on 22 Nov 2026 after the final console edits: `pytest -q` = 112 passed (`tests/test_demo.py` grew from 41 to 53 tests with the nurse console, threshold-boundary and NASA telemetry tests; `tests/test_backtest_rules.py` has 38). | `PY=$PWD/.venv/bin/python; git worktree add /tmp/pp 6a9bbb1 && (cd /tmp/pp && $PY -m pytest -q tests)`; run on 22 Nov 2026 gives 86 passed. Remove with `git worktree remove --force /tmp/pp`. |
-| G3 | "863 events, 7,373 city-days", "41.6" / "41", "13.6" / "31.4", "+2.88" | rows A1, A2, B1, B3, C1, C2, D1 above | `.venv/bin/python eval/verify_claims.py` |
-| G4 | "Six rules, frozen before the run" | row A5. `docs/DATA_PLAN.md` first entered git in `705451d` (22 Nov 2026 18:28 +0100); `eval/backtest.py` first entered in `bb879ed` (19:12 +0100). Git order shows the plan came first. It cannot prove nobody looked at results in between. | `git log --follow --format='%h %ad %s' --date=iso docs/DATA_PLAN.md eval/backtest.py` |
-| G5 | "-13.6 LUFS" note: removed from `DEVPOST_DRAFT.md` on 22 Nov 2026 (unverified). Re-measure with `ffmpeg -i <mp4> -af ebur128 -f null -` before any re-use. | see left |
+| G1 | Duration 2:57 (176.6 s) | `ffprobe` on the mastered file | `ffprobe -v error -show_entries format=duration -of csv=p=0 video/remotion/out/PollenPlan_GenHacks_v5_FINAL_1080p.mp4` |
+| G2 | Pooled 2026 counts on screen (215 events, trap 164 hits, CAMS 70 hits) | rows N1–N4 above; `data.json` → `pooled` | `python3 video/v5/build_data.py` then read `video/remotion/src/v5/data.json` |
+| G3 | Nurse batch 111 of 200, all 111 passed the safety gate; held-out red team 40 attacks, 21 rule breaks, 0 reached the nurse | rows AI1, AI6 above; `data.json` → `batch`, `redTeam` | as G2 |
+| G4 | "239 tests" | `pytest -q` summary line, run by `build_data.py` | `.venv/bin/python -m pytest -q tests` |
+| G5 | Loudness −16 LUFS integrated, true peak below −1.5 dBTP | `ebur128` on the mastered file | `ffmpeg -i <mp4> -af ebur128=peak=true -f null -` |
+| G6 | AI-generated voice, music and b-roll are labelled; product screens and charts are not AI-generated | `video/v5/README.md` "AI-generated material in the film" | read the file |
 
 ## H. Claims this project does NOT make
 
@@ -182,15 +185,6 @@ All values: `BT` → `nasa_evaluation`; reproduce with `.venv/bin/python eval/ba
 | K10 | Status of N1 and N2 | `nasa_evaluation.status` | exploratory, added 22 Nov 2026 after the pre-registered backtest |
 
 Not claimed: N1 is a negative result (worse than the calendar rule out-of-sample). N2 is also a negative result: it beats the API forecast (K4) but loses to the no-NASA control (K8, K9), so no NASA contribution is claimed. Madrid olive 5/8 (K6) rests on 8 events.
-
-## I. Wording that does not match the source (open items)
-
-| # | Where | Text | What the source says | Suggested fix |
-|---|---|---|---|---|
-| I1 | `DEVPOST_DRAFT.md` line 8 (tagline) and `video/STORYBOARD.md` voice-over draft | "3 years of real pollen counts" / "three years of real pollen counts" | `BT` → `years` is 2021 to 2025, five seasons. Only the training window is three years. | **Fixed in `DEVPOST_DRAFT.md` 22 Nov 2026** ("5 years of real pollen counts (2021–2025)"); still open in `video/STORYBOARD.md` line 34 (draft voice-over). Change to "5 years" or "three cities". The shipped video script (`video/film/script.json`) says "real pollen counts" and is not affected. |
-| I2 | Video "Eighty-six tests, green" | Hard-coded count | The committed state has 86 tests; the working tree already has 112. Once the nurse-console tests are committed, the video line is wrong. | Either re-cut the line to the final count or change it to "tests green". Re-run `pytest -q` before the final upload. |
-| I3 | `DEVPOST_DRAFT.md` "AI tools used" line | Names tools and model versions | Not verifiable from the repo. | Owner confirms before submitting. |
-| I4 | Video script and `video/STORYBOARD.md` | "including the seasons every rule missed" | `BT` → `results[].onset_by_year`: only Madrid grass 2023 has no onset from R2, P2 and C0. In Madrid olive 2024 and 2025, R2 and P2 gave none but C0 fired (2024-05-21, 2025-05-21). | Say "seasons the early alert missed", or name Madrid grass 2023. |
 
 ## J. Data and attribution claims
 

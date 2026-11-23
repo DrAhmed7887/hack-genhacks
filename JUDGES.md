@@ -73,33 +73,11 @@ The four criteria below are the verbatim list from the official page (`https://g
 | Evidence | Where |
 |---|---|
 | Live project page, loads logged-out: <https://drahmed7887.github.io/hack-genhacks/>. The front page is rebuilt on the 2026 result (23 Nov 2026) and goes live after PR #5 merges; the 2021–25 page moves to `backtest.html` | `demo/index.html` (`eval/render_site.py`), `demo/backtest.html` |
-| Video: V5 script written from scratch on the 2026 result, for approval (`video/SCRIPT_V5.md`). Earlier films (V2–V4) are retired. **Not rendered yet** | `video/SCRIPT_V5.md` |
+| Video (2:57): built in code from the result files. Every number on screen is read from `eval/results/` and every product screen is a real capture of `demo/index.html`. AI-generated voice, music and b-roll are labelled | `video/v5/README.md`, `video/remotion/src/v5/` |
 | Devpost text with problem, result, limits, built-with, attribution | `DEVPOST_DRAFT.md` |
 | Workflow diagram | `docs/flow.svg` |
 | Required attributions are on the page and in the README (Open-Meteo, CAMS, Comunidad de Madrid, MeteoSwiss) | README "Data Attribution"; demo attribution section (`#attribution-modelled`, `#attribution-observed`) |
 | Limits are printed on the page, not hidden in the repo | `demo/index.html` "Limits" list; `README.md` |
 
 **Honest limits**
-- The video URL is not yet in `DEVPOST_DRAFT.md` (placeholder `[VIDEO_URL — … pending Ahmed's Unlisted upload]`). Nothing is submitted.
-- The live site served on 22 Nov 2026 does not yet contain the nurse console (`#nurse-console` is absent from the deployed HTML). It is in the working tree, uncommitted, and appears on the live URL after the next push to `main`.
-- Devpost draft now says "5 years of real pollen counts (2021–2025)". The storyboard draft voice-over (`video/STORYBOARD.md` line 34) still says three years. See `CLAIMS.md` row I1.
-- The video says "Eighty-six tests". The working tree now has 112. See `CLAIMS.md` row I2.
-
-## Review backlog (dated 22 Nov 2026)
-
-**23 Nov 2026:** rows 1, 2, 5 and 7b refer to the retired V2–V4 films and the old front page. They are superseded by the V5 script and the rebuilt `demo/index.html`.
-
-| # | Item | Found | Owner | Status | Where |
-|---|---|---|---|---|---|
-| 1 | "3 years of real pollen counts" is wrong; data are 2021 to 2025 (5 years, 3 cities). Fixed in `DEVPOST_DRAFT.md` 22 Nov 2026; `video/STORYBOARD.md` line 34 still says three years | 22 Nov 2026 | Ahmed | Done (Devpost); storyboard line open | `DEVPOST_DRAFT.md` line 8, `video/STORYBOARD.md`; `CLAIMS.md` I1 |
-| 2 | Video line "Eighty-six tests" becomes stale when the nurse-console tests are committed (112 passed, re-run 22 Nov 2026) | 22 Nov 2026 | Ahmed | Open | `video/film/script.json` (scene `run`), `video/film/compositions/run.html`; `CLAIMS.md` I2 |
-| 3 | Upload the video Unlisted, check it in a private window, paste the URL | 22 Nov 2026 | Ahmed | Open | `DEVPOST_DRAFT.md` checklist |
-| 4 | Re-check `CLAIMS.md` F9 and F10 against the final HTML: done 22 Nov 2026 (all DOM ids present, `--check` exit 0, 91 passed). **Still open:** push the nurse console so the live URL matches the local demo (live site not updated until the push) | 22 Nov 2026 | Ahmed (push) | F9/F10 re-check Done; push Open | `demo/index.html`, `eval/render_demo.py`, `tests/test_demo.py` |
-| 5 | Re-record or re-check the video if the demo page changes visibly (the film captures the page) | 22 Nov 2026 | Ahmed | Open | `video/capture_shots.mjs` |
-| 6 | Untracked files in `video/film/` come from a different project ("Clocked": `REVIEW.md`, `SPEC.md`, `assets/site/`, and likely `AGENTS.md`, `CLAUDE.md`). Do not commit them blind. | 22 Nov 2026 | Ahmed | Open | `git status --short video/film` |
-| 7 | `DEVPOST_DRAFT.md` "-13.6 LUFS" note was unverified; removed 22 Nov 2026 | 22 Nov 2026 | Ahmed | Done | `CLAIMS.md` G5 |
-| 7b | Video line "seasons every rule missed" is true only for Madrid grass 2023 (C0 fired in Madrid olive 2024 and 2025) | 22 Nov 2026 | Ahmed | Open | `video/film/script.json` scene `product`; `CLAIMS.md` I4 |
-| 8 | Confirm the "AI tools used" line (tool names and model versions) before submitting | 22 Nov 2026 | Ahmed | Open | `DEVPOST_DRAFT.md` |
-| 9 | Madrid daily averaging window unverified (read `descripcion_ampliada_y_diccionario.pdf` for any UTC window) | 20 Nov 2026 | Open question | Open | `data/DATA_CARD.md` §3 |
-| 10 | pandas `FutureWarning` in `eval/backtest.py` (~line 540). Results unaffected; fix only with a fresh backtest re-run and diff | 22 Nov 2026 | Low | Open | `eval/backtest.py` |
-| 12 | Thresholds signed 22 Nov 2026 and kill-check run | 22 Nov 2026 | Ahmed | Done | `rules/thresholds.json`, `eval/results/backtest.json` |
+- The video link is added to the Devpost page at submission.
