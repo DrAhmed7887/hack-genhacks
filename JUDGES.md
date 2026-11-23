@@ -58,6 +58,7 @@ The four criteria below are the verbatim list from the official page (`https://g
 
 | Evidence | Where |
 |---|---|
+| AI layer kept on a leash: the model writes, code checks, the nurse decides. 40 red-team attacks: the model broke a rule 12 times and 0 reached the nurse. Run 1's gate miss (an efficacy claim) is published with the fix | `src/message_guard.py`, `src/assistant.py`, `eval/results/ai_layer.json`, `ai_layer_run1.json`, `tests/test_message_guard.py` |
 | A negative-result-first project: the kill-check is written as a rule before the run, and the outcome is recorded as `kill_check.overall_headline` and the public wording follows it | `docs/DATA_PLAN.md` §2.5; `eval/results/backtest.json` |
 | The video and demo show the failures: every one of the 28 seasons is in the onset table, including seasons the early alert missed (R2 and P2 gave no alert in Madrid olive 2024 and 2025, where climatology C0 did fire; R2, P2 and C0 all gave none in Madrid grass 2023) | `demo/backtest.html` `#onset-table-body`; `docs/results_table.md`; `eval/results/misses.csv` (2,018 missed-day rows) |
 | Code decides, a model would only explain: eligibility and message content are deterministic rules with tests, so the nurse screen shows what the code guard filtered out and why | `src/reminders.py`; demo `#nurse-filtered-panel` |

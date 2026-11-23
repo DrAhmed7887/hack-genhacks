@@ -88,8 +88,56 @@ def site_data() -> dict:
     assert totals == {"high": p["P0"]["n_events"], "p0": p["P0"]["tp"], "p2": p["P2"]["tp"]}
     assert featured is not None
     return {"pooled": p, "hypotheses": res["hypotheses"], "lock_commit": res["lock_commit"],
-            "cells": cells, "featured": featured, "console": console(featured["species"]),
+            "safety_line": reminders.SAFETY_LINE, "cells": cells, "featured": featured, "console": console(featured["species"]), "ai": ai_layer(featured),
             "dev": {k: bt_res_pooled(bt_res, k) for k in ("P0", "P2")}}
+
+
+AI_RESULTS = ROOT / "eval" / "results" / "ai_layer.json"
+
+
+RULE_LABEL = {"dose": "dose", "amount_words": "amount", "frequency": "frequency", "dose_change": "dose change",
+              "diagnosis_or_symptoms": "symptom or condition words", "efficacy_claim": "efficacy claim",
+              "link_or_contact": "link or phone", "drug_or_brand_name": "drug or brand name",
+              "other_medicine_mentioned": "other medicine", "medicine_class_on_file_missing": "medicine on file missing",
+              "species_missing": "species missing", "other_species_mentioned": "other species",
+              "too_long": "too long", "empty": "empty", "model_wrote_signed_line": "rewrote a signed line",
+              "no_model_output": "no output", "diagnosis": "condition words"}
+
+
+def label(rules: list[str]) -> list[str]:
+    out = []
+    for r in rules:
+        base = r.split(":")[0]
+        lab = {"unexplained_number": "number not in the facts", "ungrounded_number": "number not in the facts"}.get(base) or RULE_LABEL[base]
+        if lab not in out:
+            out.append(lab)
+    return out
+
+
+def ai_layer(featured: dict) -> dict:
+    """The recorded offline AI run (eval/ai_layer.py), trimmed for the page."""
+    a = json.loads(AI_RESULTS.read_text())
+    assert a["featured"]["date"] == featured["date"], "ai_layer.json is for a different morning: re-run eval/ai_layer.py"
+    keep = ("id", "age", "asthma", "tier", "tier_reason", "final", "used_fallback", "violations", "medicine")
+    picks = []
+    for want in ("dose", "drug_or_brand_name", "diagnosis_or_symptoms", "frequency", "link_or_contact"):
+        r = next((r for r in a["red_team"] if r["expected_rule"] == want), None)
+        if r:
+            picks.append({"attack": r["attack"], "raw": r["raw"], "violations": label(r["violations"]),
+                          "used_fallback": r["used_fallback"]})
+    tiers = {t: sum(d["tier"] == t for d in a["drafts"]) for t in (1, 2, 3)}
+    # run 1 (before the efficacy rule): outputs that got past the gate then and fail today's gate
+    from src import message_guard as g
+    run1 = json.loads((ROOT / "eval" / "results" / "ai_layer_run1.json").read_text())
+    med = {d["id"]: (d["medicine"], d["asthma"]) for d in a["drafts"]}
+    f = a["featured"]
+    run1_miss = [r["raw"] for r in run1["red_team"] if r["raw"] and not r["violations"]
+                 and g.check_opening(r["raw"], g.Facts(f["species"], f["yesterday"], f["threshold"], *med[r["patient"]]))]
+    return {"model": a["model"], "prompt_sha256": a["prompt_sha256"][:12], "run_utc": a["run_utc"],
+            "drafts": [{**{k: d[k] for k in keep}, "violations": label(d["violations"])} for d in a["drafts"]], "summary": a["draft_summary"], "tiers": tiers,
+            "red": a["red_team_summary"], "red_examples": picks, "run1_miss": run1_miss,
+            "qa": [{**{k: q.get(k) for k in ("question", "route", "model_called", "answer")}, "violations": label(q["violations"])}
+                   for q in a["qa"]]}
 
 
 def bt_res_pooled(bt_res: dict, rule: str) -> dict:
@@ -148,7 +196,14 @@ def render(data: dict) -> str:
         f_o=f'{f["observed_today"]:.0f}', f_t=f["threshold"], f_sp=f["species"], city_f=f["city"],
         roster=data["console"]["roster"], eligible=data["console"]["eligible"],
         dev_p0=f'{dev["P0"]["tp"]} of {dev["P0"]["events"]}', dev_p2=f'{dev["P2"]["tp"]} of {dev["P2"]["events"]}',
-        hyp_rows="".join(hyp_rows), rule_rows=rule_rows, blob=blob)
+        hyp_rows="".join(hyp_rows), rule_rows=rule_rows, blob=blob,
+        t1=data["ai"]["tiers"][1], t2=data["ai"]["tiers"][2], t3=data["ai"]["tiers"][3],
+        ai_pass=data["ai"]["summary"]["passed_gate"], ai_fb=data["ai"]["summary"]["fell_back"],
+        red_n=data["ai"]["red"]["n"], red_broke=data["ai"]["red"]["model_broke_a_rule"],
+        red_leak=data["ai"]["red"]["reached_nurse_with_violation"],
+        run1_n=len(data["ai"]["run1_miss"]),
+        run1_q=html.escape(data["ai"]["run1_miss"][0].split(". ")[-1]) if data["ai"]["run1_miss"] else "",
+        model=html.escape(data["ai"]["model"]), prompt_sha=data["ai"]["prompt_sha256"])
 
 
 TEMPLATE = """<!doctype html>
@@ -220,6 +275,17 @@ th {{ font-size:13px; color:var(--muted); font-weight:600; }}
 td.num {{ font-family:'JetBrains Mono',monospace; white-space:nowrap; }}
 tr.hl td {{ background:var(--trap-soft); font-weight:600; }}
 .chip {{ font-weight:700; font-size:12px; border-radius:6px; padding:3px 8px; }}
+.chip.neutral {{ background:#ECE9E1; color:#3A443F; }}
+.gate {{ margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; }}
+.tier {{ display:inline-block; font:700 11px Inter; border-radius:5px; padding:2px 6px; margin-left:6px; }}
+.tier.t1 {{ background:var(--fail-soft); color:var(--fail); }} .tier.t2 {{ background:var(--cams-soft); color:var(--cams); }} .tier.t3 {{ background:#ECE9E1; color:#3A443F; }}
+.draft.held {{ opacity:.45; }}
+.draft .acts {{ margin-top:8px; display:flex; gap:8px; }}
+.draft .acts button {{ font:600 12px Inter; border:1px solid var(--line); background:#fff; border-radius:6px; padding:4px 8px; cursor:pointer; }}
+.draft .src2 {{ font-size:12px; color:var(--muted); margin-top:6px; }}
+.qa {{ display:grid; gap:10px; }}
+.qa .item {{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }}
+.qa .q {{ font-weight:600; }} .qa .a {{ margin-top:6px; color:#2C3631; }} .qa .how {{ margin-top:6px; font-size:12px; color:var(--muted); }}
 .chip.pass {{ background:var(--trap-soft); color:var(--trap); }} .chip.fail {{ background:var(--fail-soft); color:var(--fail); }}
 .scroll {{ overflow-x:auto; }}
 .two {{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }}
@@ -235,7 +301,7 @@ footer {{ padding:40px 0 60px; color:var(--muted); font-size:13px; }}
 <body>
 <div id="tip"></div>
 <div class="wrap">
-<header class="top"><span>PollenPlan</span><nav><a href="#season">2026 season</a><a href="#morning">One morning</a><a href="#tests">Tests</a><a href="#where">Where</a><a href="backtest.html">2021–25 backtest</a></nav></header>
+<header class="top"><span>PollenPlan</span><nav><a href="#season">2026 season</a><a href="#morning">One morning</a><a href="#safety">AI safety</a><a href="#tests">Tests</a><a href="#where">Where</a><a href="backtest.html">2021–25 backtest</a></nav></header>
 
 <div class="hero" id="headline">
   <div class="kicker">Pre-registered test · untouched 2026 season</div>
@@ -269,9 +335,23 @@ footer {{ padding:40px 0 60px; color:var(--muted); font-size:13px; }}
     <div class="step"><div class="n">What the trap measured today</div><div class="v">{f_o}</div><div>grains/m³ grass</div><span class="verdict yes">a high-pollen day</span></div>
   </div>
   <div class="card console">
-    <div class="bar"><div><b>Nurse batch · {eligible} of {roster} synthetic patients</b><div class="src">Eligible = sensitised to grass and a medicine already on file. Code fills each draft; it names only the medicine class on file and adds the signed safety line. Nothing is sent from this page.</div></div><button class="approve" id="approve">Approve {eligible} drafts</button></div>
+    <div class="bar"><div><b>Nurse copilot · {eligible} of {roster} synthetic patients, highest risk first</b><div class="src">Eligible = sensitised to {f_sp} and a medicine already on file. Order: asthma flag + moderate/severe rhinitis first ({t1}), then asthma flag or moderate/severe ({t2}), then mild ({t3}). Each opening is written by an AI model, then checked by code. A draft that breaks any rule is replaced by the signed template. Code appends the signed safety lines itself. Nothing is sent from this page.</div></div><button class="approve" id="approve">Approve all {eligible}</button></div>
+    <div class="gate"><span class="chip pass">{ai_pass} AI drafts passed the safety gate</span> <span class="chip neutral">{ai_fb} replaced by the signed template</span></div>
     <div class="drafts" id="drafts"></div>
   </div>
+</section>
+
+<section id="safety">
+  <h2>We tried to make the AI break the rules</h2>
+  <p class="sub2">Twenty attacks, written before the run, each sent as a clinician note on two patients: "add 2 sprays", "name the drug", "say they probably have hay fever", "add our phone number", and so on. The model obeyed {red_broke} of {red_n} times. Code caught every one, so <b>{red_leak} drafts with a rule break reached the nurse</b>.</p>
+  <p class="sub2">That is the second run. In the first run, {run1_n} outputs got past the gate with an efficacy claim the signed rules do not allow (“{run1_q}”). We added the rule and put both sentences in the fixed test set, then ran everything again (<code>eval/results/ai_layer_run1.json</code>).</p>
+  <div class="card scroll"><table><thead><tr><th>Attack (clinician note)</th><th>What the model wrote</th><th>Gate</th></tr></thead><tbody id="red"></tbody></table></div>
+</section>
+
+<section id="ask">
+  <h2>Clinician Q&amp;A, grounded in today's data</h2>
+  <p class="sub2">Questions were written before the run. Any question about symptoms goes to the fixed safety reply, and the model is never called. Every other answer is checked: each number must appear in today's facts, and a dose, a drug name or a statement about a condition blocks the answer. Model: {model}; prompt <code>rules/assistant_prompt.md</code> (sha256 {prompt_sha}…).</p>
+  <div class="qa" id="qa"></div>
 </section>
 
 <section id="tests">
@@ -380,16 +460,35 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
   const start = new URLSearchParams(location.search).get('cell');
   select(Math.max(0, D.cells.findIndex(c => c.key === start)));
   const drafts = document.getElementById('drafts');
-  const SHOW = 6;
-  D.console.drafts.slice(0, SHOW).forEach(d => {{
-    const div = document.createElement('div'); div.className = 'draft';
-    div.innerHTML = '<div class="id"></div><div class="med">Alert: ' + D.featured.species + ' · medicine class on file: <span></span></div>';
-    div.querySelector('.id').textContent = d.id + ' · ' + d.age + (d.asthma ? ' · asthma flag' : '');
-    div.querySelector('span').textContent = d.medicine;
-    d.lines.forEach(l => {{ const p = document.createElement('div'); p.className = 'line'; p.textContent = l; div.appendChild(p); }});
-    drafts.appendChild(div);
+  const SHOW = 6, TIER = {{1: 'Review first', 2: 'Review next', 3: 'Routine'}};
+  const mk = (tag, cls, text) => {{ const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }};
+  D.ai.drafts.slice(0, SHOW).forEach(d => {{
+    const div = mk('div', 'draft');
+    const id = mk('div', 'id', d.id + ' · ' + d.age + (d.asthma ? ' · asthma flag' : ''));
+    const t = mk('span', 'tier t' + d.tier, TIER[d.tier]); t.title = d.tier_reason; id.appendChild(t); div.appendChild(id);
+    const cut = d.final.indexOf(D.safety_line);
+    const msg = mk('div', 'med', cut > 0 ? d.final.slice(0, cut).trim() : d.final); div.appendChild(msg);
+    if (cut > 0) div.appendChild(mk('div', 'line', d.final.slice(cut)));
+    div.appendChild(mk('div', 'src2', d.used_fallback ? 'Signed template (AI draft blocked: ' + d.violations.join(', ') + ')' : 'AI draft · passed the safety gate · signed lines appended by code'));
+    const acts = mk('div', 'acts'), hold = mk('button', null, 'Hold'), edit = mk('button', null, 'Edit');
+    hold.addEventListener('click', () => {{ div.classList.toggle('held'); hold.textContent = div.classList.contains('held') ? 'Held' : 'Hold'; }});
+    edit.addEventListener('click', () => {{ const on = msg.isContentEditable; msg.contentEditable = !on; edit.textContent = on ? 'Edited by nurse' : 'Done'; if (!on) msg.focus(); }});
+    acts.append(hold, edit); div.appendChild(acts); drafts.appendChild(div);
   }});
-  if (D.console.drafts.length > SHOW) {{ const m = document.createElement('div'); m.className = 'draft'; m.innerHTML = '<div class="med">+ ' + (D.console.drafts.length - SHOW) + ' more drafts</div><div class="line">' + D.console.not_sensitised + ' patients not sensitised to grass · ' + D.console.no_medicine + ' with no medicine on file: filtered out by code.</div>'; drafts.appendChild(m); }}
+  if (D.ai.drafts.length > SHOW) {{ const m = mk('div', 'draft'); m.appendChild(mk('div', 'med', '+ ' + (D.ai.drafts.length - SHOW) + ' more drafts, same order')); m.appendChild(mk('div', 'line', D.console.not_sensitised + ' patients not sensitised to ' + D.featured.species + ' · ' + D.console.no_medicine + ' with no medicine on file: left out by code.')); drafts.appendChild(m); }}
+  const red = document.getElementById('red');
+  D.ai.red_examples.forEach(r => {{
+    const tr = document.createElement('tr');
+    tr.appendChild(mk('td', null, r.attack)); tr.appendChild(mk('td', null, r.raw || '(no output)'));
+    const td = mk('td'); td.appendChild(mk('span', 'chip ' + (r.used_fallback ? 'fail' : 'pass'), r.used_fallback ? 'Blocked: ' + r.violations.join(', ') : 'Passed (model refused the attack)')); tr.appendChild(td);
+    red.appendChild(tr);
+  }});
+  const qa = document.getElementById('qa');
+  D.ai.qa.forEach(x => {{
+    const it = mk('div', 'item'); it.appendChild(mk('div', 'q', x.question)); it.appendChild(mk('div', 'a', x.answer));
+    it.appendChild(mk('div', 'how', x.route === 'symptom_router' ? 'Symptom question: fixed safety reply, model not called' : (x.violations.length ? 'Model answer blocked by code: ' + x.violations.join(', ') : 'Model answer · every number checked against the facts for this morning')));
+    qa.appendChild(it);
+  }});
   document.getElementById('approve').addEventListener('click', e => {{ e.target.disabled = true; e.target.textContent = 'Approved · logged locally, nothing sent'; }});
 }})();
 </script>

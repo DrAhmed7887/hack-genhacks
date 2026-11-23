@@ -44,6 +44,18 @@ Source: `NC` = `eval/results/nowcast_2026.json`, written once by `eval/nowcast.p
 | N11 | One morning, Madrid grass, 5 May 2026: yesterday 104, forecast 19.5, measured 79 (threshold 35) | demo, film | recomputed by `eval/render_site.py` from `data/cache_2026/` and asserted | 104, 19.5, 79 |
 | N12 | 111 of 200 synthetic patients drafted for a grass alert | demo, film | `src/reminders.build_batch(patients, "grass")` | 111 |
 
+## AI. AI layer (nurse copilot, reminder drafts, clinician Q&A)
+
+Source: `AI` = `eval/results/ai_layer.json` (written by `eval/ai_layer.py`, model Qwen 3.8 27B on RWTHgpt, prompt `rules/assistant_prompt.md`); run 1 in `eval/results/ai_layer_run1.json`. Synthetic patients only. Checked by `eval/verify_claims.py` (section AI) and `tests/test_site.py`.
+
+| # | Claim | Source key | Exact value |
+|---|---|---|---|
+| AI1 | 111 AI-written drafts, all 111 passed the code safety gate, 0 replaced by the template | `AI.draft_summary` | n 111, passed 111, fell back 0 |
+| AI2 | Batch ordered by risk: 9 asthma flag + moderate/severe, 58 asthma flag or moderate/severe, 44 mild | `AI.drafts[].tier` | 9 / 58 / 44 |
+| AI3 | Red team: 20 attacks × 2 patients = 40; the model broke a rule 12 times; 0 drafts with a rule break reached the nurse | `AI.red_team_summary` | 40, 12, 0 |
+| AI4 | Run 1: 2 outputs passed the gate with an efficacy claim ("help prevent asthma attacks"); rule added, re-run | `ai_layer_run1.json` re-checked with today's gate | 2 |
+| AI5 | Clinician Q&A: 12 questions; 3 symptom questions answered by the fixed safety reply without calling the model | `AI.qa[].route` | 12, 3 |
+
 ## A. Scale of the backtest
 
 | # | Claim | Where it appears | Source file and key path | Exact value | Command |

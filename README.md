@@ -33,6 +33,15 @@ An allergy clinic has patients with a known pollen allergy who are already on tr
 
 Yesterday's trap beats the forecast in all six city × species series in 2026. It did the same in 2021–2025, flagging 670 of 857 high days against 359 of 863 for the forecast (`eval/results/backtest.json`). The 2026 test was written to check whether that holds on a season we had not seen.
 
+## AI layer: helps the nurse, never decides
+
+- **Nurse copilot:** the batch is ordered by risk. Patients with an asthma flag and moderate/severe rhinitis come first (9), then asthma flag or moderate/severe (58), then mild (44). The nurse can approve all, hold or edit.
+- **Reminder drafts:** an AI model (Qwen 3.8 27B on RWTHgpt, free, run offline on synthetic patients) writes each opening from the prompt in `rules/assistant_prompt.md`. Code (`src/message_guard.py`) then rejects any dose, frequency, drug or brand name, other medicine or species, symptom or condition words, efficacy claim, link or unexplained number. On any break it falls back to the signed template, and it appends the signed safety lines itself. All 111 drafts passed.
+- **Red team** (20 attacks written before the run, × 2 patients): the model broke a rule 12 of 40 times, and 0 of those reached the nurse. In the first run, 2 outputs got through with an efficacy claim ("help prevent asthma attacks"). We added the rule and both sentences to the fixed test set, then re-ran (`eval/results/ai_layer_run1.json`).
+- **Clinician Q&A:** answers come only from the morning's facts, and every number is checked against them. Symptom questions get the fixed safety reply and never reach the model (3 of 12 test questions).
+
+Honest note: with only the trap count and the timing line approved, the 111 openings are nearly identical. The model adds little over the template until more personal content is signed (for example a parent voice for children, or Spanish).
+
 ## Where the forecast stops
 
 The CAMS European pollen forecast covers 25° W–45° E and 30° N–72° N ([CAMS dataset page](https://ads.atmosphere.copernicus.eu/datasets/cams-europe-air-quality-forecasts)). Open-Meteo states that its pollen data are "Only available in Europe as provided by CAMS European Air Quality forecast" ([docs](https://open-meteo.com/en/docs/air-quality-api)).

@@ -1,4 +1,4 @@
-# PollenPlan film V5: script for approval (23 Nov 2026), NOT APPROVED
+# PollenPlan film V5: script (23 Nov 2026), APPROVED by Ahmed 23 Nov 2026 ("approve all")
 
 Built from scratch around the pre-registered 2026 result. V4 and earlier are retired. Target length is about 2:20, under the 3:00 cap. Every number comes from `eval/results/nowcast_2026.json` (CLAIMS.md §N) and is mapped in `research/public_claims_v5.jsonl` before render. Visuals are real captures of `demo/index.html` plus motion graphics drawn from the same JSON. No AI imagery of people or screens.
 
@@ -29,7 +29,13 @@ Built from scratch around the pre-registered 2026 result. V4 and earlier are ret
 - Any treatment advice beyond "use the medicine they already have". The pre-season steroid guideline quote is unverified (ARIA full text not read).
 - Any NASA gain.
 
-## For Ahmed to sign
+## Signed by Ahmed, 23 Nov 2026 ("approve all": both items below)
 
 - **Scene 1 wording:** "so our patients should use the medicine they already have." This is the same intent as the signed message rules (DATA_PLAN §3): the message names only the medicine class on file.
 - **Scene 8 wording, corrected 23 Nov after review:** the earlier draft said Egypt had no forecast. That was wrong: Alexandria (31.2° N) and Cairo (30.0° N) sit inside the CAMS box and get values. The script now says only what WR1 (the domain) and WR6/WR7 (our API query: Alexandria and Cairo get values, Asyut none) support. "We found no one who has checked them against a trap" is a negative search result, not a survey of the field.
+
+## Amendment A1 (23 Nov 2026), for approval: AI layer scene 6b, inserted after scene 6 (about +16 s, total about 2:52)
+
+| # | Time | Narration (voice) | On screen |
+|---|---|---|---|
+| 6b | +0:16 | An AI model writes each reminder, and code checks every word. No dose, no drug name, no symptom advice, and the signed safety lines are added by code, not the model. We attacked it forty times. The model broke a rule twelve times. None of those reached the nurse. | Nurse copilot capture (batch ordered by risk, "Review first" badges), then the red-team table with its Blocked chips, then the counter: 40 attacks · 12 broke a rule · 0 reached the nurse. |

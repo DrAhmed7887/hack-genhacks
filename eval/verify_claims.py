@@ -70,6 +70,15 @@ checks.update({
  "N bootstrap 10,000 x 7-day blocks": (nc["bootstrap"]["n"], nc["bootstrap"]["block_days"]) == (10000, 7),
 })
 
+ai_ = json.load(open("eval/results/ai_layer.json"))
+_tiers = [sum(x["tier"] == t for x in ai_["drafts"]) for t in (1, 2, 3)]
+checks.update({
+ "AI1 drafts": (ai_["draft_summary"]["n"], ai_["draft_summary"]["passed_gate"], ai_["draft_summary"]["fell_back"]) == (111, 111, 0),
+ "AI2 tiers": _tiers == [9, 58, 44],
+ "AI3 red team": (ai_["red_team_summary"]["n"], ai_["red_team_summary"]["model_broke_a_rule"], ai_["red_team_summary"]["reached_nurse_with_violation"]) == (40, 12, 0),
+ "AI5 Q&A": (len(ai_["qa"]), sum(q["route"] == "symptom_router" and not q["model_called"] for q in ai_["qa"])) == (12, 3),
+})
+
 CLAIMS_TEXT = [  # value as CLAIMS.md prints it; each must be present
     "| 863 observed high-pollen events |", "| A2 | 7,373 evaluated city-days", "| 7373 (= " + " + ".join(str(p2(*k)["n_evaluated_days"]) for k in R) + ",",
     "| 28 |", "tp 359, n_events 863", "`kill_check.check2_beats_api.pooled_p2.false_alert_days` | 53 |",
@@ -79,6 +88,7 @@ CLAIMS_TEXT = [  # value as CLAIMS.md prints it; each must be present
     "N1 MAE 4.8 d from 14 d, 70% in 7-28 d", "N1 21.9 d MAE, 30% hit; C0_14d 12.5 d MAE, 60% hit",
     "P2 CSI 0.382 → N2 0.434", "CSI 0.486; recall 54.6% (215/394); 48 false-alert days; precision 81.7%",
     "`nasa_evaluation.no_nasa_control.nasa_adds_skill_heldout` | `false` |",
+    "| n 111, passed 111, fell back 0 |", "| 9 / 58 / 44 |", "| 40, 12, 0 |", "| 12, 3 |",
     "| 215, 1706 |", "tp 164, fp 40, recall 0.763, csi 0.643", "tp 70, fp 10, recall 0.326, csi 0.311",
     "csi_diff 0.332, ci95 [0.203, 0.457], passes true", "| 145, 51 |", "| 670/857, 359/863 |", "| 104, 19.5, 79 |",
 ]
