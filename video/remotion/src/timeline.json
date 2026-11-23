@@ -1,5 +1,5 @@
 {
- "total": 128.544,
+ "total": 162.74,
  "scenes": [
   {
    "id": "s1",
@@ -342,160 +342,170 @@
   {
    "id": "s3",
    "start": 29.432,
-   "dur": 16.69,
+   "dur": 16.643,
    "audio": "s3.mp3",
    "audioAt": 0.35,
    "words": [
     [
      "Weather",
      0.35,
-     0.652
+     0.675
     ],
     [
      "APIs",
-     0.71,
-     1.383
+     0.745,
+     1.453
     ],
     [
      "model",
-     1.604,
-     1.906
+     1.615,
+     1.941
     ],
     [
      "an",
-     1.975,
-     2.068
+     2.022,
+     2.091
     ],
     [
      "eleven-kilometre",
-     2.126,
-     2.904
+     2.161,
+     2.974
     ],
     [
      "grid;",
-     2.951,
-     3.345
+     3.032,
+     3.485
     ],
     [
      "people",
-     3.647,
-     4.019
+     3.845,
+     4.181
     ],
     [
      "breathe",
-     4.077,
-     4.506
+     4.228,
+     4.599
     ],
     [
      "near",
-     4.704,
-     4.924
+     4.669,
+     4.831
     ],
     [
      "point",
-     4.994,
-     5.249
+     4.901,
+     5.133
     ],
     [
      "traps.",
-     5.284,
-     5.83
+     5.168,
+     5.749
     ],
     [
      "We",
-     6.306,
-     6.445
+     6.109,
+     6.236
     ],
     [
      "checked",
-     6.503,
-     6.817
+     6.306,
+     6.585
     ],
     [
      "five",
-     6.979,
-     7.432
+     6.724,
+     7.142
     ],
     [
      "years",
-     7.49,
-     7.885
+     7.2,
+     7.513
     ],
     [
      "of",
-     7.943,
-     8.001
+     7.583,
+     7.653
     ],
     [
      "Open-Meteo",
-     8.071,
-     8.732
+     7.734,
+     8.396
     ],
     [
      "forecasts",
-     8.837,
-     9.603
+     8.5,
+     9.243
     ],
     [
      "against",
-     9.859,
-     10.288
+     9.406,
+     9.801
     ],
     [
      "Madrid,",
-     10.358,
-     10.915
+     9.859,
+     10.358
     ],
     [
      "Basel,",
-     11.112,
-     11.67
+     10.555,
+     11.112
     ],
     [
      "and",
-     11.809,
-     11.972
+     11.275,
+     11.426
     ],
     [
-     "Zürich",
-     12.041,
-     12.39
+     "Z\u00fcrich",
+     11.496,
+     11.867
     ],
     [
      "traps",
-     12.424,
-     12.784
+     11.914,
+     12.297
     ],
     [
-     "—",
-     12.924,
-     13.016
+     "\u2014",
+     12.459,
+     12.506
     ],
     [
-     "eight",
-     13.318,
-     13.539
+     "seven",
+     12.808,
+     13.121
     ],
     [
      "thousand",
-     13.585,
-     14.015
+     13.191,
+     13.597
     ],
     [
-     "seventy-six",
-     14.096,
-     14.804
+     "three",
+     13.655,
+     13.887
+    ],
+    [
+     "hundred",
+     13.934,
+     14.247
+    ],
+    [
+     "seventy-three",
+     14.305,
+     15.002
     ],
     [
      "city-days.",
-     14.967,
-     16.14
+     15.06,
+     16.093
     ]
    ]
   },
   {
    "id": "s4",
-   "start": 46.122,
+   "start": 46.075,
    "dur": 15.668,
    "audio": "s4.mp3",
    "audioAt": 0.35,
@@ -631,7 +641,7 @@
      12.657
     ],
     [
-     "—",
+     "\u2014",
      12.819,
      12.877
     ],
@@ -654,7 +664,7 @@
   },
   {
    "id": "s5a",
-   "start": 61.79,
+   "start": 61.743,
    "dur": 15.507,
    "audio": "s5a.mp3",
    "audioAt": 0.35,
@@ -793,7 +803,7 @@
   },
   {
    "id": "s5b",
-   "start": 77.297,
+   "start": 77.25,
    "dur": 6.519,
    "audio": "s5b.mp3",
    "audioAt": 0.35,
@@ -877,7 +887,7 @@
   },
   {
    "id": "s6",
-   "start": 83.816,
+   "start": 83.769,
    "dur": 16.411,
    "audio": "s6.mp3",
    "audioAt": 0.35,
@@ -1066,7 +1076,7 @@
   },
   {
    "id": "s7",
-   "start": 100.227,
+   "start": 100.18,
    "dur": 15.807,
    "audio": "s7.mp3",
    "audioAt": 0.35,
@@ -1209,136 +1219,530 @@
    ]
   },
   {
+   "id": "s7n",
+   "start": 115.987,
+   "dur": 33.593,
+   "audio": "s7n.mp3",
+   "audioAt": 0.35,
+   "words": [
+    [
+     "We",
+     0.35,
+     0.513
+    ],
+    [
+     "also",
+     0.571,
+     0.919
+    ],
+    [
+     "tested",
+     0.989,
+     1.372
+    ],
+    [
+     "NASA",
+     1.43,
+     1.685
+    ],
+    [
+     "POWER",
+     1.708,
+     1.987
+    ],
+    [
+     "weather",
+     2.045,
+     2.277
+    ],
+    [
+     "data",
+     2.324,
+     2.672
+    ],
+    [
+     "on",
+     2.974,
+     3.125
+    ],
+    [
+     "held-out",
+     3.194,
+     3.705
+    ],
+    [
+     "twenty",
+     4.065,
+     4.367
+    ],
+    [
+     "twenty-four",
+     4.402,
+     5.052
+    ],
+    [
+     "and",
+     5.412,
+     5.563
+    ],
+    [
+     "twenty",
+     5.609,
+     5.9
+    ],
+    [
+     "twenty-five.",
+     5.946,
+     6.875
+    ],
+    [
+     "A",
+     7.177,
+     7.246
+    ],
+    [
+     "fourteen-day",
+     7.351,
+     8.245
+    ],
+    [
+     "early",
+     8.349,
+     8.616
+    ],
+    [
+     "warning",
+     8.686,
+     9.034
+    ],
+    [
+     "from",
+     9.116,
+     9.266
+    ],
+    [
+     "NASA",
+     9.336,
+     9.592
+    ],
+    [
+     "temperatures",
+     9.615,
+     10.172
+    ],
+    [
+     "landed",
+     10.532,
+     10.938
+    ],
+    [
+     "in",
+     11.008,
+     11.101
+    ],
+    [
+     "the",
+     11.147,
+     11.217
+    ],
+    [
+     "useful",
+     11.287,
+     11.647
+    ],
+    [
+     "window",
+     11.716,
+     12.123
+    ],
+    [
+     "thirty",
+     12.482,
+     12.831
+    ],
+    [
+     "percent",
+     12.889,
+     13.33
+    ],
+    [
+     "of",
+     13.434,
+     13.562
+    ],
+    [
+     "the",
+     13.609,
+     13.678
+    ],
+    [
+     "time;",
+     13.725,
+     14.247
+    ],
+    [
+     "last",
+     14.897,
+     15.153
+    ],
+    [
+     "year's",
+     15.211,
+     15.397
+    ],
+    [
+     "calendar",
+     15.455,
+     15.942
+    ],
+    [
+     "did",
+     16.012,
+     16.162
+    ],
+    [
+     "it",
+     16.197,
+     16.267
+    ],
+    [
+     "sixty",
+     16.337,
+     16.673
+    ],
+    [
+     "percent",
+     16.731,
+     17.149
+    ],
+    [
+     "of",
+     17.405,
+     17.556
+    ],
+    [
+     "the",
+     17.614,
+     17.683
+    ],
+    [
+     "time.",
+     17.73,
+     18.194
+    ],
+    [
+     "A",
+     18.844,
+     18.914
+    ],
+    [
+     "NASA",
+     19.018,
+     19.309
+    ],
+    [
+     "weather",
+     19.344,
+     19.587
+    ],
+    [
+     "rule",
+     19.645,
+     20.075
+    ],
+    [
+     "lifted",
+     20.296,
+     20.644
+    ],
+    [
+     "the",
+     20.69,
+     20.772
+    ],
+    [
+     "alert",
+     20.83,
+     21.132
+    ],
+    [
+     "score",
+     21.19,
+     21.549
+    ],
+    [
+     "from",
+     21.608,
+     21.782
+    ],
+    [
+     "point",
+     21.851,
+     22.06
+    ],
+    [
+     "three",
+     22.107,
+     22.327
+    ],
+    [
+     "eight",
+     22.385,
+     22.629
+    ],
+    [
+     "to",
+     22.885,
+     22.989
+    ],
+    [
+     "point",
+     23.059,
+     23.291
+    ],
+    [
+     "four",
+     23.361,
+     23.604
+    ],
+    [
+     "three,",
+     23.674,
+     24.185
+    ],
+    [
+     "but",
+     24.591,
+     24.754
+    ],
+    [
+     "the",
+     24.789,
+     24.858
+    ],
+    [
+     "same",
+     24.928,
+     25.218
+    ],
+    [
+     "rule",
+     25.276,
+     25.741
+    ],
+    [
+     "without",
+     25.961,
+     26.333
+    ],
+    [
+     "NASA",
+     26.402,
+     26.797
+    ],
+    [
+     "scored",
+     27.099,
+     27.529
+    ],
+    [
+     "point",
+     27.598,
+     27.83
+    ],
+    [
+     "four",
+     27.9,
+     28.109
+    ],
+    [
+     "nine.",
+     28.19,
+     28.724
+    ],
+    [
+     "NASA",
+     29.375,
+     29.735
+    ],
+    [
+     "added",
+     29.769,
+     30.036
+    ],
+    [
+     "nothing",
+     30.106,
+     30.431
+    ],
+    [
+     "here,",
+     30.501,
+     30.919
+    ],
+    [
+     "so",
+     31.221,
+     31.372
+    ],
+    [
+     "we",
+     31.43,
+     31.546
+    ],
+    [
+     "claim",
+     31.604,
+     31.952
+    ],
+    [
+     "nothing.",
+     32.312,
+     33.043
+    ]
+   ]
+  },
+  {
    "id": "s8",
-   "start": 116.034,
-   "dur": 12.51,
+   "start": 149.58,
+   "dur": 13.16,
    "audio": "s8.mp3",
    "audioAt": 0.35,
    "words": [
     [
      "Zero",
      0.35,
-     0.745
+     0.826
     ],
     [
      "unapproved",
-     0.849,
-     1.395
+     0.93,
+     1.499
     ],
     [
      "sends,",
-     1.453,
-     2.022
+     1.557,
+     2.138
     ],
     [
      "eighty-nine",
-     2.324,
-     2.916
+     2.44,
+     3.067
     ],
     [
      "of",
-     2.951,
-     3.02
+     3.102,
+     3.16
     ],
     [
      "two",
-     3.067,
-     3.264
+     3.218,
+     3.403
     ],
     [
      "hundred",
-     3.334,
-     3.694
+     3.473,
+     3.821
     ],
     [
      "filtered",
-     3.763,
-     4.1
-    ],
-    [
-     "out",
-     4.123,
+     3.891,
      4.228
     ],
     [
+     "out",
+     4.251,
+     4.379
+    ],
+    [
      "by",
-     4.286,
-     4.402
+     4.437,
+     4.576
     ],
     [
      "code,",
-     4.506,
-     4.948
+     4.681,
+     5.203
     ],
     [
      "and",
-     5.145,
-     5.296
+     5.4,
+     5.563
     ],
     [
-     "ninety-five",
-     5.366,
-     6.178
+     "one",
+     5.633,
+     5.783
+    ],
+    [
+     "hundred",
+     5.83,
+     6.109
+    ],
+    [
+     "seventeen",
+     6.167,
+     6.747
     ],
     [
      "green",
-     6.283,
-     6.585
+     6.886,
+     7.177
     ],
     [
      "tests.",
-     6.643,
-     7.258
+     7.246,
+     7.896
     ],
     [
      "Open",
-     7.734,
-     8.036
+     8.303,
+     8.57
     ],
     [
      "the",
-     8.094,
-     8.164
+     8.616,
+     8.686
     ],
     [
      "live",
-     8.222,
-     8.535
+     8.756,
+     9.104
     ],
     [
      "PollenPlan",
-     8.57,
-     9.116
+     9.15,
+     9.824
     ],
     [
      "demo",
-     9.185,
-     9.417
+     9.905,
+     10.149
     ],
     [
      "today",
-     9.487,
-     9.812
+     10.207,
+     10.509
     ],
     [
-     "—",
-     10.01,
-     10.137
+     "\u2014",
+     10.729,
+     10.787
     ],
     [
      "zero",
-     10.358,
-     10.694
+     10.985,
+     11.287
     ],
     [
      "setup",
-     10.764,
-     11.054
+     11.368,
+     11.67
     ],
     [
      "required.",
-     11.112,
-     11.96
+     11.739,
+     12.61
     ]
    ]
   }
@@ -1395,174 +1799,249 @@
    "end": 29.032
   },
   {
-   "text": "Weather APIs model an eleven-kilometre grid;",
+   "text": "Weather APIs model an",
    "start": 29.782,
-   "end": 32.927
+   "end": 31.593
+  },
+  {
+   "text": "eleven-kilometre grid;",
+   "start": 31.593,
+   "end": 33.277
   },
   {
    "text": "people breathe near point traps.",
-   "start": 33.079,
-   "end": 35.412
+   "start": 33.277,
+   "end": 35.541
   },
   {
    "text": "We checked five years of Open-Meteo",
-   "start": 35.738,
-   "end": 38.269
+   "start": 35.541,
+   "end": 37.932
   },
   {
-   "text": "forecasts against Madrid,",
-   "start": 38.269,
-   "end": 40.497
+   "text": "forecasts against Madrid, Basel, and",
+   "start": 37.932,
+   "end": 40.928
   },
   {
-   "text": "Basel, and Zürich traps — eight",
-   "start": 40.544,
-   "end": 43.017
+   "text": "Z\u00fcrich traps \u2014 seven thousand three",
+   "start": 40.928,
+   "end": 43.366
   },
   {
-   "text": "thousand seventy-six city-days.",
-   "start": 43.017,
-   "end": 45.722
+   "text": "hundred seventy-three city-days.",
+   "start": 43.366,
+   "end": 45.525
   },
   {
    "text": "Six rules were frozen in the repo before scoring:",
-   "start": 46.472,
-   "end": 49.606
+   "start": 46.425,
+   "end": 49.559
   },
   {
    "text": "testing day rules P2 against R1,",
-   "start": 49.862,
-   "end": 52.868
+   "start": 49.815,
+   "end": 52.821
   },
   {
    "text": "and pre-peak onset R2 against P2 and",
-   "start": 53.078,
-   "end": 56.12
+   "start": 53.031,
+   "end": 56.073
   },
   {
    "text": "climatology across twenty-eight",
-   "start": 56.12,
-   "end": 58.256
+   "start": 56.073,
+   "end": 58.209
   },
   {
-   "text": "seasons — including missed seasons.",
-   "start": 58.256,
-   "end": 61.39
+   "text": "seasons \u2014 including missed seasons.",
+   "start": 58.209,
+   "end": 61.343
   },
   {
    "text": "Across eight hundred sixty-three high-pollen events,",
-   "start": 62.14,
-   "end": 65.274
+   "start": 62.093,
+   "end": 65.227
   },
   {
    "text": "the API forecast caught forty-one point six percent.",
-   "start": 65.344,
-   "end": 69.302
+   "start": 65.297,
+   "end": 69.255
   },
   {
    "text": "Our rule caught forty-one point zero.",
-   "start": 69.71,
-   "end": 72.205
+   "start": 69.663,
+   "end": 72.158
   },
   {
    "text": "It did not beat the API.",
-   "start": 72.531,
-   "end": 74.597
+   "start": 72.484,
+   "end": 74.55
   },
   {
    "text": "So the app uses the API forecast,",
-   "start": 77.647,
-   "end": 80.282
+   "start": 77.6,
+   "end": 80.235
   },
   {
    "text": "and our work went into what happens next.",
-   "start": 80.387,
-   "end": 83.416
+   "start": 80.34,
+   "end": 83.369
   },
   {
    "text": "Code filters who gets a draft,",
-   "start": 84.166,
-   "end": 86.278
+   "start": 84.119,
+   "end": 86.231
   },
   {
    "text": "and a nurse approves every batch.",
-   "start": 86.325,
-   "end": 88.612
+   "start": 86.278,
+   "end": 88.565
   },
   {
    "text": "Thirty-four patients without a medicine",
-   "start": 88.938,
-   "end": 91.004
+   "start": 88.891,
+   "end": 90.957
   },
   {
    "text": "on file are blocked automatically.",
-   "start": 91.004,
-   "end": 93.639
+   "start": 90.957,
+   "end": 93.592
   },
   {
    "text": "Each draft names only the",
-   "start": 93.791,
-   "end": 95.323
+   "start": 93.744,
+   "end": 95.276
   },
   {
    "text": "medicine class already on file.",
-   "start": 95.323,
-   "end": 97.702
+   "start": 95.276,
+   "end": 97.655
   },
   {
    "text": "Not a medical device.",
-   "start": 97.912,
-   "end": 99.827
+   "start": 97.865,
+   "end": 99.78
   },
   {
    "text": "Honest limits:",
-   "start": 100.577,
-   "end": 101.702
+   "start": 100.53,
+   "end": 101.655
   },
   {
    "text": "even the API forecast catches only thirteen",
-   "start": 101.854,
-   "end": 104.745
+   "start": 101.807,
+   "end": 104.698
   },
   {
    "text": "point six percent of Madrid olive spikes.",
-   "start": 104.745,
-   "end": 107.925
+   "start": 104.698,
+   "end": 107.878
   },
   {
    "text": "Pre-peak lead reflects look-ahead,",
-   "start": 108.251,
-   "end": 110.863
+   "start": 108.204,
+   "end": 110.816
   },
   {
    "text": "not beating climatology.",
-   "start": 111.119,
-   "end": 112.976
+   "start": 111.072,
+   "end": 112.929
   },
   {
    "text": "Valencia is never scored.",
-   "start": 113.302,
-   "end": 115.634
+   "start": 113.255,
+   "end": 115.587
   },
   {
-   "text": "Zero unapproved sends, eighty-nine of two hundred",
-   "start": 116.384,
-   "end": 119.797
+   "text": "We also tested NASA POWER weather",
+   "start": 116.337,
+   "end": 118.311
   },
   {
-   "text": "filtered out by code, and ninety-five green tests.",
-   "start": 119.797,
-   "end": 123.442
+   "text": "data on held-out twenty twenty-four",
+   "start": 118.311,
+   "end": 121.399
+  },
+  {
+   "text": "and twenty twenty-five.",
+   "start": 121.399,
+   "end": 123.164
+  },
+  {
+   "text": "A fourteen-day early warning from",
+   "start": 123.164,
+   "end": 125.323
+  },
+  {
+   "text": "NASA temperatures landed in the",
+   "start": 125.323,
+   "end": 127.274
+  },
+  {
+   "text": "useful window thirty percent of the time;",
+   "start": 127.274,
+   "end": 130.884
+  },
+  {
+   "text": "last year's calendar did it sixty",
+   "start": 130.884,
+   "end": 132.718
+  },
+  {
+   "text": "percent of the time.",
+   "start": 132.718,
+   "end": 134.831
+  },
+  {
+   "text": "A NASA weather rule lifted the alert",
+   "start": 134.831,
+   "end": 137.177
+  },
+  {
+   "text": "score from point three eight to",
+   "start": 137.177,
+   "end": 139.046
+  },
+  {
+   "text": "point four three, but the same rule",
+   "start": 139.046,
+   "end": 141.948
+  },
+  {
+   "text": "without NASA scored point four nine.",
+   "start": 141.948,
+   "end": 145.362
+  },
+  {
+   "text": "NASA added nothing here, so we claim nothing.",
+   "start": 145.362,
+   "end": 149.03
+  },
+  {
+   "text": "Zero unapproved sends, eighty-nine",
+   "start": 149.93,
+   "end": 152.682
+  },
+  {
+   "text": "of two hundred filtered out by code,",
+   "start": 152.682,
+   "end": 154.98
+  },
+  {
+   "text": "and one hundred seventeen green tests.",
+   "start": 154.98,
+   "end": 157.883
   },
   {
    "text": "Open the live PollenPlan demo",
-   "start": 123.768,
-   "end": 125.521
+   "start": 157.883,
+   "end": 159.787
   },
   {
-   "text": "today — zero setup required.",
-   "start": 125.521,
-   "end": 128.144
+   "text": "today \u2014 zero setup required.",
+   "start": 159.787,
+   "end": 162.19
   }
  ]
 }

@@ -1,0 +1,16 @@
+{
+  "voice_id": "onwK4e9ZLuTAKqWW03F9",
+  "model_id": "eleven_multilingual_v2",
+  "voice_settings": {
+    "stability": 0.5,
+    "similarity_boost": 0.75,
+    "style": 0.0,
+    "use_speaker_boost": true,
+    "speed": 1.08
+  },
+  "clips": {
+    "s7n": "We also tested NASA POWER weather data on held-out twenty twenty-four and twenty twenty-five. A fourteen-day early warning from NASA temperatures landed in the useful window thirty percent of the time; last year's calendar did it sixty percent of the time. A NASA weather rule lifted the alert score from point three eight to point four three, but the same rule without NASA scored point four nine. NASA added nothing here, so we claim nothing.",
+    "s8": "Zero unapproved sends, eighty-nine of two hundred filtered out by code, and one hundred seventeen green tests. Open the live PollenPlan demo today — zero setup required.",
+    "s3": "Weather APIs model an eleven-kilometre grid; people breathe near point traps. We checked five years of Open-Meteo forecasts against Madrid, Basel, and Zürich traps — seven thousand three hundred seventy-three city-days."
+  }
+}

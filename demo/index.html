@@ -334,7 +334,7 @@
           </div>
           <div class="metric-item">
             <span class="metric-label">Evaluated Days</span>
-            <span class="metric-value" id="total-days">8076</span>
+            <span class="metric-value" id="total-days">7373</span>
           </div>
         </div>
 
@@ -434,7 +434,7 @@
       <table class="results-table" id="nasa-eval-n1-table">
         <thead><tr><th>Rule</th><th>MAE from 14d</th><th>Hit in 7–28d window</th><th>Mean lead</th></tr></thead>
         <tbody>
-          <tr><td>N1 (NASA GDD, 7–28d pre-peak start)</td><td>21.5d</td><td>30%</td><td>n/a</td></tr>
+          <tr><td>N1 (NASA GDD, 7–28d pre-peak start)</td><td>21.9d</td><td>30%</td><td>n/a</td></tr>
           <tr><td>C0_14d (calendar)</td><td>12.5d</td><td>60%</td><td>n/a</td></tr>
           <tr><td>R2 (4-day CAMS pollen forecast)</td><td>n/a</td><td>0.0%</td><td>-9.7d (late)</td></tr>
         </tbody>
@@ -571,9 +571,23 @@
       },
       "thresholds_unit": "grains/m3, daily mean",
       "thresholds_note": "Signed 22 Nov 2026 by Ahmed Zayed: CRITERIA_FOR_SIGNOFF rows 1-4 as proposed (EVIDENCE T1-T4). Single-centre values; retrospective use only.",
-      "years": [2021, 2022, 2023, 2024, 2025],
-      "training_years": [2021, 2022, 2023],
-      "cities_scored": ["madrid", "basel", "zurich"],
+      "years": [
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ],
+      "training_years": [
+        2021,
+        2022,
+        2023
+      ],
+      "cities_scored": [
+        "madrid",
+        "basel",
+        "zurich"
+      ],
       "valencia_scored": false,
       "results": [
         {
@@ -581,11 +595,86 @@
           "species": "olive",
           "threshold": 162,
           "day_rules": {
-            "P0": {"tp": 10, "fp": 12, "fn": 12, "tn": 1739, "n_events": 22, "n_evaluated_days": 1773, "recall": 0.455, "precision": 0.455, "csi": 0.294, "false_alert_days": 12, "recall_ci95": [0.125, 0.731]},
-            "P1": {"tp": 1, "fp": 8, "fn": 21, "tn": 1288, "n_events": 22, "n_evaluated_days": 1318, "recall": 0.045, "precision": 0.111, "csi": 0.033, "false_alert_days": 8, "recall_ci95": [0.0, 0.095]},
-            "P2": {"tp": 3, "fp": 6, "fn": 19, "tn": 1291, "n_events": 22, "n_evaluated_days": 1319, "recall": 0.136, "precision": 0.333, "csi": 0.107, "false_alert_days": 6, "recall_ci95": [0.0, 0.334]},
-            "R1": {"tp": 2, "fp": 5, "fn": 20, "tn": 1288, "n_events": 22, "n_evaluated_days": 1315, "recall": 0.091, "precision": 0.286, "csi": 0.074, "false_alert_days": 5, "recall_ci95": [0.0, 0.190]},
-            "C0": {"tp": 1, "fp": 22, "fn": 12, "tn": 1409, "n_events": 13, "n_evaluated_days": 1444, "recall": 0.077, "precision": 0.043, "csi": 0.029, "false_alert_days": 22, "recall_ci95": [0.0, 0.231]}
+            "P0": {
+              "tp": 10,
+              "fp": 12,
+              "fn": 12,
+              "tn": 1726,
+              "n_events": 22,
+              "n_evaluated_days": 1760,
+              "recall": 0.455,
+              "precision": 0.455,
+              "csi": 0.294,
+              "false_alert_days": 12,
+              "recall_ci95": [
+                0.125,
+                0.731
+              ]
+            },
+            "P1": {
+              "tp": 1,
+              "fp": 8,
+              "fn": 21,
+              "tn": 1248,
+              "n_events": 22,
+              "n_evaluated_days": 1278,
+              "recall": 0.045,
+              "precision": 0.111,
+              "csi": 0.033,
+              "false_alert_days": 8,
+              "recall_ci95": [
+                0.0,
+                0.095
+              ]
+            },
+            "P2": {
+              "tp": 3,
+              "fp": 6,
+              "fn": 19,
+              "tn": 1251,
+              "n_events": 22,
+              "n_evaluated_days": 1279,
+              "recall": 0.136,
+              "precision": 0.333,
+              "csi": 0.107,
+              "false_alert_days": 6,
+              "recall_ci95": [
+                0.0,
+                0.334
+              ]
+            },
+            "R1": {
+              "tp": 2,
+              "fp": 5,
+              "fn": 20,
+              "tn": 1248,
+              "n_events": 22,
+              "n_evaluated_days": 1275,
+              "recall": 0.091,
+              "precision": 0.286,
+              "csi": 0.074,
+              "false_alert_days": 5,
+              "recall_ci95": [
+                0.0,
+                0.19
+              ]
+            },
+            "C0": {
+              "tp": 1,
+              "fp": 22,
+              "fn": 12,
+              "tn": 1373,
+              "n_events": 13,
+              "n_evaluated_days": 1408,
+              "recall": 0.077,
+              "precision": 0.043,
+              "csi": 0.029,
+              "false_alert_days": 22,
+              "recall_ci95": [
+                0.0,
+                0.231
+              ]
+            }
           }
         },
         {
@@ -593,11 +682,86 @@
           "species": "grass",
           "threshold": 35,
           "day_rules": {
-            "P0": {"tp": 52, "fp": 18, "fn": 18, "tn": 976, "n_events": 70, "n_evaluated_days": 1064, "recall": 0.743, "precision": 0.743, "csi": 0.591, "false_alert_days": 18, "recall_ci95": [0.0, 0.829]},
-            "P1": {"tp": 21, "fp": 16, "fn": 49, "tn": 1300, "n_events": 70, "n_evaluated_days": 1386, "recall": 0.300, "precision": 0.568, "csi": 0.244, "false_alert_days": 16, "recall_ci95": [0.0, 0.333]},
-            "P2": {"tp": 22, "fp": 15, "fn": 48, "tn": 1302, "n_events": 70, "n_evaluated_days": 1387, "recall": 0.314, "precision": 0.595, "csi": 0.259, "false_alert_days": 15, "recall_ci95": [0.0, 0.364]},
-            "R1": {"tp": 21, "fp": 14, "fn": 49, "tn": 1299, "n_events": 70, "n_evaluated_days": 1383, "recall": 0.300, "precision": 0.600, "csi": 0.250, "false_alert_days": 14, "recall_ci95": [0.0, 0.333]},
-            "C0": {"tp": 25, "fp": 12, "fn": 43, "tn": 640, "n_events": 68, "n_evaluated_days": 720, "recall": 0.368, "precision": 0.676, "csi": 0.312, "false_alert_days": 12, "recall_ci95": [0.0, 0.714]}
+            "P0": {
+              "tp": 52,
+              "fp": 18,
+              "fn": 18,
+              "tn": 967,
+              "n_events": 70,
+              "n_evaluated_days": 1055,
+              "recall": 0.743,
+              "precision": 0.743,
+              "csi": 0.591,
+              "false_alert_days": 18,
+              "recall_ci95": [
+                0.0,
+                0.829
+              ]
+            },
+            "P1": {
+              "tp": 21,
+              "fp": 1,
+              "fn": 49,
+              "tn": 860,
+              "n_events": 70,
+              "n_evaluated_days": 931,
+              "recall": 0.3,
+              "precision": 0.955,
+              "csi": 0.296,
+              "false_alert_days": 1,
+              "recall_ci95": [
+                0.0,
+                0.333
+              ]
+            },
+            "P2": {
+              "tp": 22,
+              "fp": 0,
+              "fn": 48,
+              "tn": 862,
+              "n_events": 70,
+              "n_evaluated_days": 932,
+              "recall": 0.314,
+              "precision": 1.0,
+              "csi": 0.314,
+              "false_alert_days": 0,
+              "recall_ci95": [
+                0.0,
+                0.364
+              ]
+            },
+            "R1": {
+              "tp": 21,
+              "fp": 1,
+              "fn": 49,
+              "tn": 859,
+              "n_events": 70,
+              "n_evaluated_days": 930,
+              "recall": 0.3,
+              "precision": 0.955,
+              "csi": 0.296,
+              "false_alert_days": 1,
+              "recall_ci95": [
+                0.0,
+                0.333
+              ]
+            },
+            "C0": {
+              "tp": 25,
+              "fp": 12,
+              "fn": 43,
+              "tn": 619,
+              "n_events": 68,
+              "n_evaluated_days": 699,
+              "recall": 0.368,
+              "precision": 0.676,
+              "csi": 0.312,
+              "false_alert_days": 12,
+              "recall_ci95": [
+                0.0,
+                0.714
+              ]
+            }
           }
         },
         {
@@ -605,11 +769,86 @@
           "species": "birch",
           "threshold": 30,
           "day_rules": {
-            "P0": {"tp": 96, "fp": 31, "fn": 27, "tn": 1403, "n_events": 123, "n_evaluated_days": 1557, "recall": 0.780, "precision": 0.756, "csi": 0.623, "false_alert_days": 31, "recall_ci95": [0.748, 0.809]},
-            "P1": {"tp": 66, "fp": 26, "fn": 61, "tn": 1142, "n_events": 127, "n_evaluated_days": 1295, "recall": 0.520, "precision": 0.717, "csi": 0.431, "false_alert_days": 26, "recall_ci95": [0.382, 0.615]},
-            "P2": {"tp": 70, "fp": 22, "fn": 57, "tn": 1147, "n_events": 127, "n_evaluated_days": 1296, "recall": 0.551, "precision": 0.761, "csi": 0.470, "false_alert_days": 22, "recall_ci95": [0.418, 0.656]},
-            "R1": {"tp": 70, "fp": 27, "fn": 57, "tn": 1138, "n_events": 127, "n_evaluated_days": 1292, "recall": 0.551, "precision": 0.722, "csi": 0.455, "false_alert_days": 27, "recall_ci95": [0.435, 0.653]},
-            "C0": {"tp": 66, "fp": 53, "fn": 43, "tn": 1104, "n_events": 109, "n_evaluated_days": 1266, "recall": 0.606, "precision": 0.555, "csi": 0.407, "false_alert_days": 53, "recall_ci95": [0.383, 0.786]}
+            "P0": {
+              "tp": 96,
+              "fp": 26,
+              "fn": 27,
+              "tn": 1374,
+              "n_events": 123,
+              "n_evaluated_days": 1523,
+              "recall": 0.78,
+              "precision": 0.787,
+              "csi": 0.644,
+              "false_alert_days": 26,
+              "recall_ci95": [
+                0.748,
+                0.812
+              ]
+            },
+            "P1": {
+              "tp": 66,
+              "fp": 16,
+              "fn": 61,
+              "tn": 1082,
+              "n_events": 127,
+              "n_evaluated_days": 1225,
+              "recall": 0.52,
+              "precision": 0.805,
+              "csi": 0.462,
+              "false_alert_days": 16,
+              "recall_ci95": [
+                0.385,
+                0.615
+              ]
+            },
+            "P2": {
+              "tp": 70,
+              "fp": 13,
+              "fn": 57,
+              "tn": 1084,
+              "n_events": 127,
+              "n_evaluated_days": 1224,
+              "recall": 0.551,
+              "precision": 0.843,
+              "csi": 0.5,
+              "false_alert_days": 13,
+              "recall_ci95": [
+                0.418,
+                0.656
+              ]
+            },
+            "R1": {
+              "tp": 70,
+              "fp": 16,
+              "fn": 57,
+              "tn": 1079,
+              "n_events": 127,
+              "n_evaluated_days": 1222,
+              "recall": 0.551,
+              "precision": 0.814,
+              "csi": 0.49,
+              "false_alert_days": 16,
+              "recall_ci95": [
+                0.435,
+                0.653
+              ]
+            },
+            "C0": {
+              "tp": 66,
+              "fp": 34,
+              "fn": 43,
+              "tn": 1049,
+              "n_events": 109,
+              "n_evaluated_days": 1192,
+              "recall": 0.606,
+              "precision": 0.66,
+              "csi": 0.462,
+              "false_alert_days": 34,
+              "recall_ci95": [
+                0.383,
+                0.786
+              ]
+            }
           }
         },
         {
@@ -617,11 +856,86 @@
           "species": "grass",
           "threshold": 35,
           "day_rules": {
-            "P0": {"tp": 203, "fp": 47, "fn": 45, "tn": 1262, "n_events": 248, "n_evaluated_days": 1557, "recall": 0.819, "precision": 0.812, "csi": 0.688, "false_alert_days": 47, "recall_ci95": [0.796, 0.834]},
-            "P1": {"tp": 97, "fp": 17, "fn": 153, "tn": 1121, "n_events": 250, "n_evaluated_days": 1388, "recall": 0.388, "precision": 0.851, "csi": 0.363, "false_alert_days": 17, "recall_ci95": [0.297, 0.462]},
-            "P2": {"tp": 100, "fp": 14, "fn": 150, "tn": 1125, "n_events": 250, "n_evaluated_days": 1389, "recall": 0.400, "precision": 0.877, "csi": 0.379, "false_alert_days": 14, "recall_ci95": [0.295, 0.490]},
-            "R1": {"tp": 99, "fp": 13, "fn": 151, "tn": 1122, "n_events": 250, "n_evaluated_days": 1385, "recall": 0.396, "precision": 0.884, "csi": 0.376, "false_alert_days": 13, "recall_ci95": [0.333, 0.460]},
-            "C0": {"tp": 138, "fp": 62, "fn": 80, "tn": 986, "n_events": 218, "n_evaluated_days": 1266, "recall": 0.633, "precision": 0.690, "csi": 0.493, "false_alert_days": 62, "recall_ci95": [0.522, 0.720]}
+            "P0": {
+              "tp": 203,
+              "fp": 44,
+              "fn": 45,
+              "tn": 1231,
+              "n_events": 248,
+              "n_evaluated_days": 1523,
+              "recall": 0.819,
+              "precision": 0.822,
+              "csi": 0.695,
+              "false_alert_days": 44,
+              "recall_ci95": [
+                0.796,
+                0.834
+              ]
+            },
+            "P1": {
+              "tp": 97,
+              "fp": 17,
+              "fn": 153,
+              "tn": 1049,
+              "n_events": 250,
+              "n_evaluated_days": 1316,
+              "recall": 0.388,
+              "precision": 0.851,
+              "csi": 0.363,
+              "false_alert_days": 17,
+              "recall_ci95": [
+                0.297,
+                0.462
+              ]
+            },
+            "P2": {
+              "tp": 100,
+              "fp": 14,
+              "fn": 150,
+              "tn": 1051,
+              "n_events": 250,
+              "n_evaluated_days": 1315,
+              "recall": 0.4,
+              "precision": 0.877,
+              "csi": 0.379,
+              "false_alert_days": 14,
+              "recall_ci95": [
+                0.296,
+                0.495
+              ]
+            },
+            "R1": {
+              "tp": 99,
+              "fp": 13,
+              "fn": 151,
+              "tn": 1050,
+              "n_events": 250,
+              "n_evaluated_days": 1313,
+              "recall": 0.396,
+              "precision": 0.884,
+              "csi": 0.376,
+              "false_alert_days": 13,
+              "recall_ci95": [
+                0.333,
+                0.457
+              ]
+            },
+            "C0": {
+              "tp": 138,
+              "fp": 58,
+              "fn": 80,
+              "tn": 916,
+              "n_events": 218,
+              "n_evaluated_days": 1192,
+              "recall": 0.633,
+              "precision": 0.704,
+              "csi": 0.5,
+              "false_alert_days": 58,
+              "recall_ci95": [
+                0.522,
+                0.739
+              ]
+            }
           }
         },
         {
@@ -629,11 +943,86 @@
           "species": "birch",
           "threshold": 30,
           "day_rules": {
-            "P0": {"tp": 112, "fp": 28, "fn": 28, "tn": 1440, "n_events": 140, "n_evaluated_days": 1608, "recall": 0.800, "precision": 0.800, "csi": 0.667, "false_alert_days": 28, "recall_ci95": [0.771, 0.837]},
-            "P1": {"tp": 76, "fp": 14, "fn": 64, "tn": 1141, "n_events": 140, "n_evaluated_days": 1295, "recall": 0.543, "precision": 0.844, "csi": 0.494, "false_alert_days": 14, "recall_ci95": [0.439, 0.658]},
-            "P2": {"tp": 79, "fp": 11, "fn": 61, "tn": 1145, "n_events": 140, "n_evaluated_days": 1296, "recall": 0.564, "precision": 0.878, "csi": 0.523, "false_alert_days": 11, "recall_ci95": [0.477, 0.657]},
-            "R1": {"tp": 82, "fp": 8, "fn": 58, "tn": 1144, "n_events": 140, "n_evaluated_days": 1292, "recall": 0.586, "precision": 0.911, "csi": 0.554, "false_alert_days": 8, "recall_ci95": [0.489, 0.698]},
-            "C0": {"tp": 83, "fp": 36, "fn": 35, "tn": 1117, "n_events": 118, "n_evaluated_days": 1271, "recall": 0.703, "precision": 0.697, "csi": 0.539, "false_alert_days": 36, "recall_ci95": [0.579, 0.780]}
+            "P0": {
+              "tp": 112,
+              "fp": 28,
+              "fn": 28,
+              "tn": 1426,
+              "n_events": 140,
+              "n_evaluated_days": 1594,
+              "recall": 0.8,
+              "precision": 0.8,
+              "csi": 0.667,
+              "false_alert_days": 28,
+              "recall_ci95": [
+                0.773,
+                0.838
+              ]
+            },
+            "P1": {
+              "tp": 76,
+              "fp": 14,
+              "fn": 64,
+              "tn": 1111,
+              "n_events": 140,
+              "n_evaluated_days": 1265,
+              "recall": 0.543,
+              "precision": 0.844,
+              "csi": 0.494,
+              "false_alert_days": 14,
+              "recall_ci95": [
+                0.434,
+                0.658
+              ]
+            },
+            "P2": {
+              "tp": 79,
+              "fp": 11,
+              "fn": 61,
+              "tn": 1114,
+              "n_events": 140,
+              "n_evaluated_days": 1265,
+              "recall": 0.564,
+              "precision": 0.878,
+              "csi": 0.523,
+              "false_alert_days": 11,
+              "recall_ci95": [
+                0.476,
+                0.657
+              ]
+            },
+            "R1": {
+              "tp": 82,
+              "fp": 8,
+              "fn": 58,
+              "tn": 1114,
+              "n_events": 140,
+              "n_evaluated_days": 1262,
+              "recall": 0.586,
+              "precision": 0.911,
+              "csi": 0.554,
+              "false_alert_days": 8,
+              "recall_ci95": [
+                0.49,
+                0.701
+              ]
+            },
+            "C0": {
+              "tp": 83,
+              "fp": 36,
+              "fn": 35,
+              "tn": 1089,
+              "n_events": 118,
+              "n_evaluated_days": 1243,
+              "recall": 0.703,
+              "precision": 0.697,
+              "csi": 0.539,
+              "false_alert_days": 36,
+              "recall_ci95": [
+                0.579,
+                0.78
+              ]
+            }
           }
         },
         {
@@ -641,32 +1030,142 @@
           "species": "grass",
           "threshold": 35,
           "day_rules": {
-            "P0": {"tp": 197, "fp": 57, "fn": 57, "tn": 1297, "n_events": 254, "n_evaluated_days": 1608, "recall": 0.776, "precision": 0.776, "csi": 0.633, "false_alert_days": 57, "recall_ci95": [0.710, 0.827]},
-            "P1": {"tp": 81, "fp": 13, "fn": 173, "tn": 1121, "n_events": 254, "n_evaluated_days": 1388, "recall": 0.319, "precision": 0.862, "csi": 0.303, "false_alert_days": 13, "recall_ci95": [0.266, 0.368]},
-            "P2": {"tp": 85, "fp": 9, "fn": 169, "tn": 1126, "n_events": 254, "n_evaluated_days": 1389, "recall": 0.335, "precision": 0.904, "csi": 0.323, "false_alert_days": 9, "recall_ci95": [0.279, 0.389]},
-            "R1": {"tp": 80, "fp": 8, "fn": 174, "tn": 1123, "n_events": 254, "n_evaluated_days": 1385, "recall": 0.315, "precision": 0.909, "csi": 0.305, "false_alert_days": 8, "recall_ci95": [0.252, 0.368]},
-            "C0": {"tp": 133, "fp": 71, "fn": 84, "tn": 983, "n_events": 217, "n_evaluated_days": 1271, "recall": 0.613, "precision": 0.652, "csi": 0.462, "false_alert_days": 71, "recall_ci95": [0.539, 0.678]}
+            "P0": {
+              "tp": 197,
+              "fp": 57,
+              "fn": 57,
+              "tn": 1283,
+              "n_events": 254,
+              "n_evaluated_days": 1594,
+              "recall": 0.776,
+              "precision": 0.776,
+              "csi": 0.633,
+              "false_alert_days": 57,
+              "recall_ci95": [
+                0.716,
+                0.827
+              ]
+            },
+            "P1": {
+              "tp": 81,
+              "fp": 13,
+              "fn": 173,
+              "tn": 1091,
+              "n_events": 254,
+              "n_evaluated_days": 1358,
+              "recall": 0.319,
+              "precision": 0.862,
+              "csi": 0.303,
+              "false_alert_days": 13,
+              "recall_ci95": [
+                0.266,
+                0.367
+              ]
+            },
+            "P2": {
+              "tp": 85,
+              "fp": 9,
+              "fn": 169,
+              "tn": 1095,
+              "n_events": 254,
+              "n_evaluated_days": 1358,
+              "recall": 0.335,
+              "precision": 0.904,
+              "csi": 0.323,
+              "false_alert_days": 9,
+              "recall_ci95": [
+                0.279,
+                0.389
+              ]
+            },
+            "R1": {
+              "tp": 80,
+              "fp": 8,
+              "fn": 174,
+              "tn": 1093,
+              "n_events": 254,
+              "n_evaluated_days": 1355,
+              "recall": 0.315,
+              "precision": 0.909,
+              "csi": 0.305,
+              "false_alert_days": 8,
+              "recall_ci95": [
+                0.258,
+                0.368
+              ]
+            },
+            "C0": {
+              "tp": 133,
+              "fp": 71,
+              "fn": 84,
+              "tn": 955,
+              "n_events": 217,
+              "n_evaluated_days": 1243,
+              "recall": 0.613,
+              "precision": 0.652,
+              "csi": 0.462,
+              "false_alert_days": 71,
+              "recall_ci95": [
+                0.539,
+                0.678
+              ]
+            }
           }
         }
       ],
       "kill_check": {
-        "check1_observed_counts_exist": {"passed": true},
-        "size_check": {"total_observed_events_P2_denominator": 863, "total_evaluated_city_days_P2_denominator": 8076, "passed": true},
+        "check1_observed_counts_exist": {
+          "passed": true
+        },
+        "size_check": {
+          "total_observed_events_P2_denominator": 863,
+          "total_evaluated_city_days_P2_denominator": 7373,
+          "passed": true
+        },
         "check2_beats_api": {
-          "pooled_r1": {"tp": 354, "n_events": 863, "recall": 0.410, "false_alert_days": 75},
-          "pooled_p2": {"tp": 359, "n_events": 863, "recall": 0.416, "false_alert_days": 77},
+          "pooled_r1": {
+            "tp": 354,
+            "n_events": 863,
+            "recall": 0.41,
+            "false_alert_days": 51
+          },
+          "pooled_p2": {
+            "tp": 359,
+            "n_events": 863,
+            "recall": 0.416,
+            "false_alert_days": 53
+          },
           "r1_beats_p2_pooled_recall_at_equal_or_fewer_false_alerts": false,
-          "r2_minus_p2_lead_days_bootstrap": {"mean_diff": 2.88, "ci95": [2.64, 3.0], "excludes_zero": true},
-          "r2_minus_c0_lead_days_bootstrap": {"mean_diff": -1.55, "ci95": [-7.75, 6.0], "excludes_zero": false},
+          "r2_minus_p2_lead_days_bootstrap": {
+            "mean_diff": 2.88,
+            "ci95": [
+              2.64,
+              3.0
+            ],
+            "excludes_zero": true
+          },
+          "r2_minus_c0_lead_days_bootstrap": {
+            "mean_diff": -1.55,
+            "ci95": [
+              -7.75,
+              6.0
+            ],
+            "excludes_zero": false
+          },
           "r2_beats_p2_on_lead_days_with_ci_excluding_zero": true,
           "r2_beats_c0_on_lead_days_with_ci_excluding_zero": false,
           "passed_beats_api_claim": false
         },
         "check3_madrid_p2_recall": {
-          "madrid_p2_recall_by_species": {"olive": 0.136, "grass": 0.314},
+          "madrid_p2_recall_by_species": {
+            "olive": 0.136,
+            "grass": 0.314
+          },
           "both_below_50pct": true
         },
-        "check4_valencia_never_scored": {"passed": true},
+        "check4_valencia_never_scored": {
+          "passed": true
+        },
         "overall_headline": "measured_P2_skill_only_no_beats_api_claim"
       }
     };
@@ -773,7 +1272,7 @@
    "nasa_telemetry": {
     "source_label": "Valencia demo \u00b7 2025-05-28",
     "gdd_base_c": 7.0,
-    "cum_gdd": 954.7,
+    "cum_gdd": 937.7,
     "solar_mj_m2": 29.8,
     "precip_mm": 0.0,
     "gwetroot": 0.42,
@@ -2084,7 +2583,7 @@
    "nasa_telemetry": {
     "source_label": "Madrid FACF \u00b7 2025-05-18",
     "gdd_base_c": 5.0,
-    "cum_gdd": 534.8,
+    "cum_gdd": 523.1,
     "solar_mj_m2": 27.44,
     "precip_mm": 0.46,
     "gwetroot": 0.69,
@@ -2320,7 +2819,7 @@
    "nasa_telemetry": {
     "source_label": "Basel PBS \u00b7 2025-04-05",
     "gdd_base_c": 5.0,
-    "cum_gdd": 101.1,
+    "cum_gdd": 94.3,
     "solar_mj_m2": 21.94,
     "precip_mm": 0.0,
     "gwetroot": 0.83,
@@ -3141,7 +3640,7 @@
    "nasa_telemetry": {
     "source_label": "Simulated olive spike over Valencia 2025-05-28 NASA telemetry",
     "gdd_base_c": 7.0,
-    "cum_gdd": 954.7,
+    "cum_gdd": 937.7,
     "solar_mj_m2": 29.8,
     "precip_mm": 0.0,
     "gwetroot": 0.42,
