@@ -1,0 +1,135 @@
+{
+ "headline": {
+  "selector": "#headline",
+  "query": "",
+  "cssW": 1048,
+  "cssH": 675,
+  "scale": 3
+ },
+ "season_card": {
+  "selector": "#season .card",
+  "query": "?cell=madrid/grass",
+  "cssW": 1048,
+  "cssH": 455,
+  "scale": 3
+ },
+ "season": {
+  "selector": "#season",
+  "query": "?cell=madrid/grass",
+  "cssW": 1048,
+  "cssH": 624,
+  "scale": 3
+ },
+ "morning_head": {
+  "selector": "#morning > h2",
+  "query": "",
+  "cssW": 1048,
+  "cssH": 39,
+  "scale": 3
+ },
+ "morning_cards": {
+  "selector": "#morning .morning",
+  "query": "",
+  "cssW": 1048,
+  "cssH": 167,
+  "scale": 3
+ },
+ "step_trap": {
+  "selector": "#morning .step:nth-child(1)",
+  "query": "",
+  "cssW": 340,
+  "cssH": 167,
+  "scale": 3
+ },
+ "step_cams": {
+  "selector": "#morning .step:nth-child(2)",
+  "query": "",
+  "cssW": 340,
+  "cssH": 167,
+  "scale": 3
+ },
+ "step_obs": {
+  "selector": "#morning .step:nth-child(3)",
+  "query": "",
+  "cssW": 340,
+  "cssH": 167,
+  "scale": 3
+ },
+ "console_bar": {
+  "selector": "#morning .console .bar",
+  "query": "",
+  "cssW": 1006,
+  "cssH": 160,
+  "scale": 3
+ },
+ "console": {
+  "selector": "#morning .console",
+  "query": "",
+  "cssW": 1048,
+  "cssH": 1167,
+  "scale": 3
+ },
+ "draft_first": {
+  "selector": "#drafts > :first-child",
+  "query": "",
+  "cssW": 329,
+  "cssH": 398,
+  "scale": 3
+ },
+ "drafts_row1": {
+  "selector": "#drafts",
+  "query": "",
+  "cssW": 1006,
+  "cssH": 914,
+  "scale": 3
+ },
+ "approve_btn": {
+  "selector": "#approve",
+  "query": "",
+  "cssW": 142,
+  "cssH": 43,
+  "scale": 3
+ },
+ "console_after_click": {
+  "selector": "#morning .console",
+  "query": "",
+  "cssW": 1048,
+  "cssH": 1167,
+  "scale": 3
+ },
+ "safety": {
+  "selector": "#safety",
+  "query": "",
+  "cssW": 1048,
+  "cssH": 1084,
+  "scale": 3
+ },
+ "safety_table": {
+  "selector": "#safety table",
+  "query": "",
+  "cssW": 1006,
+  "cssH": 628,
+  "scale": 3
+ },
+ "tests": {
+  "selector": "#tests",
+  "query": "",
+  "cssW": 1048,
+  "cssH": 972,
+  "scale": 3
+ },
+ "tests_table": {
+  "selector": "#tests table",
+  "query": "",
+  "cssW": 1006,
+  "cssH": 262,
+  "scale": 3
+ },
+ "where": {
+  "selector": "#where",
+  "query": "",
+  "cssW": 1048,
+  "cssH": 495,
+  "scale": 3
+ }
+}
