@@ -411,7 +411,9 @@ def inject_backtest_data(page: str, backtest: dict) -> str:
         for k in path:
             val = val[k]
         shown = f"{val:.3f}" if isinstance(val, float) else str(val)
-        page = re.sub(rf'(<span class="metric-value" id="{span_id}">)[^<]*(</span>)', lambda mm: mm.group(1) + html.escape(shown) + mm.group(2), page)
+        page, n = re.subn(rf'(<span class="metric-value" id="{span_id}">)[^<]*(</span>)', lambda mm: mm.group(1) + html.escape(shown) + mm.group(2), page)
+        if n != 1:
+            raise ValueError(f"metric span #{span_id} matched {n} times in demo/index.html")
     return page
 
 

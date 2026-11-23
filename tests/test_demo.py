@@ -311,7 +311,9 @@ class TestRenderedValues:
         assert "863" in html
         
         # Total days  
-        assert "7373" in html
+        assert 'id="total-days">7373<' in html
+        assert 'id="total-events">863<' in html
+        assert 'id="p2-recall">0.416<' in html
         
         # Madrid P2 recall values
         assert "0.136" in html  # olive

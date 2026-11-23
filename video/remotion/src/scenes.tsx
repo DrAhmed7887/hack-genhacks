@@ -72,7 +72,7 @@ export const S2: React.FC = () => {
 // ───────── s3 · dark · grid vs traps
 export const S3: React.FC = () => {
   const t = useSec();
-  const tPeople = W('s3', 'people'), tWe = W('s3', 'we'), tMad = W('s3', 'madrid'), tFive = W('s3', 'five'), tEight = W('s3', 'seven');
+  const tPeople = W('s3', 'people'), tWe = W('s3', 'we'), tMad = W('s3', 'madrid'), tFive = W('s3', 'five'), tSeven = W('s3', 'seven');
   const badge = (txt: string, sub: string, at: number, y: number, col: string) => (
     <Glass style={{left: 1160, top: y, width: 696, padding: '18px 26px', ...appear(t, at, 0.5)}}>
       <div style={{fontSize: 40, fontWeight: 800, color: col}}>{txt}</div>
@@ -101,7 +101,7 @@ export const S3: React.FC = () => {
         <div style={{fontSize: 30, fontWeight: 700, lineHeight: 1.25, marginTop: 6}}>EPOCHAL n=396 found no threshold</div>
         <div style={{fontSize: 26, color: '#C5D1E0', lineHeight: 1.25, marginTop: 6}}>No safe or unsafe level exists for every person</div>
       </Glass>
-      {counter(64, `${fmt(countTo(t, tEight, tEight + 1.6, 7373))}`, 'city-days', tEight - 0.2)}
+      {counter(64, `${fmt(countTo(t, tSeven, tSeven + 1.6, 7373))}`, 'city-days', tSeven - 0.2)}
       {counter(412, `${fmt(countTo(t, tMad, tMad + 1.2, 863))}`, 'events', tMad - 0.2)}
       {counter(760, `${fmt(countTo(t, tFive, tFive + 0.8, 5))}`, 'years', tFive - 0.2)}
     </AbsoluteFill>
@@ -256,7 +256,7 @@ export const S7: React.FC = () => {
           {bar('NASA temperature clock', '30%', 0.3, CRIMSON, W7N('nasa', 1), 110)}
           {bar("Last year's calendar", '60%', 0.6, C.accent, W7N('last'), 192)}
         </Glass>
-        <Glass style={{left: 120, top: 490, width: 1680, height: 345, ...appear(t, W7N('a', 3) - 0.2, 0.5, 20)}}>
+        <Glass style={{left: 120, top: 490, width: 1680, height: 345, ...appear(t, W7N('rule') - 0.8, 0.5, 20)}}>
           <div style={{position: 'absolute', left: 44, top: 26, fontSize: 36, fontWeight: 800}}>Alert score (CSI) · higher is better</div>
           {bar('API forecast alone', '0.382', 0.382 / 0.5, '#5A6672', W7N('score'), 105)}
           {bar('+ NASA weather rule', '0.434', 0.434 / 0.5, AMBER, W7N('four', 1), 180)}
