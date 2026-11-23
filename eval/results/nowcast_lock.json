@@ -1,8 +1,8 @@
 {
  "prereg": "docs/PREREG_NOWCAST_2026.md",
- "locked_from_git_sha": "7e884b45b8bcf380e242c6ee2f436affb45f52d0",
+ "locked_from_git_sha": "6ac17005d69e1f497bbeed274fb35b6a0f4d78f9",
  "nowcast_py_sha256": "65cc62300bfaae2fb1425130ca850cd9bed2b5041af046d73056d6d1ee5b0d8e",
- "fetch_2026_py_sha256": "9e90b7a6fa681feed350d77ce0864f8f461a3e01c9daca4203b979dbc7eb5ccf",
+ "fetch_2026_py_sha256": "b51b438cac7dd97f487ad5efa82442b1aeebbe031e7d040f9ff0ac5bf0e6214d",
  "test_window": [
   "2026-01-01",
   "2026-10-31"

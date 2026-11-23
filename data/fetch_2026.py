@@ -26,6 +26,16 @@ METEOSWISS_RECENT = {  # "current year up to yesterday" (MeteoSwiss open-data do
 }
 
 
+def _get_madrid_2026(url: str, **kw) -> bytes:
+    """Madrid's 2026.csv is UTF-8 with a BOM; 2021-2025 were ISO-8859-1, which
+    fetch.fetch_madrid decodes. Re-encode so the same parser reads it
+    (prereg deviation 2: loader only, no scoring change)."""
+    return _http_get(url, **kw).decode("utf-8-sig").encode("iso-8859-1")
+
+
+_http_get = fetch._http_get
+
+
 def main() -> int:
     lock = nowcast.assert_lock_committed_and_pushed()
     print(f"lock OK (commit {lock['_lock_commit'][:7]}); downloading 2026 ...")
@@ -36,7 +46,11 @@ def main() -> int:
     fetch.MADRID_YEAR_URLS = {2026: MADRID_2026_URL}
     fetch.fetch_open_meteo(force=True)
     fetch.fetch_meteoswiss(force=True)
-    fetch.fetch_madrid(force=True)
+    fetch._http_get = _get_madrid_2026
+    try:
+        fetch.fetch_madrid(force=True)
+    finally:
+        fetch._http_get = _http_get
     fetch.fetch_nasa_power(force=True)
     return 0
 
