@@ -105,15 +105,20 @@ The signed thresholds are single-centre published values. The newest large panel
 
 F8 caveat: the module docstring says the approve step and the `approved_at` log are outside the scope of `src/reminders.py`. "0 external sends" is true because no code path in the repo can send. `#kpi-sent` is a fixed 0, not a measured count of sends. F9 and F10 were re-checked against the final HTML on 22 Nov 2026 (DOM ids present, `render_demo.py --check` exit 0, 91 passed).
 
-## G. Video claims (`video/film/renders/film_2026-11-22_21-15-36.mp4`)
+## G. Video claims (V4 film, `video/remotion`, rendered by `video/remotion/scripts/render_chunks.sh`)
+
+Narration: `video/SCRIPT_V4.md` (evidence gate: 6 mapped claims, 0 failures) plus the V2 slots it keeps. Every number on screen is in rows A–D or K, or is computed by `video/remotion/scripts/export_film_data.py`, which asserts the published totals before writing `src/data/film_data.json`.
 
 | # | Claim | Source | Command |
 |---|---|---|---|
-| G1 | Duration 2:16 | `ffprobe` duration 136.3 s | `ffprobe -v error -show_entries format=duration -of csv=p=0 video/film/renders/film_2026-11-22_21-15-36.mp4` |
-| G2 | "Eighty-six tests, green" | `pytest -q` summary line. 86 passed at commit `6a9bbb1`, which is the state the video was filmed on. Re-run on 22 Nov 2026 after the final console edits: `pytest -q` = 112 passed (`tests/test_demo.py` grew from 41 to 53 tests with the nurse console, threshold-boundary and NASA telemetry tests; `tests/test_backtest_rules.py` has 38). | `PY=$PWD/.venv/bin/python; git worktree add /tmp/pp 6a9bbb1 && (cd /tmp/pp && $PY -m pytest -q tests)`; run on 22 Nov 2026 gives 86 passed. Remove with `git worktree remove --force /tmp/pp`. |
-| G3 | "863 events, 7,373 city-days", "41.6" / "41", "13.6" / "31.4", "+2.88" | rows A1, A2, B1, B3, C1, C2, D1 above | `.venv/bin/python eval/verify_claims.py` |
-| G4 | "Six rules, frozen before the run" | row A5. `docs/DATA_PLAN.md` first entered git in `705451d` (22 Nov 2026 18:28 +0100); `eval/backtest.py` first entered in `bb879ed` (19:12 +0100). Git order shows the plan came first. It cannot prove nobody looked at results in between. | `git log --follow --format='%h %ad %s' --date=iso docs/DATA_PLAN.md eval/backtest.py` |
-| G5 | "-13.6 LUFS" note: removed from `DEVPOST_DRAFT.md` on 22 Nov 2026 (unverified). Re-measure with `ffmpeg -i <mp4> -af ebur128 -f null -` before any re-use. | see left |
+| G1 | Duration and loudness | `ffprobe` duration; `ebur128` integrated loudness (target −16 LUFS) | `ffprobe -v error -show_entries format=duration -of csv=p=0 <mp4>`; `ffmpeg -i <mp4> -af ebur128 -f null -` |
+| G2 | "117 green tests" | `pytest -q` summary line on 23 Nov 2026 | `.venv/bin/python -m pytest -q` |
+| G3 | "863 events, 7,373 city-days", "41.6" / "41.0", "13.6" / "31.4" | rows A1, A2, B1, B3, C1, C2 | `.venv/bin/python eval/verify_claims.py` |
+| G4 | "Six rules, frozen before scoring" | row A5; `docs/DATA_PLAN.md` entered git (`705451d`) before `eval/backtest.py` (`bb879ed`) | `git log --follow --format='%h %ad %s' --date=iso docs/DATA_PLAN.md eval/backtest.py` |
+| G5 | S5 dot grids: 863 observed high-pollen days, 359 filled for P2, 354 for R1 | `film_data.json` → `events`, asserted against `kill_check.check2_beats_api` | `.venv/bin/python video/remotion/scripts/export_film_data.py` |
+| G6 | S7 row 1: 22 Madrid olive spike days, 3 caught (13.6%) | `film_data.json` → `olive`, asserted against row C1 | same |
+| G7 | S7 NASA strip: 10 held-out seasons; NASA 3/10 and calendar 6/10 in the 7–28 day window | `film_data.json` → `seasons`, asserted against row K3 | same |
+| G8 | S7 CSI bars 0.382 / 0.434 / 0.486 and the live-page tiles ("Does NASA add skill? no") | rows K4, K8, K9; tiles are element captures of the live page | `node video/remotion/scripts/capture_demo.mjs` (ALL PASS) |
 
 ## H. Claims this project does NOT make
 

@@ -10,3 +10,4 @@ public/audio/*_v2.*
 public/sfx/
 
 out/*.srt
+out/chunks/
