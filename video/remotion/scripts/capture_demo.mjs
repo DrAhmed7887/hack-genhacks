@@ -57,14 +57,14 @@ try {
   check("valencia: caveat visible", await page.locator("#nurse-caveat").isVisible());
   const scen = await page.locator("#replay-scenario-select option").allTextContents();
   check("valencia: initial scenario label", /Valencia/.test(scen[0]) && /2025-05-28/.test(scen[0]), scen[0]);
-  await shoot("s2_valencia_control", { console: "#nurse-console", select: "#replay-scenario-select", kpi_drafted: "#kpi-eligible", kpi_filtered: "#kpi-filtered", trigger: "#nurse-trigger-rule", caveat: "#nurse-caveat" });
+  await shoot("s2_valencia_control", { console: "#nurse-console", select: "#replay-scenario-select", kpi_drafted: "#kpi-eligible", kpi_filtered: "#kpi-filtered", trigger: "#nurse-trigger-rule", caveat: "#nurse-caveat", kpis: ".nc-kpis", nasa_panel: "#nasa-telemetry-panel" });
 
   // 2. Madrid grass
   await page.selectOption("#replay-scenario-select", "madrid_grass");
   check("madrid_grass: drafted == 111", (await txt("#kpi-eligible")) === "111", await txt("#kpi-eligible"));
   check("madrid_grass: blocked == 89", (await txt("#kpi-filtered")) === "89", await txt("#kpi-filtered"));
   check("madrid_grass: sent == 0", (await txt("#kpi-sent")) === "0");
-  await shoot("s2_madrid_grass", { console: "#nurse-console", select: "#replay-scenario-select", kpi_drafted: "#kpi-eligible", kpi_filtered: "#kpi-filtered", kpi_sent: "#kpi-sent", trigger: "#nurse-trigger-rule", draft_table: "#nurse-draft-table", approve: "#approve-batch-btn" });
+  await shoot("s2_madrid_grass", { console: "#nurse-console", select: "#replay-scenario-select", kpi_drafted: "#kpi-eligible", kpi_filtered: "#kpi-filtered", kpi_sent: "#kpi-sent", trigger: "#nurse-trigger-rule", draft_table: "#nurse-draft-table", approve: "#approve-batch-btn", kpis: ".nc-kpis", nasa_panel: "#nasa-telemetry-panel" });
 
   // 3. Approve
   await page.click("#approve-batch-btn");
@@ -72,7 +72,7 @@ try {
   check("approve: ISO timestamp in audit log", /approved_at \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/.test(log));
   check("approve: '0 external messages sent'", log.includes("0 external messages sent"));
   check("approve: button frozen", await page.locator("#approve-batch-btn").isDisabled());
-  await shoot("s2_madrid_approved", { console: "#nurse-console", approve: "#approve-batch-btn", status: "#approve-status", audit: "#nurse-audit-log", kpi_sent: "#kpi-sent" });
+  await shoot("s2_madrid_approved", { console: "#nurse-console", approve: "#approve-batch-btn", status: "#approve-status", audit: "#nurse-audit-log", kpi_sent: "#kpi-sent", kpis: ".nc-kpis" });
 
   // 4. Blocked guard (clean reload)
   await open();
@@ -84,7 +84,7 @@ try {
   check("guard: 55 not sensitised", /\b55 not sensitised/.test(panel));
   const rows = await page.locator("#nurse-draft-table-body tr").count();
   check("guard: draft rows present", rows > 0, `rows=${rows}`);
-  await shoot("s6_blocked_guard", { console: "#nurse-console", toggle: "#toggle-filtered-btn", panel: "#nurse-filtered-panel", first_row: "#nurse-draft-table-body tr:first-child", draft_table: "#nurse-draft-table" });
+  await shoot("s6_blocked_guard", { console: "#nurse-console", toggle: "#toggle-filtered-btn", panel: "#nurse-filtered-panel", first_row: "#nurse-draft-table-body tr:first-child", draft_table: "#nurse-draft-table", kpis: ".nc-kpis" });
 
   // 5. Onset + results tables, smooth scroll
   await open();
@@ -96,6 +96,30 @@ try {
   await page.locator("#onset-table-body").scrollIntoViewIfNeeded();
   await page.evaluate(async () => { const el = document.getElementById("results-table-body"); el.scrollIntoView({ behavior: "smooth", block: "center" }); await new Promise(r => setTimeout(r, 900)); });
   await shoot("s4_onset_table", { onset: "#onset-table-body", results: "#results-table-body", verdict: "#overall-verdict", caption: "#threshold-caption" });
+
+  // 6. NASA evaluation + headline metrics (V4, 23 Nov 2026)
+  await open();
+  check("metrics: 7,373 city-days", (await txt("#total-days")).trim() === "7373", await txt("#total-days"));
+  check("metrics: P2 recall 0.416", (await txt("#p2-recall")).trim() === "0.416", await txt("#p2-recall"));
+  const note = await txt("#nasa-control-note");
+  check("nasa: control note says no", /Does NASA add skill\?\s*no/i.test(note), note.slice(0, 60));
+  await shoot("s7_nasa_eval", { summary: "#nasa-eval-summary", note: "#nasa-control-note", days: "#total-days", recall: "#p2-recall", events: "#total-events" });
+
+  // 7. Crisp element captures of the live NASA verdict tiles (DSF 2) for the s7n close
+  const ctx2 = await browser.newContext({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 2, reducedMotion: "reduce" });
+  const p2 = await ctx2.newPage();
+  p2.on("pageerror", e => errors.push("pageerror: " + e.message));
+  await p2.goto(URL, { waitUntil: "load" });
+  const cards = p2.locator("#nasa-eval-summary .ne-card");
+  check("nasa tiles: CSI tile first", /0\.382 → 0\.434/.test(await cards.nth(0).innerText()));
+  check("nasa tiles: control tile", /0\.486/.test(await p2.locator("#nasa-eval-summary .ne-card.bad").innerText()));
+  await cards.nth(0).screenshot({ path: path.join(OUT, "s7_tile_csi.png") });
+  await p2.locator("#nasa-eval-summary .ne-card.bad").screenshot({ path: path.join(OUT, "s7_tile_control.png") });
+  await p2.locator("#nasa-control-note").screenshot({ path: path.join(OUT, "s7_tile_note.png") });
+  // first sentence only ("Does NASA add skill? no."), cropped so it can be shown at >= 28 px
+  const nb = await p2.locator("#nasa-control-note").boundingBox();
+  await p2.screenshot({ path: path.join(OUT, "s7_tile_verdict.png"), clip: { x: nb.x, y: nb.y, width: 169, height: 24 } });
+  await ctx2.close();
 
   await browser.close();
   fs.writeFileSync(path.join(OUT, "boxes.json"), JSON.stringify(boxes, null, 1));
