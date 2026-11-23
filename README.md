@@ -28,14 +28,18 @@ An allergy clinic has patients with a known pollen allergy who are already on tr
 | H1: yesterday's trap beats the forecast | +0.332 | 0.203 to 0.457 | **Passed** |
 | H2: fusion model beats the forecast | +0.291 | 0.176 to 0.406 | Passed |
 | H3: fusion model beats yesterday's trap | −0.041 | −0.117 to 0.028 | **Failed**, so we ship P0 |
-| H4: NASA weather improves the fusion model | +0.020 | −0.021 to 0.064 | **Failed**, so NASA is not used |
+| H4: NASA weather improves the fusion model's score | +0.020 | −0.021 to 0.064 | **Failed**, so NASA is not used |
 | Sensitivity: two-day-old reading beats the forecast | +0.261 | 0.134 to 0.384 | Passed |
 
 Yesterday's trap beats the forecast in all six city × species series in 2026. It did the same in 2021–2025, flagging 670 of 857 high days against 359 of 863 for the forecast (`eval/results/backtest.json`). The 2026 test was written to check whether that holds on a season we had not seen.
 
-## Where a forecast does not reach
+## Where the forecast stops
 
-The CAMS European pollen forecast covers 25° W–45° E and 30° N–72° N ([CAMS dataset page](https://ads.atmosphere.copernicus.eu/datasets/cams-europe-air-quality-forecasts)). Open-Meteo states that its pollen data are "Only available in Europe as provided by CAMS European Air Quality forecast" ([docs](https://open-meteo.com/en/docs/air-quality-api)). The trap-first rule needs a local trap and no forecast. In Egypt, a one-year volumetric trap study in Alexandria (May 2019 – April 2020; Taia & Bassiouni, *Acta Scientific Microbiology* 2022) shows the measurement can be made. We found no routine public network there. **The rule is not yet tested outside Madrid, Basel and Zürich.**
+The CAMS European pollen forecast covers 25° W–45° E and 30° N–72° N ([CAMS dataset page](https://ads.atmosphere.copernicus.eu/datasets/cams-europe-air-quality-forecasts)). Open-Meteo states that its pollen data are "Only available in Europe as provided by CAMS European Air Quality forecast" ([docs](https://open-meteo.com/en/docs/air-quality-api)).
+
+We queried it for Egypt ([`docs/evidence/open_meteo_egypt_coverage_2026-11-23.txt`](docs/evidence/open_meteo_egypt_coverage_2026-11-23.txt)). Alexandria and Cairo, inside the box, get pollen values. Asyut (27° N) gets none.
+
+We found no study comparing those Egyptian values with trap counts. The trap-first rule needs only a local trap. In Alexandria, a one-year volumetric trap study (May 2019 – April 2020; Taia & Bassiouni, *Acta Scientific Microbiology* 2022) shows the measurement can be made. **The rule is not yet tested outside Madrid, Basel and Zürich.**
 
 ## Limits
 

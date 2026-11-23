@@ -14,8 +14,9 @@ ALERT = json.loads((ROOT / "rules" / "thresholds.json").read_text())["alert"]
 
 
 def test_at_threshold_alerts_below_does_not():
-    assert [a.species for a in trap_alerts({"grass": 35.0}, ALERT)] == ["grass"]
-    assert trap_alerts({"grass": 34.9}, ALERT) == []
+    t = ALERT["grass"]
+    assert [a.species for a in trap_alerts({"grass": float(t)}, ALERT)] == ["grass"]
+    assert trap_alerts({"grass": t - 0.1}, ALERT) == []
 
 
 def test_missing_reading_never_alerts():

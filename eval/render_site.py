@@ -122,7 +122,7 @@ def render(data: dict) -> str:
     blob = json.dumps(data, ensure_ascii=True, separators=(",", ":")).replace("</", "<\\/")
     hyp_rows = []
     labels = {"H1": "Yesterday's trap beats the forecast", "H2": "Fusion model beats the forecast",
-              "H3": "Fusion model beats yesterday's trap", "H4": "Adding NASA POWER weather improves the fusion model",
+              "H3": "Fusion model beats yesterday's trap", "H4": "Adding NASA POWER weather improves the fusion model's score",
               "sensitivity_P0_D2_vs_P2": "A two-day-old trap reading still beats the forecast"}
     for hid, v in h.items():
         ok = v["passes"]
@@ -279,20 +279,22 @@ footer {{ padding:40px 0 60px; color:var(--muted); font-size:13px; }}
   <p class="sub2">Four hypotheses were written down and committed before the 2026 data existed on our machines. A hypothesis passes only if its 95% interval (moving-block bootstrap, 10,000 resamples) excludes zero. Two passed; two failed, and we report them. Because the fusion model did not beat the simple rule, the product ships the simple rule.</p>
   <div class="card scroll"><table><thead><tr><th></th><th>Hypothesis</th><th>CSI difference</th><th>95% CI</th><th>Result</th></tr></thead><tbody>{hyp_rows}</tbody></table></div>
   <div class="card scroll" style="margin-top:14px"><table><thead><tr><th>Rule (2026, 1 Jan–31 Oct)</th><th>High days flagged</th><th>Recall</th><th>False-alert days</th><th>CSI</th></tr></thead><tbody>{rule_rows}</tbody></table></div>
-  <p class="src">CSI = hits / (hits + misses + false alerts). The same rules on 2021–2025 (development years): yesterday's trap flagged {dev_p0} high days, the forecast {dev_p2}. 2026 replicated it.</p>
+  <p class="src">CSI = hits / (hits + misses + false alerts). The same rules on 2021–2025 (development years): yesterday's trap flagged {dev_p0} high days, the forecast {dev_p2} (the 2021–25 backtest scored P0 only on days with a reading the day before, hence 857 vs 863). 2026 replicated it; in 2026 every rule is scored on the same days, and a missing reading counts as no alert.</p>
 </section>
 
 <section id="where">
-  <h2>Where a forecast does not reach</h2>
+  <h2>Where the forecast stops</h2>
   <div class="two">
-    <div class="card"><h3>The free forecast is Europe-only</h3>
+    <div class="card"><h3>The free forecast is built for Europe</h3>
       <blockquote>“Europe (west boundary=25.0° W, east=45.0° E, south=30.0° N, north=72.0°)”</blockquote>
       <div class="src">Copernicus Atmosphere Monitoring Service, CAMS European air quality forecasts, <a href="https://ads.atmosphere.copernicus.eu/datasets/cams-europe-air-quality-forecasts">dataset page</a> (checked 23 Nov 2026).</div>
       <blockquote>“Only available in Europe as provided by CAMS European Air Quality forecast.”</blockquote>
       <div class="src">Open-Meteo Air Quality API, <a href="https://open-meteo.com/en/docs/air-quality-api">documentation</a> (checked 23 Nov 2026).</div>
+      <p>We asked it for Egypt. Alexandria and Cairo, inside the box, get pollen values. Asyut, at 27° N, gets none (<a href="{repo}/blob/main/docs/evidence/open_meteo_egypt_coverage_2026-11-23.txt">our query</a>, 23 Nov 2026).</p>
     </div>
-    <div class="card"><h3>The rule needs one trap, not a forecast</h3>
-      <p>Yesterday's count is a local measurement, so the rule runs wherever a clinic can read a trap. In Egypt, a one-year volumetric trap study in Alexandria (May 2019 – April 2020) shows the measurement is possible; we found no routine public network.</p>
+    <div class="card"><h3>The rule needs one trap</h3>
+      <p>Yesterday's count is a local measurement, so the rule runs wherever a clinic can read a trap. A trap would also be the first check of the forecast values northern Egypt already gets: we found no study comparing them with trap counts.</p>
+      <p>A one-year volumetric trap study in Alexandria (May 2019 – April 2020) shows the measurement is possible there. We found no routine public network.</p>
       <div class="src">Taia WK, Bassiouni EM. Airborne Allergenic Pollen Grains in Alexandria City, Egypt. Acta Scientific Microbiology, 2022. <a href="https://actascientific.com/ASMI/ASMI-05-1088.php">link</a>.</div>
       <p><b>Not yet tested outside Madrid, Basel and Zürich.</b></p>
     </div>
@@ -381,7 +383,8 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
   const SHOW = 6;
   D.console.drafts.slice(0, SHOW).forEach(d => {{
     const div = document.createElement('div'); div.className = 'draft';
-    div.innerHTML = '<div class="id">' + d.id + ' · ' + d.age + (d.asthma ? ' · asthma flag' : '') + '</div><div class="med">Alert: grass · medicine class on file: <span></span></div>';
+    div.innerHTML = '<div class="id"></div><div class="med">Alert: ' + D.featured.species + ' · medicine class on file: <span></span></div>';
+    div.querySelector('.id').textContent = d.id + ' · ' + d.age + (d.asthma ? ' · asthma flag' : '');
     div.querySelector('span').textContent = d.medicine;
     d.lines.forEach(l => {{ const p = document.createElement('div'); p.className = 'line'; p.textContent = l; div.appendChild(p); }});
     drafts.appendChild(div);

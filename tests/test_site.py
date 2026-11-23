@@ -34,6 +34,9 @@ def test_featured_morning_is_a_real_trap_only_catch():
     data = json.loads(re.search(r'<script type="application/json" id="site-data">(.*?)</script>', PAGE, re.S).group(1))
     f = data["featured"]
     assert f["yesterday"] >= f["threshold"] > f["cams_today"] and f["observed_today"] >= f["threshold"]
+    # the values quoted in DEVPOST_DRAFT.md, CLAIMS.md N11 and video/SCRIPT_V5.md
+    assert (f["date"], f["yesterday"], f["cams_today"], f["observed_today"]) == ("2026-05-05", 104.0, 19.5, 79.0)
+    assert data["console"]["eligible"] == 111 and data["console"]["roster"] == 200
 
 
 def test_no_invented_message_text():

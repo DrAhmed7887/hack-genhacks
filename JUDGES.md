@@ -4,7 +4,7 @@ GenHacks (Devpost), track **Healthcare & Environmental**. Live demo, no account:
 
 **What it is.** A clinic aid for hay-fever patients who are already on treatment. Each morning it reads the clinic's own pollen trap for yesterday. If the count is at or above the signed threshold, it drafts reminders, and a nurse approves them.
 
-**What the result says.** We ran a pre-registered test on the untouched 2026 season: Madrid, Basel and Zürich, 215 high-pollen days. Yesterday's trap count flagged 164 of them (76.3%). Europe's CAMS forecast for the same day flagged 70 (32.6%). The CSI difference is +0.332, 95% CI 0.203 to 0.457. The lock was committed and pushed (`6ac1700`) before any 2026 file was downloaded. Our fusion model did not beat the simple rule (H3 failed), and NASA weather added nothing (H4 failed). So the product ships the simple rule. Every number is traced in [`CLAIMS.md`](CLAIMS.md) §N, and `eval/verify_claims.py` checks it.
+**What the result says.** We ran a pre-registered test on the untouched 2026 season: Madrid, Basel and Zürich, 215 high-pollen days. Yesterday's trap count flagged 164 of them (76.3%). Europe's CAMS forecast for the same day flagged 70 (32.6%). The CSI difference is +0.332, 95% CI 0.203 to 0.457. The lock was committed and pushed (`6ac1700`) before any 2026 file was downloaded. Our fusion model did not beat the simple rule (H3 failed), and NASA weather did not improve its score (H4 failed). So the product ships the simple rule. Every number is traced in [`CLAIMS.md`](CLAIMS.md) §N, and `eval/verify_claims.py` checks it.
 
 The four criteria below are the verbatim list from the official page (`https://genhacks-open.devpost.com/`, read 19 Nov 2026 and recorded in the project SPEC): four criteria, 25% each.
 
@@ -13,11 +13,11 @@ The four criteria below are the verbatim list from the official page (`https://g
 | Evidence | Where |
 |---|---|
 | **Headline, pre-registered and replicated on an unseen season:** yesterday's trap 164/215 high days vs CAMS forecast 70/215 (2026); 670/857 vs 359/863 (2021–2025); trap wins in all 6 series both times | `eval/results/nowcast_2026.json`, `docs/PREREG_NOWCAST_2026.md`, `CLAIMS.md` §N |
-| Reach: the free CAMS pollen forecast covers Europe only (30° N–72° N), so outside it there is no forecast to compare against, and a local trap is the only input this rule needs. Not yet tested outside the three cities | demo `#where`, README "Where a forecast does not reach" |
+| Reach: the free CAMS pollen forecast is built for Europe, and its map stops at 30° N. Our query gives Alexandria and Cairo values and gives Asyut (27° N) none. The rule needs only a local trap. Not yet tested outside the three cities | demo `#where`, README "Where a forecast does not reach" |
 | Problem: hay-fever patients start treatment late because nobody tells them the season began. The first question was whether a simple alert rule beats the forecast it is built on. | `DEVPOST_DRAFT.md` (Problem), `docs/DATA_PLAN.md` §2.5 |
 | Scale of the test: 863 observed high-pollen events, 7,373 city-days, 28 city-species-year seasons, six pre-registered rules | `eval/results/backtest.json` → `kill_check.size_check`; `docs/results_table.md` |
 | Negative results are published too: in 2021–2025 our first day rule R1 did not beat the API (no claim for R1), and in 2026 the fusion model and the NASA variant failed their pre-registered tests | `kill_check.overall_headline` = `measured_P2_skill_only_no_beats_api_claim`; `README.md` disclaimers |
-| Delivery layer: a nurse reviews a draft batch of reminders that name only a medicine class the patient already has on file. Nothing is sent. | `demo/index.html` (`#nurse-console`), `src/reminders.py`, `tests/test_reminders.py` (14 tests) |
+| Delivery layer: a nurse reviews a draft batch of reminders that name only a medicine class the patient already has on file. Nothing is sent. | `demo/index.html` (`#morning`, the 2026 trap-first batch) and `demo/backtest.html` (`#nurse-console`), `src/reminders.py`, `tests/test_reminders.py` (14 tests) |
 | Per-city skill, including the weak cities, so a clinic can see where the alert is unreliable | `docs/results_table.md`; demo results table |
 
 **Honest limits**
@@ -45,7 +45,7 @@ The four criteria below are the verbatim list from the official page (`https://g
 | Guard rails: the thresholds file is read-only to the build agents; a pre-tool-use hook configured for the build agent blocks writes to `rules/`, `CLAIMS.md` and `.kiro/` | `rules/thresholds.json`, `scripts/hooks/guard_signed.py`, `.kiro/agents/genhacks-builder.json` |
 
 **Honest limits**
-- The N2 gain rests on two held-out years and costs extra false alerts (precision 87.8% → 83.5%); N1 fell from 70% in-sample to 30% held-out (7-28 d window). The kill-check verdict is unchanged: no "beats the API" claim.
+- The N2 gain rests on two held-out years and costs extra false alerts (precision 87.8% → 83.5%); N1 fell from 70% in-sample to 30% held-out (7-28 d window). The 2021–25 kill-check verdict for R1 is unchanged: no claim for R1 (the 2026 headline is a separate pre-registered test of P0).
 - Static GitHub Pages only. There is no server, no database and no real send path. The approve button writes an in-page audit line and nothing else.
 - Five seasons per city or fewer, so the confidence intervals are wide (Madrid olive recall CI [0.000, 0.334]).
 - R2's +2.88-day lead over P2 (95% CI [+2.64, +3.00]) comes from reading three days of archived forecast, so it is look-ahead by construction. R2 minus climatology is -1.55 days, CI [-7.75, +6.00], which includes zero.
@@ -59,7 +59,7 @@ The four criteria below are the verbatim list from the official page (`https://g
 | Evidence | Where |
 |---|---|
 | A negative-result-first project: the kill-check is written as a rule before the run, and the outcome is recorded as `kill_check.overall_headline` and the public wording follows it | `docs/DATA_PLAN.md` §2.5; `eval/results/backtest.json` |
-| The video and demo show the failures: every one of the 28 seasons is in the onset table, including seasons the early alert missed (R2 and P2 gave no alert in Madrid olive 2024 and 2025, where climatology C0 did fire; R2, P2 and C0 all gave none in Madrid grass 2023) | `demo/index.html` `#onset-table-body`; `docs/results_table.md`; `eval/results/misses.csv` (2,018 missed-day rows) |
+| The video and demo show the failures: every one of the 28 seasons is in the onset table, including seasons the early alert missed (R2 and P2 gave no alert in Madrid olive 2024 and 2025, where climatology C0 did fire; R2, P2 and C0 all gave none in Madrid grass 2023) | `demo/backtest.html` `#onset-table-body`; `docs/results_table.md`; `eval/results/misses.csv` (2,018 missed-day rows) |
 | Code decides, a model would only explain: eligibility and message content are deterministic rules with tests, so the nurse screen shows what the code guard filtered out and why | `src/reminders.py`; demo `#nurse-filtered-panel` |
 | Climatology (C0) and persistence (P0, P1) baselines test whether the API adds anything over the calendar | `docs/DATA_PLAN.md` §2.3 |
 
@@ -71,8 +71,8 @@ The four criteria below are the verbatim list from the official page (`https://g
 
 | Evidence | Where |
 |---|---|
-| Live project page, loads logged-out, HTTP 200 on 22 Nov 2026: <https://drahmed7887.github.io/hack-genhacks/> | `demo/index.html` |
-| Video, 2:16 (136.3 s by `ffprobe`), under the 3:00 cap. Uploaded as an unlisted YouTube or Vimeo link: **not done yet**. | `video/film/renders/film_2026-11-22_21-15-36.mp4`; script in `video/film/script.json`; beat sheet `video/STORYBOARD.md` |
+| Live project page, loads logged-out: <https://drahmed7887.github.io/hack-genhacks/>. The front page is rebuilt on the 2026 result (23 Nov 2026) and goes live after PR #5 merges; the 2021–25 page moves to `backtest.html` | `demo/index.html` (`eval/render_site.py`), `demo/backtest.html` |
+| Video: V5 script written from scratch on the 2026 result, for approval (`video/SCRIPT_V5.md`). Earlier films (V2–V4) are retired. **Not rendered yet** | `video/SCRIPT_V5.md` |
 | Devpost text with problem, result, limits, built-with, attribution | `DEVPOST_DRAFT.md` |
 | Workflow diagram | `docs/flow.svg` |
 | Required attributions are on the page and in the README (Open-Meteo, CAMS, Comunidad de Madrid, MeteoSwiss) | README "Data Attribution"; demo attribution section (`#attribution-modelled`, `#attribution-observed`) |
@@ -85,6 +85,8 @@ The four criteria below are the verbatim list from the official page (`https://g
 - The video says "Eighty-six tests". The working tree now has 112. See `CLAIMS.md` row I2.
 
 ## Review backlog (dated 22 Nov 2026)
+
+**23 Nov 2026:** rows 1, 2, 5 and 7b refer to the retired V2–V4 films and the old front page. They are superseded by the V5 script and the rebuilt `demo/index.html`.
 
 | # | Item | Found | Owner | Status | Where |
 |---|---|---|---|---|---|

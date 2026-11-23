@@ -19,7 +19,7 @@ Read the trap, not the forecast. On a pollen season we had never seen, yesterday
 - Yesterday's trap: 164 of 215 (76.3%), 40 false-alert days.
 - CAMS forecast: 70 of 215 (32.6%), 10 false-alert days.
 - CSI +0.332, 95% CI 0.203 to 0.457, the trap winning in all six city × species series.
-- Our own fusion model did not beat the simple rule (H3 failed), and NASA POWER weather added nothing (H4 failed). So we ship the simple rule and report both failures.
+- Our own fusion model did not beat the simple rule (H3 failed), and NASA POWER weather did not improve its score (H4 failed). So we ship the simple rule and report both failures.
 - A two-day-old reading still beats the forecast, which matters where trap data publish late.
 
 **Product.**
@@ -28,7 +28,7 @@ Read the trap, not the forecast. On a pollen season we had never seen, yesterday
 - A nurse approves the batch. Nothing is sent without that click.
 - The demo replays a real morning: Madrid, 5 May 2026. Yesterday's grass count was 104, the forecast said 19.5, and the trap measured 79. The demo drafts 111 reminders for 200 synthetic patients.
 
-**Why it travels.** The CAMS pollen forecast covers Europe only (30° N–72° N), so North Africa has no free forecast to fall back on. The rule needs one local trap, and a one-year trap study in Alexandria (2019–20) shows the measurement can be made there. We have not tested it outside the three cities.
+**Where next (a hypothesis, not a result).** The CAMS pollen forecast is built for Europe, with a map that stops at 30° N. We queried it for Egypt: Alexandria and Cairo get values, and Asyut (27° N) gets none. We found no study comparing the Egyptian values with trap counts. The rule needs one local trap, and a one-year trap study in Alexandria (2019–20) shows the measurement can be made there. We have not tested it outside the three cities.
 
 ## Built with
 
