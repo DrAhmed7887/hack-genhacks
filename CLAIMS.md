@@ -7,7 +7,7 @@ Last verified: 22 Nov 2026, working tree on top of commit `6a9bbb1`. Every numbe
 ```bash
 python -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python eval/backtest.py              # rewrites eval/results/backtest.json, eval/results/misses.csv, docs/results_table.md from data/cache/ (no network, no key)
-.venv/bin/pytest -q                            # all pass. At commit 6a9bbb1: 86 passed; working tree 22 Nov 2026: 91 passed (24 backtest rules, 46 demo, 7 patients, 14 reminders)
+.venv/bin/pytest -q                            # all pass. At commit 6a9bbb1: 86 passed; working tree 22 Nov 2026: 112 passed (38 backtest rules, 53 demo, 7 patients, 14 reminders)
 .venv/bin/python eval/render_demo.py --check   # exit 0 = the onset table in demo/index.html matches backtest.json
 git diff --stat eval/results docs/results_table.md   # empty output = the re-run reproduced the committed results exactly
 ```
@@ -140,7 +140,7 @@ F8 caveat: the module docstring says the approve step and the `approved_at` log 
 | # | Claim | Source | Command |
 |---|---|---|---|
 | G1 | Duration 2:16 | `ffprobe` duration 136.3 s | `ffprobe -v error -show_entries format=duration -of csv=p=0 video/film/renders/film_2026-11-22_21-15-36.mp4` |
-| G2 | "Eighty-six tests, green" | `pytest -q` summary line. 86 passed at commit `6a9bbb1`, which is the state the video was filmed on. Re-run on 22 Nov 2026 after the final console edits: `pytest -q` = 95 passed (`tests/test_demo.py` grew from 41 to 50 tests with the nurse console and threshold-boundary tests). | `PY=$PWD/.venv/bin/python; git worktree add /tmp/pp 6a9bbb1 && (cd /tmp/pp && $PY -m pytest -q tests)`; run on 22 Nov 2026 gives 86 passed. Remove with `git worktree remove --force /tmp/pp`. |
+| G2 | "Eighty-six tests, green" | `pytest -q` summary line. 86 passed at commit `6a9bbb1`, which is the state the video was filmed on. Re-run on 22 Nov 2026 after the final console edits: `pytest -q` = 112 passed (`tests/test_demo.py` grew from 41 to 53 tests with the nurse console, threshold-boundary and NASA telemetry tests; `tests/test_backtest_rules.py` has 38). | `PY=$PWD/.venv/bin/python; git worktree add /tmp/pp 6a9bbb1 && (cd /tmp/pp && $PY -m pytest -q tests)`; run on 22 Nov 2026 gives 86 passed. Remove with `git worktree remove --force /tmp/pp`. |
 | G3 | "863 events, 8,076 city-days", "41.6" / "41", "13.6" / "31.4", "+2.88" | rows A1, A2, B1, B3, C1, C2, D1 above | `.venv/bin/python verify_claims.py` (the block above) |
 | G4 | "Six rules, frozen before the run" | row A5. `docs/DATA_PLAN.md` first entered git in `705451d` (22 Nov 2026 18:28 +0100); `eval/backtest.py` first entered in `bb879ed` (19:12 +0100). Git order shows the plan came first. It cannot prove nobody looked at results in between. | `git log --follow --format='%h %ad %s' --date=iso docs/DATA_PLAN.md eval/backtest.py` |
 | G5 | "-13.6 LUFS" note: removed from `DEVPOST_DRAFT.md` on 22 Nov 2026 (unverified). Re-measure with `ffmpeg -i <mp4> -af ebur128 -f null -` before any re-use. | see left |
@@ -160,12 +160,29 @@ F8 caveat: the module docstring says the approve step and the `approved_at` log 
 | H9 | Madrid daily averaging window is **unverified** (MeteoSwiss window is verified 6 UTC to 6 UTC). No UTC-alignment claim is made for Madrid. | `data/DATA_CARD.md` §3 |
 | H10 | The pre-October-2023 source of Open-Meteo pollen values is unverified. | `docs/DATA_PLAN.md` §2.6 |
 
+## K. NASA POWER + MODIS layer (rules N1, N2)
+
+All values: `BT` → `nasa_evaluation`; reproduce with `.venv/bin/python eval/backtest.py` (offline, reads `data/cache/nasa_*.csv`). Calibration on 2021-2023 only; held-out 2024-2025.
+
+| # | Claim | Source key path | Exact value |
+|---|---|---|---|
+| K1 | NASA POWER fields (T2M, T2M_MAX, T2M_MIN, PRECTOTCORR, ALLSKY_SFC_SW_DWN, RH2M, GWETROOT, WS2M) and MODIS MOD13Q1 250 m 16-day NDVI cached for all 4 cities, 2021-2025; NDVI used only from `calendar_date + 16 days` | `data/DATA_CARD.md` §5; `load_nasa_daily` | 4 + 4 cache files |
+| K2 | N1 (steroid nasal spray priming 14 days before onset), in-sample fit 2021-2023, paired rows | `nasa_evaluation.N1_pooled.train_2021_2023.paired_common_rows` | n=10, N1 MAE 5.1 d from 14 d, 80% in 7-28 d (in-sample fit, not evidence of skill) |
+| K3 | N1 held-out 2024-2025, paired rows | `N1_pooled.heldout_2024_2025.paired_common_rows` | n=10; N1 21.5 d MAE, 30% hit; C0_14d 12.5 d MAE, 60% hit; R2 (Europe's 4-day CAMS pollen forecast) mean lead -9.7 d, 0.0% hit |
+| K4 | N2 held-out 2024-2025; N2 on day D uses prior-day (D-1) NASA POWER only | `N2_pooled.heldout_2024_2025` | 394 events; P2 CSI 0.382 → N2 0.434 (+0.052); recall 40.4% → 47.5% (159 → 187); false-alert days 22 → 37; precision 87.8% → 83.5% |
+| K5 | N2 pooled 2021-2025 | `N2_pooled.all_evaluable` | 863 events; CSI 0.392 → 0.454; recall 41.6% → 50.9% (359 → 439); false-alert days 53 → 105 |
+| K6 | Madrid olive held-out spikes caught | `per_city_species[madrid/olive].N2.splits.heldout_2024_2025` | N2 5/8, P2 0/8 (N2 has 4 false-alert days there) |
+| K6b | N2 latency sensitivity: D-3 NASA POWER (MERRA-2 publishes ~2-3 days late), recalibrated | `latency_sensitivity_lag3.N2_pooled` | held-out CSI 0.405, recall 44.4% (175/394), 38 false-alert days; pooled CSI 0.429, recall 48.7%; Madrid olive 5/8 with 2 false-alert days |
+| K7 | Legacy kill-check verdict unchanged | `kill_check` | `measured_P2_skill_only_no_beats_api_claim` |
+
+Not claimed: N1 is a negative result (worse than the calendar rule out-of-sample). N2's gain is two held-out years, bought with extra false alerts, and does not change the kill-check verdict.
+
 ## I. Wording that does not match the source (open items)
 
 | # | Where | Text | What the source says | Suggested fix |
 |---|---|---|---|---|
 | I1 | `DEVPOST_DRAFT.md` line 8 (tagline) and `video/STORYBOARD.md` voice-over draft | "3 years of real pollen counts" / "three years of real pollen counts" | `BT` → `years` is 2021 to 2025, five seasons. Only the training window is three years. | **Fixed in `DEVPOST_DRAFT.md` 22 Nov 2026** ("5 years of real pollen counts (2021–2025)"); still open in `video/STORYBOARD.md` line 34 (draft voice-over). Change to "5 years" or "three cities". The shipped video script (`video/film/script.json`) says "real pollen counts" and is not affected. |
-| I2 | Video "Eighty-six tests, green" | Hard-coded count | The committed state has 86 tests; the working tree already has 91. Once the nurse-console tests are committed, the video line is wrong. | Either re-cut the line to the final count or change it to "tests green". Re-run `pytest -q` before the final upload. |
+| I2 | Video "Eighty-six tests, green" | Hard-coded count | The committed state has 86 tests; the working tree already has 112. Once the nurse-console tests are committed, the video line is wrong. | Either re-cut the line to the final count or change it to "tests green". Re-run `pytest -q` before the final upload. |
 | I3 | `DEVPOST_DRAFT.md` "AI tools used" line | Names tools and model versions | Not verifiable from the repo. | Owner confirms before submitting. |
 | I4 | Video script and `video/STORYBOARD.md` | "including the seasons every rule missed" | `BT` → `results[].onset_by_year`: only Madrid grass 2023 has no onset from R2, P2 and C0. In Madrid olive 2024 and 2025, R2 and P2 gave none but C0 fired (2024-05-21, 2025-05-21). | Say "seasons the early alert missed", or name Madrid grass 2023. |
 
@@ -176,5 +193,6 @@ F8 caveat: the module docstring says the approve step and the `approved_at` log 
 | J1 | Observed Madrid: Comunidad de Madrid, CC BY (exact CC version not stated by the publisher) | `data/DATA_CARD.md` §3, `docs/DATA_PLAN.md` §5 | `data/cache/madrid_facf_daily.csv` (2,922 rows) |
 | J2 | Observed Basel and Zurich: MeteoSwiss, CC-BY, daily mean 6 UTC to 6 UTC | `data/DATA_CARD.md` §2 | `data/cache/meteoswiss_pbs_daily.csv` (1,574 rows), `data/cache/meteoswiss_pzh_daily.csv` (1,612 rows) |
 | J3 | Modelled: Open-Meteo Air Quality API, CAMS ENSEMBLE, CC BY 4.0, free tier non-commercial | `data/DATA_CARD.md` §1 | `data/cache/open_meteo_*.csv` (43,824 hourly rows each) |
-| J4 | Never used: the Taia unpublished table, any real patient data | repo rules, `data/DATA_CARD.md` | `ls data/cache` lists only the seven files above |
+| J4 | Never used: the Taia unpublished table, any real patient data | repo rules, `data/DATA_CARD.md` | `ls data/cache` lists the seven files above plus eight NASA files (`nasa_power_*`, `nasa_modis_*`) |
+| J6 | NASA POWER (public domain, NASA LaRC POWER Project) and ORNL DAAC MODIS MOD13Q1 (NASA LP DAAC, open data) | `data/DATA_CARD.md` §5 | `data/cache/nasa_*.csv` |
 | J5 | The backtest reads only `data/cache/`, no network | `data/DATA_CARD.md` §4 | `.venv/bin/python eval/backtest.py` works offline |

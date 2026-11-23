@@ -12,6 +12,8 @@ Sources (see docs/DATA_SOURCES.md and data/DATA_CARD.md for full detail):
   - MeteoSwiss STAC collection ch.meteoschweiz.ogd-pollen (CC-BY): daily CSVs
     for stations PBS (Basel) and PZH (Zurich), columns kabetud0 (birch) and
     khpoacd0 (grass), 6 UTC - 6 UTC following day, unit No/m3.
+  - NASA POWER daily point API (public domain) and NASA ORNL DAAC MODIS
+    MOD13Q1 NDVI REST (CC0 / public domain): see data/DATA_CARD.md section 5.
   - Comunidad de Madrid "Histórico de mediciones de polen" (CC BY): yearly
     CSVs 2021-2025 for all traps; filtered here to station FACF and types
     "Olivo" and "Gramíneas".
@@ -185,11 +187,91 @@ def fetch_madrid(force: bool = False) -> None:
     print(f"[madrid] wrote {out_path} ({len(all_rows)} rows, station {MADRID_STATION})")
 
 
+# --- NASA POWER (daily, point) -----------------------------------------------
+NASA_POWER_URL = "https://power.larc.nasa.gov/api/temporal/daily/point"
+NASA_POWER_PARAMS = "T2M,T2M_MAX,T2M_MIN,PRECTOTCORR,ALLSKY_SFC_SW_DWN,RH2M,GWETROOT,WS2M"
+NASA_POWER_COLUMNS = [
+    ("T2M", "t2m"), ("T2M_MAX", "t2m_max"), ("T2M_MIN", "t2m_min"),
+    ("PRECTOTCORR", "prectotcorr"), ("ALLSKY_SFC_SW_DWN", "allsky_sfc_sw_dwn"),
+    ("RH2M", "rh2m"), ("GWETROOT", "gwetroot"), ("WS2M", "ws2m"),
+]
+
+# --- NASA ORNL DAAC MODIS REST (MOD13Q1, 250 m, 16-day NDVI) --------------------
+MODIS_BASE = "https://modis.ornl.gov/rst/api/v1/MOD13Q1"
+MODIS_START = "2020-12-01"  # include the late-Dec-2020 composite so 1 Jan 2021 has a prior value
+MODIS_END = "2025-12-31"
+MODIS_BAND = "250m_16_days_NDVI"
+MODIS_CHUNK = 10
+
+
+def fetch_nasa_power(force: bool = False) -> None:
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    for name, cfg in CITIES.items():
+        out_path = CACHE_DIR / f"nasa_power_{name}.csv"
+        if out_path.exists() and not force:
+            print(f"[nasa-power] cache hit: {out_path.name}")
+            continue
+        url = (
+            f"{NASA_POWER_URL}?parameters={NASA_POWER_PARAMS}&community=AG"
+            f"&longitude={cfg['lon']}&latitude={cfg['lat']}"
+            f"&start={START_DATE.replace('-', '')}&end={END_DATE.replace('-', '')}&format=JSON"
+        )
+        print(f"[nasa-power] fetching {name} ...")
+        payload = json.loads(_http_get(url, timeout=120))
+        params = payload["properties"]["parameter"]
+        dates = sorted(params[NASA_POWER_COLUMNS[0][0]].keys())
+        with out_path.open("w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f)
+            w.writerow(["date"] + [c for _, c in NASA_POWER_COLUMNS])
+            for d in dates:
+                row = [f"{d[:4]}-{d[4:6]}-{d[6:]}"]
+                for key, _ in NASA_POWER_COLUMNS:
+                    v = params[key].get(d)
+                    row.append("" if v is None or float(v) <= -998.5 else v)  # -999 fill -> empty
+                w.writerow(row)
+        print(f"[nasa-power] wrote {out_path} ({len(dates)} daily rows)")
+
+
+def fetch_nasa_modis(force: bool = False) -> None:
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    for name, cfg in CITIES.items():
+        out_path = CACHE_DIR / f"nasa_modis_{name}.csv"
+        if out_path.exists() and not force:
+            print(f"[nasa-modis] cache hit: {out_path.name}")
+            continue
+        print(f"[nasa-modis] fetching {name} ...")
+        q = f"latitude={cfg['lat']}&longitude={cfg['lon']}"
+        avail = json.loads(_http_get(f"{MODIS_BASE}/dates?{q}"))["dates"]
+        avail = [d for d in avail if MODIS_START <= d["calendar_date"] <= MODIS_END]
+        avail.sort(key=lambda d: d["calendar_date"])
+        rows = []
+        for i in range(0, len(avail), MODIS_CHUNK):
+            chunk = avail[i : i + MODIS_CHUNK]
+            url = (
+                f"{MODIS_BASE}/subset?{q}&startDate={chunk[0]['modis_date']}"
+                f"&endDate={chunk[-1]['modis_date']}&kmAboveBelow=0&kmLeftRight=0&band={MODIS_BAND}"
+            )
+            payload = json.loads(_http_get(url, timeout=120))
+            for rec in payload.get("subset", []):
+                val = rec["data"][0]
+                ndvi = "" if val <= -2000 else round(val * 0.0001, 6)  # -3000 fill -> empty
+                rows.append((rec["calendar_date"], rec["modis_date"], ndvi))
+            time.sleep(0.2)
+        rows.sort()
+        with out_path.open("w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f)
+            w.writerow(["date", "modis_date", "ndvi"])
+            w.writerows(rows)
+        print(f"[nasa-modis] wrote {out_path} ({len(rows)} composites, {len(avail)} dates listed)")
+
+
 def main() -> int:
     force = "--force" in sys.argv
     fetch_open_meteo(force=force)
     fetch_meteoswiss(force=force)
     fetch_madrid(force=force)
+    fetch_nasa_power(force=force)
+    fetch_nasa_modis(force=force)
     print("Done. Cached files in", CACHE_DIR)
     return 0
 

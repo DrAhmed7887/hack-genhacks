@@ -138,7 +138,81 @@ Total cache size: 4.8 MB, 181,411 lines, all committed to `data/cache/`.
 Reproduce with `make fetch` (or `.venv/bin/python data/fetch.py`); the
 backtest itself reads only from `data/cache/` and makes no network calls.
 
-## 5. Synthetic patient list (`data/patients.csv`)
+## 5. NASA Earth-observation layers (POWER + MODIS NDVI)
+
+Added 22 Nov 2026 for the multi-sensor backtest (rules N1, N2 in
+`eval/backtest.py`). Fetched by `fetch_nasa_power` / `fetch_nasa_modis` in
+`data/fetch.py`; the backtest itself stays offline and reads only the cache.
+
+### 6a. NASA POWER daily point API (weather and root-zone soil)
+
+- **Call shape:** `GET https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M,T2M_MAX,T2M_MIN,PRECTOTCORR,ALLSKY_SFC_SW_DWN,RH2M,GWETROOT,WS2M&community=AG&longitude=<lon>&latitude=<lat>&start=20210101&end=20251231&format=JSON`
+- **Version / sources (from the response header, 22 Nov 2026):** POWER Daily API
+  v2.10.5, source native resolution (MERRA-2 based meteorology), `time_standard` LST,
+  `fill_value` -999.0.
+- **Fields and units:** `T2M`, `T2M_MAX`, `T2M_MIN` (deg C, 2 m), `PRECTOTCORR`
+  (mm/day, bias-corrected precipitation), `ALLSKY_SFC_SW_DWN` (MJ/m2/day, all-sky
+  surface shortwave downward irradiance), `RH2M` (%), `GWETROOT` (root-zone soil
+  wetness, 0-1), `WS2M` (m/s at 2 m).
+- **Cache:** `data/cache/nasa_power_<city>.csv`, header
+  `date,t2m,t2m_max,t2m_min,prectotcorr,allsky_sfc_sw_dwn,rh2m,gwetroot,ws2m`,
+  one row per day 2021-01-01..2025-12-31 (1,826 rows per city), for madrid_facf,
+  basel_pbs, zurich_pzh and valencia_demo. `-999` fill values are written as empty
+  (NaN in pandas) and never imputed.
+- **Caveats:** POWER is a gridded reanalysis/satellite product at coarse
+  resolution (about 0.5 deg for MERRA-2 fields), not a station measurement. Its
+  day boundary is local solar time (LST), not the 6 UTC-6 UTC window used for
+  MeteoSwiss, so alignment with Basel/Zurich pollen days is approximate to within
+  a few hours. **Causal use:** N2 on day D reads only prior-day (D-1) POWER
+  values (solar, Tmax, precip), never day D (zero same-day hindsight;
+  2021-01-01 has no prior day and gets no boost). POWER (MERRA-2) is published
+  about 2-3 days late, so a D-1 value may not exist in live operation. Measured
+  sensitivity with D-3 predictors, recalibrated (`nasa_evaluation.latency_sensitivity_lag3`):
+  held-out 2024-2025 CSI 0.405 and recall 44.4% (versus 0.434 and 47.5% at D-1;
+  P2 0.382 and 40.4%). `GWETROOT` is contextual telemetry only, not an N1/N2 input.
+- **Licence / citation:** NASA POWER data are publicly available at no cost,
+  without restriction on use (public domain; NASA data policy). Cite: "These data
+  were obtained from the NASA Langley Research Center (LaRC) POWER Project funded
+  through the NASA Earth Science/Applied Science Program."
+
+### 6b. NASA ORNL DAAC MODIS MOD13Q1 (NDVI, 250 m, 16-day composites)
+
+- **Calls:** `GET https://modis.ornl.gov/rst/api/v1/MOD13Q1/dates?latitude=<lat>&longitude=<lon>`
+  (available composites), then
+  `.../MOD13Q1/subset?latitude=<lat>&longitude=<lon>&startDate=<modis_date>&endDate=<modis_date>&kmAboveBelow=0&kmLeftRight=0&band=250m_16_days_NDVI`
+  in chunks of at most 10 composites, 0.2 s apart.
+- **Band:** `250m_16_days_NDVI`, scale factor 0.0001, single 250 m pixel at the city
+  point (a pixel can be mixed urban/vegetation, so NDVI is a coarse greenness signal).
+  Values <= -2000 (fill -3000) are written as empty; otherwise `round(raw * 0.0001, 6)`.
+- **Cache:** `data/cache/nasa_modis_<city>.csv`, header `date,modis_date,ndvi`
+  (`date` = composite calendar_date, i.e. the composite's first day). Composites
+  from 2020-12-01 are kept so 1 Jan 2021 has a prior value.
+- **Causal join (exact +16d completion):** a MOD13Q1 composite stamped
+  `calendar_date` is built from observations over the following 16 days, so
+  `load_nasa_daily` treats it as available only on
+  `avail_date = calendar_date + 16 days`, and joins with
+  `merge_asof(left_on="date", right_on="avail_date", direction="backward")`.
+  Date D therefore sees only composites with `avail_date <= D`; fill-value
+  composites are skipped and D keeps the last valid one. This removes the
+  16-day lookahead entirely (the +16 d is past the composite window close; it
+  does not include any MODIS publication delay). The first composite (2020-12-02) is available on
+  2020-12-18, before 2021-01-01, so every 2021 day has a value. NDVI is
+  contextual telemetry; N1 and N2 decision rules do not use it.
+- **Licence / citation:** ORNL DAAC MODIS web service; MOD13Q1 is a NASA LP DAAC
+  product, open data with no use restrictions (CC0 / public domain). Cite: ORNL
+  DAAC. 2018. MODIS and VIIRS Land Products Global Subsetting and Visualization
+  Tool. ORNL DAAC, Oak Ridge, Tennessee, USA, https://doi.org/10.3334/ORNLDAAC/1379;
+  and Didan, K. MOD13Q1 MODIS/Terra Vegetation Indices 16-Day L3 Global 250m SIN
+  Grid V061, NASA LP DAAC, https://doi.org/10.5067/MODIS/MOD13Q1.061.
+
+### 6c. Cache additions
+
+| File | Rows | Columns | Period |
+|---|---|---|---|
+| `nasa_power_<city>.csv` (4 files) | 1,826 | date + 8 POWER fields | daily 2021-2025 |
+| `nasa_modis_<city>.csv` (4 files) | see below | date, modis_date, ndvi | 16-day composites, 2020-12..2025-12 |
+
+## 6. Synthetic patient list (`data/patients.csv`)
 
 Generated by `data/make_patients.py`, seed `20261120`, N = 200, fields per
 `docs/DATA_PLAN.md` §3. No real patient data of any kind. The following

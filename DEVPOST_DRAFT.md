@@ -23,6 +23,26 @@ measured skill, and the app is the delivery layer: a clinic-facing briefing
 that compares the day's modelled pollen against published-panel thresholds and
 drafts reminders for already-prescribed medicine (a nurse approves every batch).
 
+**NASA layer.** We added NASA POWER (MERRA-2 / CERES: daily T2M, T2M_MAX,
+T2M_MIN, PRECTOTCORR, ALLSKY_SFC_SW_DWN, RH2M, GWETROOT, WS2M) and NASA ORNL
+MODIS MOD13Q1 (250 m 16-day NDVI, lagged +16 days for strict causality),
+cached offline for all four cities (2021–2025), and tested two extra rules
+calibrated on 2021–2023 only. *Negative finding (N1, priming a steroid nasal
+spray, an intranasal corticosteroid, 14 days before onset):* thermal
+accumulation hit the 7–28 d window 80% in-sample (5.1 d MAE from 14 d) but only
+30% on held-out 2024–2025 (n=10 paired rows; 21.5 d MAE), versus 12.5 d
+and 60% for the prior-year calendar rule; R2 (Europe's 4-day CAMS pollen forecast) fired
+9.7 d after onset (0.0% hit). Warm Feb/Mar springs triggered it before
+flowering. *Multi-sensor gain (N2, prior-day D-1 NASA solar/warm/dry scaling + CAMS, no same-day NASA value):* on
+held-out 2024–2025 (394 observed spikes) CSI rose 0.382 → 0.434 (+0.052) and
+recall 40.4% → 47.5% (159 → 187 events, including 5 of 8 Madrid olive spikes
+versus 0 of 8), at a disclosed cost (false-alert days 22 → 37,
+precision 87.8% → 83.5%). Pooled 2021–2025 (863 events): CSI 0.392 → 0.454,
+recall 41.6% → 50.9%, false-alert days 53 → 105. With a 2–3 day MERRA-2
+publication lag (D-3 predictors, re-calibrated) held-out CSI is 0.405 and
+recall 44.4%. The kill-check verdict stays
+`measured_P2_skill_only_no_beats_api_claim`; N2 has its own holdout ledger.
+
 **Honest limits.** Madrid recall is below our own 50% bar (olive 13.6%, grass
 31.4%) — flagged as limits. The pre-peak rule fires ~3 days earlier by
 construction (it reads 3 days of forecast; archived values may flatter it
