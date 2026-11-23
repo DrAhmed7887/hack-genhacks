@@ -1,5 +1,12 @@
 # PollenPlan — Gate 3 Script & Visual Blueprint (`V3_FOR_APPROVAL`)
 
+> **NOT APPROVED (23 Nov 2026): fails the evidence gate. Do not record or render.**
+> 1. The "2-week" / 14-day alarm claim: N1 hit the 7–28 d window 30% held-out vs 60% for the calendar rule (`nasa_evaluation`, N1).
+> 2. "Satellite weather": NASA POWER is MERRA-2 reanalysis plus CERES solar, not live satellite weather.
+> 3. The orbital-scan shot implies a satellite pollen detection the project does not do.
+> 4. Any "NASA lifts skill" line: the no-NASA control scored held-out CSI 0.486 vs N2 0.434 (`nasa_evaluation.no_nasa_control.nasa_adds_skill_heldout: false`).
+> A new script must be drafted from the signed claims in `CLAIMS.md` and pass `evidence.py gate`.
+
 - **Target Runtime:** ~2m 04s (`~270` spoken words at ~130 wpm; leaves ~56s margin under Devpost 3m cap)
 - **Voice Plan:** ElevenLabs Creator voice, `-16.0 LUFS` normalized, `0` black frames
 - **Reviewed & Revised Against:** Opus `video-director`, Codex/GPT-6-Luna, and Gemini 4 Hydrogen audits

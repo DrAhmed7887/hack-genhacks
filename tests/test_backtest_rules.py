@@ -620,3 +620,34 @@ def test_rule_N2_invariant_to_same_day_nasa_power():
         out = backtest.rule_N2(mutated, "grass", 10.0, 2.0, True, solar_med, tmax_med)
         flipped += int(out.iloc[d + 1] != ref.iloc[d + 1])
     assert flipped > 0
+
+
+def test_no_nasa_control_ignores_nasa_inputs_and_equals_scaled_api():
+    """The control is API(D) x k on every day: NASA columns cannot change it, washout is ignored."""
+    base = _synthetic_nasa_frame()
+    ref = backtest.rule_N2(base, "grass", 10.0, 2.0, True, 17.0, 12.0, use_nasa=False)
+    mutated = base.copy()
+    for col in ("nasa_solar", "nasa_t2m_max", "nasa_precip"):
+        mutated[col] = np.random.default_rng(2).uniform(-50, 500, len(mutated))
+    out = backtest.rule_N2(mutated, "grass", 10.0, 2.0, True, 17.0, 12.0, use_nasa=False)
+    pd.testing.assert_series_equal(ref, out)
+    expected = backtest._ge_threshold_preserving_nan(base["api_grass"] * 2.0, 10.0)
+    pd.testing.assert_series_equal(ref, expected)
+
+
+def test_no_nasa_control_with_k1_equals_p2():
+    base = _synthetic_nasa_frame()
+    control = backtest.rule_N2(base, "grass", 10.0, 1.0, False, 0.0, 0.0, use_nasa=False)
+    pd.testing.assert_series_equal(control, backtest.rule_P2(base, "grass", 10.0), check_names=False)
+
+
+def test_no_nasa_control_calibration_ignores_heldout_years():
+    base = _synthetic_nasa_frame()
+    mutated = base.copy()
+    held = mutated.index.year >= 2024
+    for col in ("obs_grass", "api_grass"):
+        mutated.loc[held, col] = np.random.default_rng(3).uniform(0, 1000, held.sum())
+    a = backtest.calibrate_n2(base, "grass", 10.0, use_nasa=False)
+    b = backtest.calibrate_n2(mutated, "grass", 10.0, use_nasa=False)
+    assert (a["k"], a["washout"]) == (b["k"], b["washout"])
+    assert a["washout"] is False

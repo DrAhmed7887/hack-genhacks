@@ -1066,7 +1066,7 @@ def _lagged_nasa(frame: pd.DataFrame, lag: int) -> pd.DataFrame:
     }, index=frame.index)
 
 
-def calibrate_n2(frame: pd.DataFrame, species: str, threshold: float, lag: int = N2_LAG_DAYS) -> dict:
+def calibrate_n2(frame: pd.DataFrame, species: str, threshold: float, lag: int = N2_LAG_DAYS, use_nasa: bool = True) -> dict:
     """Pick (k, washout) on TRAINING years only, maximising CSI subject to
     train precision >= 0.8 x P2's train precision. Reads TRAINING_YEARS rows only.
     Medians are taken over prior-day (D-lag) NASA POWER solar and Tmax on
@@ -1082,9 +1082,9 @@ def calibrate_n2(frame: pd.DataFrame, species: str, threshold: float, lag: int =
     p2_m = day_alert_metrics(obs_high, rule_P2(train, species, threshold))
     p2_prec = p2_m["precision"]
     trials = []
-    for wash in N2_WASHOUT_GRID:
+    for wash in (N2_WASHOUT_GRID if use_nasa else [False]):
         for k in N2_K_GRID:
-            m = day_alert_metrics(obs_high, rule_N2(train, species, threshold, k, wash, solar_med, tmax_med, lag))
+            m = day_alert_metrics(obs_high, rule_N2(train, species, threshold, k, wash, solar_med, tmax_med, lag, use_nasa))
             ok = p2_prec is None or (m["precision"] is not None and m["precision"] >= N2_PRECISION_FLOOR * p2_prec)
             trials.append({"k": k, "washout": wash, "csi": m["csi"], "precision": m["precision"], "recall": m["recall"], "feasible": bool(ok)})
     feas = [t for t in trials if t["feasible"] and t["csi"] is not None]
@@ -1102,13 +1102,17 @@ def calibrate_n2(frame: pd.DataFrame, species: str, threshold: float, lag: int =
     }
 
 
-def rule_N2(frame: pd.DataFrame, species: str, threshold: float, k: float, washout: bool, solar_med: float, tmax_med: float, lag: int = N2_LAG_DAYS) -> pd.Series:
+def rule_N2(frame: pd.DataFrame, species: str, threshold: float, k: float, washout: bool, solar_med: float, tmax_med: float, lag: int = N2_LAG_DAYS, use_nasa: bool = True) -> pd.Series:
     """adj = API(D) * k when prior-day (D-1) NASA POWER solar >= train median,
     Tmax >= train median and precip < 2.0 mm (dry), else API(D). Optional
     washout: prior-day precip >= 5 mm -> no alert. No same-day NASA value is
     read. NaN API stays NaN; a missing prior-day NASA field (e.g. 2021-01-01
     after shift) counts as False for boost/washout, so API(D) is unscaled."""
     api = frame[f"api_{species}"]
+    if not use_nasa:
+        # No-NASA control (added 23 Nov 2026 review): the same k scaling on every day, so any
+        # gain of N2 over this control is what the NASA weather condition itself adds.
+        return _ge_threshold_preserving_nan(api * k, threshold)
     prev = _lagged_nasa(frame, lag)
     boost = ((prev["solar"] >= solar_med) & (prev["tmax"] >= tmax_med) & (prev["precip"] < N2_DRY_MM)).fillna(False).astype(bool)
     adj = api * np.where(boost, k, 1.0)
@@ -1131,11 +1135,11 @@ def _sum_conf(ms: list[dict]) -> dict:
     }
 
 
-def evaluate_n2(frame: pd.DataFrame, species: str, threshold: float, lag: int = N2_LAG_DAYS) -> dict:
-    calib = calibrate_n2(frame, species, threshold, lag)
+def evaluate_n2(frame: pd.DataFrame, species: str, threshold: float, lag: int = N2_LAG_DAYS, use_nasa: bool = True) -> dict:
+    calib = calibrate_n2(frame, species, threshold, lag, use_nasa)
     obs = frame[f"obs_{species}"]
     obs_high = (obs >= threshold).where(obs.notna(), other=np.nan)
-    n2 = rule_N2(frame, species, threshold, calib["k"], calib["washout"], calib["train_solar_median"], calib["train_tmax_median"], lag)
+    n2 = rule_N2(frame, species, threshold, calib["k"], calib["washout"], calib["train_solar_median"], calib["train_tmax_median"], lag, use_nasa)
     p2 = rule_P2(frame, species, threshold)
     splits = {}
     for name, years in EVAL_SPLITS.items():
@@ -1154,6 +1158,7 @@ def run_nasa_evaluation(results: list[dict], thresholds: dict) -> dict:
     existing run_city_species output (used for the R2 comparator)."""
     per_pair = []
     lag3_pairs = []
+    control_pairs = []
     for r in results:
         city, species = r["city"], r["species"]
         threshold = thresholds["alert"][species]
@@ -1165,6 +1170,7 @@ def run_nasa_evaluation(results: list[dict], thresholds: dict) -> dict:
             "N2": evaluate_n2(frame, species, threshold),
         })
         lag3_pairs.append({"city": city, "species": species, "N2": evaluate_n2(frame, species, threshold, N2_LATENCY_LAG_DAYS)})
+        control_pairs.append({"city": city, "species": species, "C": evaluate_n2(frame, species, threshold, use_nasa=False)})
 
     n1_pooled, n2_pooled = {}, {}
     for split, years in EVAL_SPLITS.items():
@@ -1199,8 +1205,15 @@ def run_nasa_evaluation(results: list[dict], thresholds: dict) -> dict:
         },
         "madrid_olive": next((p["N2"]["splits"]["heldout_2024_2025"] for p in lag3_pairs if p["city"] == "madrid" and p["species"] == "olive"), None),
     }
+    control = {split: _sum_conf([p["C"]["splits"][split]["N2"] for p in control_pairs]) for split in EVAL_SPLITS}
+    control["k_by_city_species"] = {f"{p['city']}_{p['species']}": p["C"]["calibration"]["k"] for p in control_pairs}
+    control["madrid_olive_heldout"] = next(p["C"]["splits"]["heldout_2024_2025"]["N2"] for p in control_pairs
+                                           if p["city"] == "madrid" and p["species"] == "olive")
+    control["nasa_adds_skill_heldout"] = bool(n2_pooled["heldout_2024_2025"]["N2"]["csi"] > control["heldout_2024_2025"]["csi"])
     return {
+        "status": "exploratory: N1 and N2 were added on 22 Nov 2026 after the pre-registered backtest; not pre-registered",
         "rule_definitions": {
+            "no_nasa_control": "API(D) x k on every day, no NASA input, no washout; k chosen on 2021-2023 with the same CSI-under-precision-floor rule as N2. N2 must beat this to claim a NASA contribution.",
             "N1": "cum GDD from Jan 1 (base olive 7C, birch/grass 5C) reaches the TRAINING-year median of cum GDD at (observed_onset - 14d); first date in [Jan 15, season_end].",
             "N2": "API(D) x k when prior-day (D-1) NASA POWER solar (>= train median), Tmax (>= train median), and dry (< 2.0 mm precip); optional washout (prior-day precip >= 5 mm -> no alert); no same-day NASA value is used; (k, washout) chosen on 2021-2023 by CSI subject to precision >= 0.8 x P2 train precision.",
         },
@@ -1211,6 +1224,7 @@ def run_nasa_evaluation(results: list[dict], thresholds: dict) -> dict:
         "per_city_species": per_pair,
         "N1_pooled": n1_pooled,
         "N2_pooled": n2_pooled,
+        "no_nasa_control": control,
         "latency_sensitivity_lag3": lag3,
     }
 
@@ -1222,8 +1236,9 @@ def _f(x, nd=3):
 def append_nasa_section_md(nasa: dict) -> None:
     out_path = DOCS_DIR / "results_table.md"
     L = ["", "## NASA Earth-Observation Evaluation (POWER + MODIS NDVI)", "",
-         "Pre-registered N1/N2 rules calibrated on 2021-2023 only; `heldout_2024_2025` never influences any parameter. "
-         "Added alongside the original rules; the kill-check verdict above is unchanged.", "",
+         "**Exploratory, not pre-registered:** N1 and N2 were added on 22 Nov 2026 after the pre-registered backtest above. "
+         "Their parameters are calibrated on 2021-2023 only; `heldout_2024_2025` never influences any parameter. "
+         "The kill-check verdict above is unchanged.", "",
          "### N1: 14-day pre-season priming (lead = observed onset - alert day; target 14)", "",
          "| City | Species | gdd_base | gdd_target | Train years used |", "|---|---|---|---|---|"]
     for p in nasa["per_city_species"]:
@@ -1251,6 +1266,14 @@ def append_nasa_section_md(nasa: dict) -> None:
         for rule in ("P2", "N2"):
             x = d[rule]
             L.append(f"| {split} | {rule} | {_f(x['recall'])} | {_f(x['precision'])} | {_f(x['csi'])} | {x['tp']} | {x['fp']} | {x['fn']} |")
+    ctl = nasa["no_nasa_control"]
+    L += ["", "**No-NASA control** (same k scaling on every day, no NASA input, k chosen on 2021-2023 by the same rule). "
+          "N2 claims a NASA contribution only if its CSI beats this control.", "",
+          "| Split | Rule | Recall | Precision | CSI | TP | FP | FN |", "|---|---|---|---|---|---|---|---|"]
+    for split in nasa["N2_pooled"]:
+        for rule, x in (("N2 (NASA)", nasa["N2_pooled"][split]["N2"]), ("No-NASA control", ctl[split])):
+            L.append(f"| {split} | {rule} | {_f(x['recall'])} | {_f(x['precision'])} | {_f(x['csi'])} | {x['tp']} | {x['fp']} | {x['fn']} |")
+    L += ["", f"NASA adds skill on held-out 2024-2025: **{'yes' if ctl['nasa_adds_skill_heldout'] else 'no'}**."]
     lg = nasa["latency_sensitivity_lag3"]
     L += ["", f"Latency sensitivity (D-{lg['lag_days']} NASA POWER, recalibrated; MERRA-2 publication lag ~2-3 days):", "",
           "| Split | Rule | Recall | Precision | CSI | TP | FP | FN |", "|---|---|---|---|---|---|---|---|"]

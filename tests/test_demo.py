@@ -614,3 +614,20 @@ def test_nasa_eval_summary_matches_backtest_json():
         assert label in text, label
     lg = backtest["nasa_evaluation"]["latency_sensitivity_lag3"]["N2_pooled"]["heldout_2024_2025"]["N2"]
     assert "Latency check" in text and f"{lg['csi']:.3f}" in text and f"{lg['recall']*100:.1f}%" in text
+
+
+def test_nasa_eval_summary_shows_no_nasa_control():
+    """The page must show the control and must not present N2 as a NASA gain when the control wins."""
+    html = load_demo_html()
+    m = re.search(r'<div class="section" id="nasa-eval-summary">(.*?)<!-- NASA_EVAL:END -->', html, re.S)
+    assert m
+    text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1)))
+    ctl = json.loads((EVAL_RESULTS_DIR / "backtest.json").read_text())["nasa_evaluation"]["no_nasa_control"]
+    ho = ctl["heldout_2024_2025"]
+    assert f"CSI {ho['csi']:.3f}" in text
+    assert f"{ho['tp']} of {ho['n_events']}" in text and f"{ho['fp']} false-alert days" in text
+    verdict = "yes" if ctl["nasa_adds_skill_heldout"] else "no"
+    assert f"Does NASA add skill? {verdict}" in text
+    if not ctl["nasa_adds_skill_heldout"]:
+        assert "What Helped" not in text
+        assert 'class="ne-card good"' not in m.group(1)

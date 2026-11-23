@@ -174,8 +174,11 @@ All values: `BT` → `nasa_evaluation`; reproduce with `.venv/bin/python eval/ba
 | K6 | Madrid olive held-out spikes caught | `per_city_species[madrid/olive].N2.splits.heldout_2024_2025` | N2 5/8, P2 0/8 (N2 has 4 false-alert days there) |
 | K6b | N2 latency sensitivity: D-3 NASA POWER (MERRA-2 publishes ~2-3 days late), recalibrated | `latency_sensitivity_lag3.N2_pooled` | held-out CSI 0.405, recall 44.4% (175/394), 38 false-alert days; pooled CSI 0.429, recall 48.7%; Madrid olive 5/8 with 2 false-alert days |
 | K7 | Legacy kill-check verdict unchanged | `kill_check` | `measured_P2_skill_only_no_beats_api_claim` |
+| K8 | No-NASA control, held-out 2024-2025 (API × k every day, no NASA input, k chosen on 2021-2023 by the N2 rule) | `nasa_evaluation.no_nasa_control.heldout_2024_2025` | CSI 0.486; recall 54.6% (215/394); 48 false-alert days; precision 81.7% |
+| K9 | NASA adds skill over its control, held-out | `nasa_evaluation.no_nasa_control.nasa_adds_skill_heldout` | `false` |
+| K10 | Status of N1 and N2 | `nasa_evaluation.status` | exploratory, added 22 Nov 2026 after the pre-registered backtest |
 
-Not claimed: N1 is a negative result (worse than the calendar rule out-of-sample). N2's gain is two held-out years, bought with extra false alerts, and does not change the kill-check verdict.
+Not claimed: N1 is a negative result (worse than the calendar rule out-of-sample). N2 is also a negative result: it beats the API forecast (K4) but loses to the no-NASA control (K8, K9), so no NASA contribution is claimed. Madrid olive 5/8 (K6) rests on 8 events.
 
 ## I. Wording that does not match the source (open items)
 

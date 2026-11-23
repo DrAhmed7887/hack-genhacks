@@ -296,7 +296,15 @@ def nasa_eval_figures(backtest: dict) -> dict[str, str]:
     pct = lambda v: f"{v * 100:.1f}%"  # noqa: E731
     pct0 = lambda v: f"{v * 100:.0f}%"  # noqa: E731
     lg = ne["latency_sensitivity_lag3"]["N2_pooled"]["heldout_2024_2025"]["N2"]
+    ctl = ne["no_nasa_control"]
+    ctl_ho, ctl_mo = ctl["heldout_2024_2025"], ctl["madrid_olive_heldout"]
     return {
+        "ctl_csi": f"{ctl_ho['csi']:.3f}",
+        "ctl_recall": pct(ctl_ho["recall"]),
+        "ctl_events": f"{ctl_ho['tp']} of {ctl_ho['n_events']}",
+        "ctl_fp": str(ctl_ho["fp"]),
+        "ctl_madrid_olive": f"{ctl_mo['tp']}/{ctl_mo['n_events']}",
+        "nasa_adds_skill": "yes" if ctl["nasa_adds_skill_heldout"] else "no",
         "lag3_csi": f"{lg['csi']:.3f}",
         "lag3_recall": pct(lg["recall"]),
         "lag3_fp": str(lg["fp"]),
@@ -328,18 +336,23 @@ def render_nasa_eval(backtest: dict, indent: str = "    ") -> str:
     lines = [
         indent + NASA_BEGIN,
         indent + '<div class="section" id="nasa-eval-summary">',
-        indent + "  <h2>NASA Layer: What Helped and What Did Not (held-out 2024–25)</h2>",
-        indent + '  <p class="ne-lead">Rules N1 and N2 were calibrated on 2021–2023 only and scored on 2024–2025. '
-                 "Retrospective; the gain is reported together with its false-alert cost and a negative result.</p>",
-        indent + '  <h3 class="ne-h good">Held-Out 2024–25 Prior-Day (D-1) NASA + CAMS (N2) vs API Forecast (P2)</h3>',
+        indent + "  <h2>NASA Layer: What We Tested (held-out 2024–25)</h2>",
+        indent + '  <p class="ne-lead">Exploratory rules N1 and N2 were added after the pre-registered backtest, calibrated on 2021–2023 only '
+                 "and scored on 2024–2025. Retrospective. Both are reported with their controls; neither beat its control.</p>",
+        indent + '  <h3 class="ne-h">Held-Out 2024–25 Prior-Day (D-1) NASA + CAMS (N2) vs API Forecast (P2)</h3>',
         indent + '  <div class="ne-grid">',
-        indent + "    " + card("CSI", f["csi"], "P2 → N2", "good"),
-        indent + "    " + card("Recall", f["recall"], "P2 → N2", "good"),
-        indent + "    " + card("Spikes caught", f["events"], "P2 → N2 events", "good"),
-        indent + "    " + card("Madrid olive", f["madrid_olive"], "P2 → N2 spikes caught", "good"),
+        indent + "    " + card("CSI", f["csi"], "P2 → N2"),
+        indent + "    " + card("Recall", f["recall"], "P2 → N2"),
+        indent + "    " + card("Spikes caught", f["events"], "P2 → N2 events"),
+        indent + "    " + card("Madrid olive", f["madrid_olive"], f"P2 → N2 (n = 8; control {f['ctl_madrid_olive']})", "warn"),
         indent + "    " + card("False-alert days", f["fp"], "trade-off: more false alerts", "warn"),
         indent + "    " + card("Precision", f["precision"], "trade-off: lower precision", "warn"),
+        indent + "    " + card("No-NASA control CSI", f["ctl_csi"], "same scaling every day, no NASA input", "bad"),
         indent + "  </div>",
+        indent + f'  <p class="nc-note ne-control" id="nasa-control-note">Does NASA add skill? <strong>{e(f["nasa_adds_skill"])}</strong>. '
+                 f"Scaling the CAMS forecast the same way on every day, with no NASA input and the same training rule, "
+                 f"scored CSI {e(f['ctl_csi'])} (recall {e(f['ctl_recall'])}, {e(f['ctl_events'])}, {e(f['ctl_fp'])} false-alert days). "
+                 "The N2 gain over P2 came from lowering the alert level, not from the NASA weather condition.</p>",
         indent + '  <h3 class="ne-h bad">Honest Negative Result (N1: thermal-accumulation priming, held-out)</h3>',
         indent + '  <table class="results-table" id="nasa-eval-n1-table">',
         indent + "    <thead><tr><th>Rule</th><th>MAE from 14d</th><th>Hit in 7–28d window</th><th>Mean lead</th></tr></thead>",

@@ -1194,7 +1194,9 @@
     "overall_headline": "measured_P2_skill_only_no_beats_api_claim"
   },
   "nasa_evaluation": {
+    "status": "exploratory: N1 and N2 were added on 22 Nov 2026 after the pre-registered backtest; not pre-registered",
     "rule_definitions": {
+      "no_nasa_control": "API(D) x k on every day, no NASA input, no washout; k chosen on 2021-2023 with the same CSI-under-precision-floor rule as N2. N2 must beat this to claim a NASA contribution.",
       "N1": "cum GDD from Jan 1 (base olive 7C, birch/grass 5C) reaches the TRAINING-year median of cum GDD at (observed_onset - 14d); first date in [Jan 15, season_end].",
       "N2": "API(D) x k when prior-day (D-1) NASA POWER solar (>= train median), Tmax (>= train median), and dry (< 2.0 mm precip); optional washout (prior-day precip >= 5 mm -> no alert); no same-day NASA value is used; (k, washout) chosen on 2021-2023 by CSI subject to precision >= 0.8 x P2 train precision."
     },
@@ -3386,6 +3388,59 @@
           "false_alert_days": 37
         }
       }
+    },
+    "no_nasa_control": {
+      "all_evaluable": {
+        "tp": 508,
+        "fp": 147,
+        "fn": 355,
+        "n_events": 863,
+        "recall": 0.5886442641946698,
+        "precision": 0.7755725190839695,
+        "csi": 0.502970297029703,
+        "false_alert_days": 147
+      },
+      "train_2021_2023": {
+        "tp": 293,
+        "fp": 99,
+        "fn": 176,
+        "n_events": 469,
+        "recall": 0.6247334754797441,
+        "precision": 0.7474489795918368,
+        "csi": 0.5158450704225352,
+        "false_alert_days": 99
+      },
+      "heldout_2024_2025": {
+        "tp": 215,
+        "fp": 48,
+        "fn": 179,
+        "n_events": 394,
+        "recall": 0.5456852791878173,
+        "precision": 0.8174904942965779,
+        "csi": 0.48642533936651583,
+        "false_alert_days": 48
+      },
+      "k_by_city_species": {
+        "madrid_olive": 1.25,
+        "madrid_grass": 1.0,
+        "basel_birch": 3.0,
+        "basel_grass": 1.5,
+        "zurich_birch": 2.0,
+        "zurich_grass": 2.0
+      },
+      "madrid_olive_heldout": {
+        "tp": 2,
+        "fp": 1,
+        "fn": 6,
+        "tn": 699,
+        "n_events": 8,
+        "n_evaluated_days": 708,
+        "recall": 0.25,
+        "precision": 0.6666666666666666,
+        "csi": 0.2222222222222222,
+        "false_alert_days": 1
+      },
+      "nasa_adds_skill_heldout": false
     },
     "latency_sensitivity_lag3": {
       "lag_days": 3,
