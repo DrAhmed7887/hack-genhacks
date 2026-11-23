@@ -6,7 +6,8 @@ import {Mono, Paper, Title, ramp} from '../ui';
 const s = scene('s2');
 export const TRAP_FRAMES = 300; // Blender sequence length (video/v5/blender/trap_scene.py)
 // where the unrolled tape sits in the last 3D frame (measured on the rendered frame 300)
-export const STRIP = {y0: 396, y1: 696};
+export const STRIP = {y0: 399, y1: 697};
+const TICKS = [-62, 392, 847, 1300, 1754]; // day ticks on the rendered tape (frame 300)
 const LINE = {y0: 742, y1: 822}; // the strip as the timeline, after it settles
 const pad = (n: number) => String(n).padStart(4, '0');
 const hhmm = (iso: string) => iso.slice(11, 16);
@@ -39,6 +40,7 @@ export const S2Trap: React.FC = () => {
       <Paper>
         <Img src={staticFile(`v5/3d/trap/trap_${pad(f + 1)}.png`)} style={{position: 'absolute', inset: 0, width: 1920, height: 1080}} />
         <div style={{opacity: tO}}>
+          <div style={{position: 'absolute', left: 88, top: 60, width: 900, height: 190, borderRadius: 20, background: 'rgba(246,244,238,.9)'}} />
           <Title text="Yesterday's trap" sub="the clinic's own pollen count, read each morning" />
         </div>
       </Paper>
@@ -58,10 +60,12 @@ export const S2Trap: React.FC = () => {
     <Paper>
       <Title at={TRAP_FRAMES + 4} text="Locked before the data" />
       {/* the tape, now a timeline */}
-      <div style={{position: 'absolute', left: 0, right: 0, top: y0, height: y1 - y0, background: '#DCD6C8', borderTop: `2px solid ${C.ink2}`, borderBottom: `2px solid ${C.ink2}`}} />
-      {Array.from({length: 13}, (_, i) => (
-        <div key={i} style={{position: 'absolute', left: 70 + i * 148, top: y0, width: 3, height: y1 - y0, background: C.ink, opacity: 0.8}} />
+      <div style={{position: 'absolute', left: 0, right: 0, top: y0, height: y1 - y0, background: '#D2CBB9', borderTop: `2px solid ${C.ink2}`, borderBottom: `2px solid ${C.ink2}`}} />
+      {TICKS.map((x, i) => (
+        <div key={i} style={{position: 'absolute', left: x - 2, top: y0, width: 4, height: y1 - y0, background: C.ink, opacity: 0.85}} />
       ))}
+      {/* the last 3D frame fades out over the flat strip, so the grains leave and the tape stays */}
+      <Img src={staticFile(`v5/3d/trap/trap_${pad(TRAP_FRAMES)}.png`)} style={{position: 'absolute', inset: 0, width: 1920, height: 1080, opacity: 1 - ramp(g, 0, 10)}} />
       <svg width={1920} height={1080} style={{position: 'absolute', inset: 0, opacity: hatch}}>
         <defs>
           <pattern id="hatch" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">

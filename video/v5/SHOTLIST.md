@@ -84,3 +84,11 @@ R13 Tape colour: the tape is neutral warm grey so green reads as "trap result" o
 - **3D render cost:** a 1080p, 64-sample frame takes 77 s on the Pro's CPU (Metal GPU compile hung), so 300 frames = about 6.4 h locally. That goes to Colab (594.69 units, read 23 Nov).
 - **Style frames:** `video/v5/style_frames/` (git-ignored) and Drive `Hackathons/2026-12-genhacks/video/v5_style_frames/`.
 - **To confirm:** the SF3 subtitle "air in through a slit · pollen sticks to a tape · one band per day" is context text with no source row yet. Map it in `public_claims_v5.jsonl` or drop it.
+
+## 7. Build record (23 Nov 2026)
+
+- 3D-A rendered on Colab: NVIDIA L4, Blender 5.3.0 Cycles (OptiX requested), 96 samples, 300 frames in 7,214 s, 3.88 compute units (594.69 → 590.81). Freestyle outlines and 5,200 grain objects made it CPU-bound (~21–35 s/frame); next time, use instances.
+- Match cut: the last 3D frame's tape is y 399–697 with ticks at x 392/847/1300/1754; scene 2b's flat strip starts there and settles into the timeline.
+- Music: Flow Music (flowmusic.app, Lyria 3 Pro), "Morning Clarity", 180.98 s WAV, prompt in the hand-over notes; mixed at volume 0.20 with sidechain ducking under the voice (`video/v5/master.sh`).
+- Close card: 239 tests (pytest collection, all passing), not the script's 137, which was out of date.
+- Real-screen fine print (chart axis dates, card footers, table chips) sits at 22–27 px after zoom. All film-authored text is ≥ 28 px.
