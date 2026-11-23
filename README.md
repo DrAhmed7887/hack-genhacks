@@ -2,6 +2,14 @@
 
 A minimal static demo for GitHub Pages visualizing the pre-registered backtest results for the PollenPlan alert system.
 
+**Headline:** on 863 observed high-pollen days (Madrid, Basel, Zurich, 2021–2025), the free CAMS forecast caught **41.6%**; our pre-registered alert rule caught 41.0%, so we make no "beats the API" claim. An exploratory NASA POWER weather rule also lost to its own no-NASA control (held-out CSI 0.434 vs 0.486). The app uses the forecast and puts a nurse in front of every reminder batch.
+
+**Live demo, no account:** <https://drahmed7887.github.io/hack-genhacks/> · **Reproduce with no keys (the backtest reads committed data; only the install needs a network):**
+
+```bash
+python -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/python -m pytest -q && .venv/bin/python eval/verify_claims.py
+```
+
 ## Important Disclaimers
 
 - **Retrospective analysis only** - Results are from historical data and do not predict future performance
@@ -149,7 +157,7 @@ measured_P2_skill_only_no_beats_api_claim
 | Metric | Value |
 |--------|-------|
 | Total events (P2 denominator) | 863 |
-| Evaluated city-days | 8076 |
+| Evaluated city-days | 7373 |
 | Pooled P2 recall | 0.416 |
 | Pooled R1 recall | 0.410 |
 | Madrid olive P2 recall | 0.136 |
@@ -174,7 +182,7 @@ Both Madrid species have P2 recall below 50% → **limits** number per kill-chec
 
 **Bottom line: neither NASA rule beat its control.** N1 lost to a calendar rule; N2's gain over the API forecast came from lowering the alert level, and a no-NASA control that does only that scored higher.
 
-**N1 (negative finding): priming a steroid nasal spray (intranasal corticosteroid) 14 days before onset.** N1 is naive thermal accumulation from 1 January. On the 10 paired held-out rows (2024-2025), R2 (Europe's 4-day CAMS pollen forecast, read as D..D+3) fired 9.7 days *after* onset (0.0% in the 7-28 day window). N1 scored 80% in the 7-28 day window in-sample (2021-2023, 5.1 days MAE from 14 days) but only 30% held-out (2024-2025: 21.5 days MAE) versus 12.5 days MAE and 60% hit for the prior-year calendar rule `C0_14d`. Warm February/March springs triggered N1 early, before olive and grass flowering. N1 is not a usable improvement.
+**N1 (negative finding): priming a steroid nasal spray (intranasal corticosteroid) 14 days before onset.** N1 is naive thermal accumulation from 1 January. On the 10 paired held-out rows (2024-2025), R2 (Europe's 4-day CAMS pollen forecast, read as D..D+3) fired 9.7 days *after* onset (0.0% in the 7-28 day window). N1 scored 70% in the 7-28 day window in-sample (2021-2023, 4.8 days MAE from 14 days) but only 30% held-out (2024-2025: 21.9 days MAE) versus 12.5 days MAE and 60% hit for the prior-year calendar rule `C0_14d`. Warm February/March springs triggered N1 early, before olive and grass flowering. N1 is not a usable improvement.
 
 **N2 (negative finding against its control): prior-day (D-1) NASA solar/warm/dry scaling on top of CAMS.** N2 on day D reads only NASA POWER values from D-1 (solar >= train median, Tmax >= train median, precip < 2.0 mm); no same-day NASA value is used (`tests/test_backtest_rules.py` proves invariance). On held-out 2024-2025 (394 observed spikes), CSI rose from 0.382 (P2) to 0.434 (N2, +0.052) and recall from 40.4% to 47.5% (159 to 187 events, including 5 of 8 held-out Madrid olive spikes versus 0 of 8 for P2). The cost is more false-alert days: 22 to 37, precision 87.8% to 83.5%. Pooled 2021-2025 (863 events): CSI 0.392 to 0.454, recall 41.6% to 50.9% (359 to 439), false-alert days 53 to 105. Latency check: NASA POWER (MERRA-2) publishes about 2-3 days late; re-calibrated and re-scored with D-3 predictors, held-out CSI is 0.405, recall 44.4% (175 of 394), 38 false-alert days.
 

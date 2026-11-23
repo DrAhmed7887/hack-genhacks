@@ -10,7 +10,7 @@ export const TOTAL_FRAMES = Math.round(timeline.total * FPS);
 const F = (s: number) => Math.round(s * FPS);
 const X = 10; // pre-overlap fade-in frames: the next scene fades in OVER the previous one, which stays opaque underneath (never black)
 
-// Visual scenes. s5 spans narration slots s5a + s5b.
+// Visual scenes. s5 spans narration slots s5a + s5b; s7 spans s7 + s7n (V4 NASA test).
 const VIS: {id: string; narr: string[]; bg: string; C: React.FC}[] = [
   {id: 's1', narr: ['s1'], bg: DARK, C: S1},
   {id: 's2', narr: ['s2'], bg: LIGHT, C: S2},
@@ -18,7 +18,7 @@ const VIS: {id: string; narr: string[]; bg: string; C: React.FC}[] = [
   {id: 's4', narr: ['s4'], bg: LIGHT, C: S4},
   {id: 's5', narr: ['s5a', 's5b'], bg: DARK, C: S5},
   {id: 's6', narr: ['s6'], bg: LIGHT, C: S6},
-  {id: 's7', narr: ['s7'], bg: DARK, C: S7},
+  {id: 's7', narr: ['s7', 's7n'], bg: DARK, C: S7},
   {id: 's8', narr: ['s8'], bg: LIGHT, C: S8},
 ];
 const slot = (id: string) => timeline.scenes.find((s) => s.id === id)!;

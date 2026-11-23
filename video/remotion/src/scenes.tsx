@@ -8,6 +8,8 @@ const b = box;
 const ctr = (r: {x: number; y: number; w: number; h: number}) => [r.x + r.w / 2, r.y + r.h / 2] as const;
 const DUR5A = timeline.scenes.find((s) => s.id === 's5a')!.dur;
 const W5B = (p: string, n = 0) => DUR5A + W('s5b', p, n);
+const DUR7 = timeline.scenes.find((s) => s.id === 's7')!.dur;
+const W7N = (p: string, n = 0) => DUR7 + W('s7n', p, n);
 const fmt = (n: number) => Math.round(n).toLocaleString('en-US');
 
 // Screen-space chip (not zoomed).
@@ -70,7 +72,7 @@ export const S2: React.FC = () => {
 // ───────── s3 · dark · grid vs traps
 export const S3: React.FC = () => {
   const t = useSec();
-  const tPeople = W('s3', 'people'), tWe = W('s3', 'we'), tMad = W('s3', 'madrid'), tFive = W('s3', 'five'), tEight = W('s3', 'eight');
+  const tPeople = W('s3', 'people'), tWe = W('s3', 'we'), tMad = W('s3', 'madrid'), tFive = W('s3', 'five'), tSeven = W('s3', 'seven');
   const badge = (txt: string, sub: string, at: number, y: number, col: string) => (
     <Glass style={{left: 1160, top: y, width: 696, padding: '18px 26px', ...appear(t, at, 0.5)}}>
       <div style={{fontSize: 40, fontWeight: 800, color: col}}>{txt}</div>
@@ -99,7 +101,7 @@ export const S3: React.FC = () => {
         <div style={{fontSize: 30, fontWeight: 700, lineHeight: 1.25, marginTop: 6}}>EPOCHAL n=396 found no threshold</div>
         <div style={{fontSize: 26, color: '#C5D1E0', lineHeight: 1.25, marginTop: 6}}>No safe or unsafe level exists for every person</div>
       </Glass>
-      {counter(64, `${fmt(countTo(t, tEight, tEight + 1.6, 8076))}`, 'city-days', tEight - 0.2)}
+      {counter(64, `${fmt(countTo(t, tSeven, tSeven + 1.6, 7373))}`, 'city-days', tSeven - 0.2)}
       {counter(412, `${fmt(countTo(t, tMad, tMad + 1.2, 863))}`, 'events', tMad - 0.2)}
       {counter(760, `${fmt(countTo(t, tFive, tFive + 0.8, 5))}`, 'years', tFive - 0.2)}
     </AbsoluteFill>
@@ -176,7 +178,7 @@ export const S5: React.FC = () => {
   return (
     <AbsoluteFill>
       <div style={{position: 'absolute', left: 64, top: 52, fontFamily: SANS, fontSize: 34, fontWeight: 700, color: '#9FB0C5', ...appear(t, 0.2)}}>
-        863 high-pollen events · 8,076 city-days · frozen in DATA_PLAN.md before scoring</div>
+        863 high-pollen events · 7,373 city-days · frozen in DATA_PLAN.md before scoring</div>
       {card(64, 'API Forecast (P2)', 41.6, 359, tApi, '#5EEAD4')}
       {card(996, 'Our Rule (R1)', 41.0, 354, tOur, '#93C5FD')}
       {(() => {
@@ -221,20 +223,48 @@ export const S6: React.FC = () => {
 // ───────── s7 · dark · honest limits
 export const S7: React.FC = () => {
   const t = useSec();
+  const tN = W7N('we') - 0.2; // phase 2: NASA test (narration slot s7n)
   const rows: [string, string, number][] = [
     ['1', 'Madrid API P2 recall: 13.6% olive / 31.4% grass (below 50% bar)', W('s7', 'honest') + 0.4],
     ['2', 'R2 pre-peak lead (+2.88d) reflects 3-day forecast look-ahead, not beating C0 (−1.55d)', W('s7', 'pre-peak') - 0.2],
     ['3', 'Valencia: CAMS demo replay only — never scored', W('s7', 'valencia') - 0.2],
   ];
+  const out = 1 - ease(t, tN - 0.4, tN);
+  const bar = (label: string, value: string, frac: number, col: string, at: number, top: number) => (
+    <div style={{position: 'absolute', left: 44, top, width: 1592, height: 58, display: 'flex', alignItems: 'center', gap: 24, ...appear(t, at, 0.5, 12)}}>
+      <div style={{flex: '0 0 470px', fontSize: 34, fontWeight: 700, color: '#D5DEE8'}}>{label}</div>
+      <div style={{height: 46, width: 900 * frac * ease(t, at, at + 0.9), background: col, borderRadius: 10}} />
+      <div style={{fontSize: 40, fontWeight: 800, color: '#fff', fontFamily: MONO}}>{value}</div>
+    </div>
+  );
   return (
     <AbsoluteFill>
-      <div style={{position: 'absolute', left: 120, top: 70, fontFamily: SANS, fontSize: 64, fontWeight: 800, color: '#fff', ...appear(t, 0.2)}}>Honest limits</div>
+      <div style={{position: 'absolute', left: 120, top: 70, fontFamily: SANS, fontSize: 64, fontWeight: 800, color: '#fff', ...appear(t, 0.2), opacity: Math.min(ease(t, 0.2, 0.7), out)}}>Honest limits</div>
       {rows.map(([n, txt, at], i) => (
-        <Glass key={i} style={{left: 120, top: 210 + i * 220, width: 1680, height: 180, display: 'flex', alignItems: 'center', gap: 36, padding: '0 44px', borderColor: i === 0 ? AMBER : '#34415A', ...appear(t, 0.3 + i * 0.2, 0.5, 20)}}>
+        <Glass key={i} style={{left: 120, top: 210 + i * 220, width: 1680, height: 180, display: 'flex', alignItems: 'center', gap: 36, padding: '0 44px', borderColor: i === 0 ? AMBER : '#34415A', ...appear(t, 0.3 + i * 0.2, 0.5, 20), opacity: Math.min(ease(t, 0.3 + i * 0.2, 0.8 + i * 0.2), out)}}>
           <div style={{flex: '0 0 84px', height: 84, borderRadius: 42, background: AMBER, color: '#1A1203', fontSize: 48, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>{n}</div>
           <div style={{fontSize: 42, fontWeight: 700, lineHeight: 1.25, opacity: ease(t, at, at + 0.5, 0.25, 1)}}>{txt}</div>
         </Glass>
       ))}
+      {t >= tN - 0.4 && (<>
+        <div style={{position: 'absolute', left: 120, top: 46, fontFamily: SANS, color: '#fff', ...appear(t, tN, 0.5)}}>
+          <span style={{fontSize: 60, fontWeight: 800}}>NASA POWER test</span>
+          <span style={{fontSize: 34, fontWeight: 700, color: '#9FB0C5', marginLeft: 28}}>held-out 2024–25 · exploratory</span>
+        </div>
+        <Glass style={{left: 120, top: 175, width: 1680, height: 290, ...appear(t, W7N('fourteen') - 0.2, 0.5, 20)}}>
+          <div style={{position: 'absolute', left: 44, top: 26, fontSize: 36, fontWeight: 800}}>14-day early warning landed in the 1–4 week window <span style={{color: '#9FB0C5', fontWeight: 700}}>· 10 seasons</span></div>
+          {bar('NASA temperature clock', '30%', 0.3, CRIMSON, W7N('nasa', 1), 110)}
+          {bar("Last year's calendar", '60%', 0.6, C.accent, W7N('last'), 192)}
+        </Glass>
+        <Glass style={{left: 120, top: 490, width: 1680, height: 345, ...appear(t, W7N('rule') - 0.8, 0.5, 20)}}>
+          <div style={{position: 'absolute', left: 44, top: 26, fontSize: 36, fontWeight: 800}}>Alert score (CSI) · higher is better</div>
+          {bar('API forecast alone', '0.382', 0.382 / 0.5, '#5A6672', W7N('score'), 105)}
+          {bar('+ NASA weather rule', '0.434', 0.434 / 0.5, AMBER, W7N('four', 1), 180)}
+          {bar('Same rule, no NASA', '0.486', 0.486 / 0.5, C.accent, W7N('without'), 255)}
+        </Glass>
+        <div style={{position: 'absolute', left: 120, top: 858, padding: '14px 34px', borderRadius: 14, background: AMBER, color: '#1A1203', fontFamily: SANS, fontSize: 38, fontWeight: 800, ...appear(t, W7N('added'), 0.5)}}>
+          NASA adds skill? No → no NASA claim</div>
+      </>)}
     </AbsoluteFill>
   );
 };
@@ -242,7 +272,7 @@ export const S7: React.FC = () => {
 // ───────── s8 · light · close on our measurement
 export const S8: React.FC = () => {
   const t = useSec();
-  const tZ = W('s8', 'zero'), tE = W('s8', 'eighty'), tN = W('s8', 'ninety'), tO = W('s8', 'open');
+  const tZ = W('s8', 'zero'), tE = W('s8', 'eighty'), tN = W('s8', 'one'), tO = W('s8', 'open');
   const hero = (x: number, big: string, label: string, at: number, col: string) => (
     <div style={{position: 'absolute', left: x, top: 150, width: 560, height: 380, borderRadius: 24, background: '#fff', border: `4px solid ${col}`, fontFamily: SANS, textAlign: 'center',
       boxShadow: '0 16px 40px rgba(20,32,43,0.14)', ...appear(t, at, 0.5, 30)}}>
@@ -255,11 +285,11 @@ export const S8: React.FC = () => {
     <AbsoluteFill>
       {hero(64, '0', 'Unapproved Sends', tZ, C.accent)}
       {hero(680, `${fmt(89 * kZ)} / 200`, 'Blocked by Code', tE, CRIMSON)}
-      {hero(1296, `${fmt(95 * ease(t, tN, tN + 1.0))} / 95`, 'Tests Green', tN, C.navy)}
+      {hero(1296, `${fmt(117 * ease(t, tN, tN + 1.0))} / 117`, 'Tests Green', tN, C.navy)}
       <div style={{position: 'absolute', left: 64, top: 570, padding: '14px 34px', borderRadius: 14, background: AMBER, color: '#1A1203', fontFamily: SANS, fontSize: 36, fontWeight: 800, ...appear(t, tN + 0.8, 0.5)}}>
         🔒 Claim Locked (R1 Lost)</div>
       <div style={{position: 'absolute', left: 64, right: 64, top: 690, padding: '22px 36px', borderRadius: 18, background: C.ink, color: '#fff', fontFamily: SANS, ...appear(t, tO - 0.3, 0.6)}}>
-        <div style={{fontSize: 34, fontWeight: 700, color: '#9FB0C5'}}>863 events · 8,076 city-days</div>
+        <div style={{fontSize: 34, fontWeight: 700, color: '#9FB0C5'}}>863 events · 7,373 city-days</div>
         <div style={{fontSize: 44, fontWeight: 800, marginTop: 6, color: '#5EEAD4'}}>drahmed7887.github.io/hack-genhacks</div>
         <div style={{fontSize: 34, fontFamily: MONO, marginTop: 6}}>github.com/DrAhmed7887/hack-genhacks</div>
       </div>
