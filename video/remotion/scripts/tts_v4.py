@@ -16,6 +16,7 @@ OUT = HERE.parent / "public" / "audio"
 
 
 def tts(clip_id: str) -> None:
+    OUT.mkdir(parents=True, exist_ok=True)
     body = json.dumps({"text": CFG["clips"][clip_id], "model_id": CFG["model_id"], "voice_settings": CFG["voice_settings"]}).encode()
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{CFG['voice_id']}/with-timestamps?output_format=mp3_44100_128"
     req = urllib.request.Request(url, data=body, headers={"xi-api-key": os.environ["ELEVENLABS_API_KEY"], "Content-Type": "application/json"})

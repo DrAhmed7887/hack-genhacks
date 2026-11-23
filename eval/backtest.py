@@ -580,6 +580,7 @@ def run_city_species(city: str, species: str, threshold: float, rng: np.random.G
 
         # misses: observed high day where this rule did not alert
         valid = obs_high.notna() & alerts.notna()
+        # NaN coercions below are harmless: `valid` masks every NaN day first.
         alerts_filled = alerts.copy()
         alerts_filled[alerts_filled.isna()] = False
         missed_mask = valid & obs_high.astype(bool) & ~alerts_filled.astype(bool)

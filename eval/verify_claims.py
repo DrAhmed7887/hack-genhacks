@@ -37,10 +37,12 @@ checks = {
 }
 ne = d["nasa_evaluation"]
 n1 = ne["N1_pooled"]["heldout_2024_2025"]["paired_common_rows"]
+n1t = ne["N1_pooled"]["train_2021_2023"]["paired_common_rows"]["N1"]
 n2 = ne["N2_pooled"]["heldout_2024_2025"]
 ctl = ne["no_nasa_control"]
 checks.update({
- "K3 N1 held-out": (n1["n"], n1["N1"]["mae_from_14d"], n1["N1"]["share_in_7_to_28d"], n1["C0_14d"]["mae_from_14d"], n1["C0_14d"]["share_in_7_to_28d"]) == (10, 21.9, 0.3, 12.5, 0.6),
+ "K2 N1 in-sample": (n1t["n"], round(n1t["mae_from_14d"], 3), round(n1t["share_in_7_to_28d"], 3)) == (10, 4.8, 0.7),
+ "K3 N1 held-out": (n1["n"],) + tuple(round(x, 3) for x in (n1["N1"]["mae_from_14d"], n1["N1"]["share_in_7_to_28d"], n1["C0_14d"]["mae_from_14d"], n1["C0_14d"]["share_in_7_to_28d"])) == (10, 21.9, 0.3, 12.5, 0.6),
  "K4 N2 held-out": (n2["N2"]["n_events"], round(n2["P2"]["csi"], 3), round(n2["N2"]["csi"], 3), n2["P2"]["tp"], n2["N2"]["tp"], n2["P2"]["false_alert_days"], n2["N2"]["false_alert_days"]) == (394, 0.382, 0.434, 159, 187, 22, 37),
  "K8 no-NASA control held-out": (round(ctl["heldout_2024_2025"]["csi"], 3), ctl["heldout_2024_2025"]["tp"], ctl["heldout_2024_2025"]["n_events"], ctl["heldout_2024_2025"]["false_alert_days"], round(ctl["heldout_2024_2025"]["precision"], 3)) == (0.486, 215, 394, 48, 0.817),
  "K9 NASA adds no skill": ctl["nasa_adds_skill_heldout"] is False and ctl["heldout_2024_2025"]["csi"] > n2["N2"]["csi"],
@@ -48,10 +50,11 @@ checks.update({
 })
 
 CLAIMS_TEXT = [  # value as CLAIMS.md prints it; each must be present
-    "| 863 observed high-pollen events |", "| A2 | 7,373 evaluated city-days", "| 7373 (= 1279 + 932 + 1224 + 1315 + 1265 + 1358,",
+    "| 863 observed high-pollen events |", "| A2 | 7,373 evaluated city-days", "| 7373 (= " + " + ".join(str(p2(*k)["n_evaluated_days"]) for k in R) + ",",
     "| 28 |", "tp 359, n_events 863", "`kill_check.check2_beats_api.pooled_p2.false_alert_days` | 53 |",
     "tp 354, n_events 863", "`kill_check.check2_beats_api.pooled_r1.false_alert_days` | 51 |",
-    "6 + 0 + 13 + 14 + 11 + 9 = 53", "5 + 1 + 16 + 13 + 8 + 8 = 51",
+    " + ".join(str(p2(*k)["false_alert_days"]) for k in R) + " = 53",  # per-cell values from the JSON
+    " + ".join(str(R[k]["R1"]["false_alert_days"]) for k in R) + " = 51",
     "N1 MAE 4.8 d from 14 d, 70% in 7-28 d", "N1 21.9 d MAE, 30% hit; C0_14d 12.5 d MAE, 60% hit",
     "P2 CSI 0.382 → N2 0.434", "CSI 0.486; recall 54.6% (215/394); 48 false-alert days; precision 81.7%",
     "`nasa_evaluation.no_nasa_control.nasa_adds_skill_heldout` | `false` |",
