@@ -1,5 +1,5 @@
 {
-  "source": "video/SCRIPT_V5.md scenes 1-9 + amendment A1 (6b), approved by Ahmed 23 Nov 2026. 'caption' is the script wording; 'say' differs only where a number is written as words for the voice.",
+  "source": "video/SCRIPT_V5.md scenes 1-9 + amendment A1 (6b), approved 23 Nov 2026. 'caption' is the script wording; 'say' differs only where a number is written as words for the voice.",
   "voice": {"name": "Daniel", "voice_id": "onwK4e9ZLuTAKqWW03F9", "model_id": "eleven_multilingual_v2", "speed": 1.08},
   "scenes": [
     {"id": "s1", "caption": "Every morning in pollen season, an allergy clinic asks one question. Is today a high-pollen day, so our patients should use the medicine they already have?"},

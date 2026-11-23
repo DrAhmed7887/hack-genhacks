@@ -1,6 +1,6 @@
 """Write the two Colab notebooks for the V5 GPU renders into the Drive render folder.
 
-Run: python3 video/v5/colab/make_notebooks.py <drive_render_dir>
+Run: COLAB_DRIVE_DIR=/content/drive/MyDrive/<folder> python3 video/v5/colab/make_notebooks.py <local mirror of that folder>
 Notebook A renders the Blender trap (Cycles, OptiX). Notebook B renders the Remotion film.
 Both read inputs from, and write outputs to, the same Drive folder; no secrets are involved.
 """
@@ -8,7 +8,8 @@ import json
 import sys
 from pathlib import Path
 
-DRIVE_DIR = "/content/drive/MyDrive/Zayed OS/Hackathons/2026-12-genhacks/video/v5_render"
+import os
+DRIVE_DIR = os.environ.get("COLAB_DRIVE_DIR", "/content/drive/MyDrive/pollenplan_v5_render")
 
 
 def nb(cells):

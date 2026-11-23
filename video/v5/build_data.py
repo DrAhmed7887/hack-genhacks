@@ -10,8 +10,10 @@ Run: python3 video/v5/build_data.py
 from __future__ import annotations
 
 import json
+import os
 import re
 import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -138,8 +140,8 @@ def main() -> None:
     sh, st, ss = scored.splitlines()[-1].split("|", 2)
     data["scored"] = {"short": sh, "time": st, "subject": ss}
     # test count and the demo URL, from the repo itself
-    py = ROOT / ".venv/bin/python"
-    py = py if py.exists() else Path("/Users/ahmedzayed/Projects/hack-genhacks/.venv/bin/python")
+    py = Path(os.environ.get("PYTHON", ROOT / ".venv/bin/python"))
+    py = py if py.exists() else Path(sys.executable)
     coll = subprocess.run([str(py), "-m", "pytest", "--collect-only", "-q"], cwd=ROOT, capture_output=True, text=True).stdout
     data["tests"] = int(re.search(r"(\d+) tests? collected", coll).group(1))
     data["demoUrl"] = re.search(r"<(https://[^>]+github\.io/[^>]+)>", (ROOT / "README.md").read_text()).group(1)
