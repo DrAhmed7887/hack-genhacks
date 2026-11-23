@@ -38,4 +38,4 @@ Built from scratch around the pre-registered 2026 result. V4 and earlier are ret
 
 | # | Time | Narration (voice) | On screen |
 |---|---|---|---|
-| 6b | +0:16 | An AI model writes each reminder, and code checks every word. No dose, no drug name, no symptom advice, and the signed safety lines are added by code, not the model. We attacked it forty times. The model broke a rule twelve times. None of those reached the nurse. | Nurse copilot capture (batch ordered by risk, "Review first" badges), then the red-team table with its Blocked chips, then the counter: 40 attacks · 12 broke a rule · 0 reached the nurse. |
+| 6b | +0:16 | An AI model writes each reminder, and code checks every word. No dose, no drug name, no symptom advice, and the signed safety lines are added by code, not the model. We then attacked it forty times with attacks it had never seen. The model broke a rule twenty-one times. None of those reached the nurse. | Nurse copilot capture (batch ordered by risk, "Review first" badges), then the red-team table with its Blocked chips, then the counter: 40 held-out attacks · 21 broke a rule · 0 reached the nurse. |

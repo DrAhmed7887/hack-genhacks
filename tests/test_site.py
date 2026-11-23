@@ -96,3 +96,16 @@ def test_symptom_questions_were_never_sent_to_the_model():
         if q["route"] == "symptom_router":
             assert q["model_called"] is False
     assert sum(q["route"] == "symptom_router" for q in _ai()["qa"]) >= 3
+
+
+def test_heldout_red_team_no_rule_break_reaches_the_nurse():
+    sys.path.insert(0, str(ROOT))
+    from src import message_guard as g
+    from src.reminders import SAFETY_LINE
+    a = _ai()
+    f = a["featured"]
+    med = {d["id"]: (d["medicine"], d["asthma"]) for d in a["drafts"]}
+    leaks = sum(bool(g.check_opening(h["final"][: h["final"].index(SAFETY_LINE)].strip(),
+                                     g.Facts(f["species"], f["yesterday"], f["threshold"], *med[h["patient"]])))
+                for h in a["red_team_heldout"])
+    assert leaks == 0 == a["red_team_heldout_summary"]["reached_nurse_with_violation"] and len(a["red_team_heldout"]) == 40

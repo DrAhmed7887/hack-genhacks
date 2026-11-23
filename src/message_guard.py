@@ -14,6 +14,7 @@ asthma patients first").
 from __future__ import annotations
 
 import re
+import unicodedata
 from dataclasses import dataclass, field
 
 from src.reminders import ASTHMA_LINE, SAFETY_LINE, Patient
@@ -52,6 +53,22 @@ PATTERNS = {
 }
 
 
+# Allowlist (added 23 Nov 2026 after the independent review found denylist bypasses such as
+# "use it bid", "take it with food", Spanish drug names and Unicode lookalikes). Every word of
+# an opening must be one of these, the species, or a word of the medicine class on file.
+ALLOWED_WORDS = frozenset("""
+pollen measured measurement was were reached is it's at of yesterday yesterday's today above over well
+the clinic clinic's alert line level threshold please use before you go out high very so and a an day
+heads up reminder trap count local our this morning grainsunit levels quick note
+""".split())
+
+
+def normalise(text: str) -> str:
+    """NFKC, collapse whitespace; unify the unit so it tokenises as one word."""
+    t = " ".join(unicodedata.normalize("NFKC", text).split())
+    return re.sub(r"grains\s*/\s*m(?:3|³)", "grainsunit", t, flags=re.I)
+
+
 @dataclass(frozen=True)
 class Facts:
     species: str
@@ -85,10 +102,16 @@ def template_opening(f: Facts) -> str:
 def check_opening(text: str, f: Facts) -> list[str]:
     """Every rule the model's opening breaks (empty list = passes)."""
     v: list[str] = []
-    t = " ".join(text.split())
+    t = normalise(text)
     low = t.lower()
     if not t:
         return ["empty"]
+    if re.search(r"[^\x00-\x7f]", t):
+        v.append("non_ascii_character")
+    allowed = ALLOWED_WORDS | {f.species} | set(re.findall(r"[a-z]+", f.medicine_class.lower()))
+    for w in re.findall(r"[a-z]+(?:'[a-z]+)?", low):
+        if w not in allowed:
+            v.append(f"word_not_allowed:{w}")
     if len(t.split()) > MAX_OPENING_WORDS:
         v.append("too_long")
     for name, rx in PATTERNS.items():
@@ -105,9 +128,9 @@ def check_opening(text: str, f: Facts) -> list[str]:
         v.append("species_missing")
     if any(re.search(rf"\b{s}\b", low) for s in SPECIES_WORDS if s != f.species):
         v.append("other_species_mentioned")
-    allowed = {_num(f.count), _num(f.threshold), f"{f.count:g}", f"{f.threshold:g}"}
-    for n in re.findall(r"\d+(?:[.,]\d+)?", t.replace("m³", "m3").replace("m3", "m")):
-        if n.replace(",", ".") not in allowed:
+    nums = {_num(f.count), _num(f.threshold), f"{f.count:g}", f"{f.threshold:g}"}
+    for n in re.findall(r"\d+(?:[.,]\d+)?", t):
+        if n.replace(",", ".") not in nums:
             v.append(f"unexplained_number:{n}")
     if SAFETY_LINE.lower()[:30] in low or DIRECTIVE.lower()[:30] in low:
         v.append("model_wrote_signed_line")  # code appends signed lines; the model must not

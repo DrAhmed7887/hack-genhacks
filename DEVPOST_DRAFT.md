@@ -30,8 +30,8 @@ Read the trap, not the forecast. On a pollen season we had never seen, yesterday
 
 **AI layer, with the AI kept on a leash.**
 - A nurse copilot orders the batch by risk: asthma flag plus moderate/severe rhinitis first.
-- An AI model (Qwen on RWTHgpt, free, offline, synthetic patients) drafts each reminder opening. Code rejects any dose, frequency, drug name, symptom words, efficacy claim, link or unexplained number, and it appends the signed safety lines itself.
-- We attacked it 40 times: the model broke a rule 12 times, and none of those drafts reached the nurse. The first run let 2 efficacy claims through. We fixed the rule, added both sentences to the tests and re-ran.
+- An AI model (Qwen on RWTHgpt, free, offline, synthetic patients) drafts each reminder opening. Code accepts it only if every word is on a short approved list, and it appends the signed safety lines itself.
+- We attacked it with a tuning set, and our own runs and an independent review found holes (efficacy claims, "bid", Unicode lookalikes). We fixed them in public, then ran 20 held-out attacks that were never used for tuning (numbers in CLAIMS.md, AI section).
 - Clinician Q&A answers only from that morning's facts. Symptom questions never reach the model.
 
 **Where next (a hypothesis, not a result).** The CAMS pollen forecast is built for Europe, with a map that stops at 30° N. We queried it for Egypt: Alexandria and Cairo get values, and Asyut (27° N) gets none. We found no study comparing the Egyptian values with trap counts. The rule needs one local trap, and a one-year trap study in Alexandria (2019–20) shows the measurement can be made there. We have not tested it outside the three cities.

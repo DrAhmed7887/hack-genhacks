@@ -12,6 +12,7 @@ import hashlib
 import json
 import re
 import subprocess
+import unicodedata
 from pathlib import Path
 
 from src import message_guard as g
@@ -21,10 +22,19 @@ PROMPT_FILE = ROOT / "rules" / "assistant_prompt.md"
 MODEL = "qwen3.8-27b (RWTHgpt, via rwth-ask)"
 SYMPTOM_REPLY = "Please contact your clinic, or emergency services if it is severe."
 NOT_IN_DATA = "Not in today's data."
+WITHHELD = "Answer withheld: it failed the code safety check."
 SYMPTOM_RX = re.compile(
     r"\b(?:symptom\w*|burn\w*|itch\w*|sting\w*|sore|pain\w*|ache\w*|chest|tight\w*|wheez\w*|breath\w*|cough\w*|"
     r"sneez\w*|runny|blocked|congest\w*|swell\w*|swollen|rash|hives|fever|dizz\w*|faint\w*|attack|emergency|"
-    r"bleed\w*|vomit\w*|eyes?|throat|nose|feel\w*|unwell|sick|worse)\b", re.I)
+    r"bleed\w*|vomit\w*|eyes?|throat|nose|feel\w*|unwell|sick|worse|"
+    # widened after the 23 Nov 2026 review: these reached the model
+    r"scratch\w*|gasp\w*|blue|lips?|rub\w*|hoarse|red|puffy|headache\w*|nause\w*|tired|sleep\w*|wak\w*|"
+    r"struggl\w*|can'?t|cannot|choking|crying|distress\w*|hurt\w*|skin|face|mouth)\b|"
+    r"\b(?:says|reports|complain\w*|is having|has an?|have an?|mentions?|told me)\b", re.I)
+NUMBER_WORDS = re.compile(r"\b(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|twenty|thirty|"
+                          r"forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|dozen|half|double|twice)\b")
+ADVICE = re.compile(r"\b(?:has (?:an? )?(?:asthma|allergy|hay fever|infection)|should (?:stop|start|increase|decrease|"
+                    r"double|take|use|skip|see|go)|must (?:take|use|stop))\b")
 
 
 def system_prompt() -> str:
@@ -57,7 +67,8 @@ def draft_prompt(f: g.Facts, age_band: str, clinician_note: str | None = None) -
 
 
 def is_symptom_question(q: str) -> bool:
-    return bool(SYMPTOM_RX.search(q))
+    """Conservative: any symptom, body-part or patient-report wording routes to the fixed reply."""
+    return bool(SYMPTOM_RX.search(unicodedata.normalize("NFKC", q)))
 
 
 def qa_prompt(question: str, facts: dict) -> str:
@@ -84,15 +95,20 @@ def _numbers(obj) -> set[str]:
     return out
 
 
-def check_answer(answer: str, facts: dict) -> list[str]:
+def check_answer(answer: str, facts: dict, question: str = "") -> list[str]:
     """Rules a clinician Q&A answer breaks: every number must come from FACTS; no dose/drug/symptom advice."""
     v: list[str] = []
+    answer = unicodedata.normalize("NFKC", answer)
     low = answer.lower()
-    allowed = _numbers(facts)
+    allowed = _numbers(facts) | set(re.findall(r"\d+(?:\.\d+)?", question))  # e.g. patient IDs the clinician typed
+    if NUMBER_WORDS.search(low):
+        v.append("number_word")
+    if ADVICE.search(low):
+        v.append("advice")
     for n in re.findall(r"\d+(?:[.,]\d+)?", answer.replace("m³", "m")):
         if n.replace(",", ".").rstrip(".") not in allowed:
             v.append(f"ungrounded_number:{n}")
-    for name in ("dose", "amount_words", "dose_change", "link_or_contact"):
+    for name in ("dose", "amount_words", "dose_change", "link_or_contact", "frequency", "efficacy_claim"):
         if g.PATTERNS[name].search(low):
             v.append(name)
     if any(re.search(rf"\b{d}\b", low) for d in g.DRUG_NAMES):
@@ -111,6 +127,6 @@ def answer(question: str, facts: dict) -> dict:
     if raw is None:
         return {"question": question, "route": "model", "model_called": True, "answer": NOT_IN_DATA,
                 "raw": None, "violations": ["no_model_output"]}
-    viol = check_answer(raw, facts)
+    viol = check_answer(raw, facts, question)
     return {"question": question, "route": "model", "model_called": True,
-            "answer": NOT_IN_DATA if viol else " ".join(raw.split()), "raw": raw, "violations": viol}
+            "answer": WITHHELD if viol else " ".join(raw.split()), "raw": raw, "violations": viol}

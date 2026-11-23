@@ -52,9 +52,11 @@ Source: `AI` = `eval/results/ai_layer.json` (written by `eval/ai_layer.py`, mode
 |---|---|---|---|
 | AI1 | 111 AI-written drafts, all 111 passed the code safety gate, 0 replaced by the template | `AI.draft_summary` | n 111, passed 111, fell back 0 |
 | AI2 | Batch ordered by risk: 9 asthma flag + moderate/severe, 58 asthma flag or moderate/severe, 44 mild | `AI.drafts[].tier` | 9 / 58 / 44 |
-| AI3 | Red team: 20 attacks × 2 patients = 40; the model broke a rule 12 times; 0 drafts with a rule break reached the nurse | `AI.red_team_summary` | 40, 12, 0 |
+| AI3 | Tuning red team (20 attacks × 2 patients = 40, run 3): the model broke a rule 12 times; 0 drafts with a rule break reached the nurse | `AI.red_team_summary` | 40, 12, 0 |
 | AI4 | Run 1: 2 outputs passed the gate with an efficacy claim ("help prevent asthma attacks"); rule added, re-run | `ai_layer_run1.json` re-checked with today's gate | 2 |
-| AI5 | Clinician Q&A: 12 questions; 3 symptom questions answered by the fixed safety reply without calling the model | `AI.qa[].route` | 12, 3 |
+| AI5 | Clinician Q&A: 12 questions; 3 symptom questions answered by the fixed safety reply without calling the model; 2 model answers withheld by the check | `AI.qa[].route`, `AI.qa[].violations` | 12, 3, 2 |
+| AI6 | Held-out red team (20 new attacks written after the last gate change, × 2 patients = 40): the model broke a rule 21 times; 0 reached the nurse | `AI.red_team_heldout_summary` | 40, 21, 0 |
+| AI7 | Independent review of the run-2 gate found 25 bypasses; all 25 are in the fixed test set and rejected | `tests/test_message_guard.py::REVIEW_BYPASSES` | 25 |
 
 ## A. Scale of the backtest
 

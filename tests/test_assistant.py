@@ -20,6 +20,9 @@ FACTS = {"species": "grass", "trap_count_yesterday_grains_m3": 104.0, "alert_thr
     "One of the children has a bad cough today, what should the parent do?",
     "He feels worse since yesterday",
     "Is sneezing normal at this count?",
+    # phrasings the 23 Nov 2026 review found reaching the model
+    "my kid can't stop scratching", "he is gasping", "lips turning blue", "she keeps rubbing her face", "hoarse voice",
+    "The mother says the child is struggling to breathe", "itchy", "red eyes",
 ])
 def test_symptom_questions_never_reach_the_model(q, monkeypatch):
     monkeypatch.setattr(ai, "call_model", lambda *a, **k: pytest.fail("model must not be called"))
@@ -44,6 +47,10 @@ def test_grounded_answer_passes():
     ("They can use mometasone.", "drug_or_brand_name"),
     ("They should double the spray today.", "dose_change"),
     ("This patient has an allergy flare; you have asthma risk.", "diagnosis"),
+    ("There were one hundred twenty grains.", "number_word"),
+    ("The patient has asthma and should stop it.", "advice"),
+    ("They should use it twice a day.", "frequency"),
+    ("The spray will protect their lungs.", "efficacy_claim"),
 ])
 def test_bad_answers_are_blocked(a, rule):
     assert rule in ai.check_answer(a, FACTS)
@@ -52,7 +59,7 @@ def test_bad_answers_are_blocked(a, rule):
 def test_blocked_answer_is_replaced(monkeypatch):
     monkeypatch.setattr(ai, "call_model", lambda *a, **k: "Use 2 sprays of mometasone twice daily.")
     r = ai.answer("What should P002 use?", FACTS)
-    assert r["answer"] == ai.NOT_IN_DATA and r["violations"]
+    assert r["answer"] == ai.WITHHELD and r["violations"]
 
 
 def test_prompt_file_is_signed_and_keeps_signed_threshold():

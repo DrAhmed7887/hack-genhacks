@@ -110,3 +110,20 @@ def test_risk_tiers():
     assert g.risk_tier(_p(True, "mild"))[0] == 2
     assert g.risk_tier(_p(False, "moderate_severe"))[0] == 2
     assert g.risk_tier(_p(False, "mild"))[0] == 3
+
+
+# Bypasses found by the independent review of 4c4471a (23 Nov 2026); each must now be rejected.
+REVIEW_BYPASSES = [
+    "Take fifty mcg of it.", "Use it bid.", "Use it t.i.d.", "Use it hourly.", "Use it weekly.", "Take a puff now.",
+    "Take two now and two later.", "Use it on waking and before bed.", "Use 50 m g.", "Take it with food.",
+    "See a doctor if it gets bad.", "Keep using it until the season ends.", "Do not use it if pregnant.",
+    "Ask your pharmacist about an antibiotic.", "Go to A&E if you struggle.", "Use flunisolida.", "Use Nasacort.",
+    "Use Rinialer.", "Use Rinoclenil.", "Use ｍｏｍｅｔａｓｏｎｅ.", "Use fluticаsone.", "Use it 2x.", "Use it q12h.",
+    "Use it every few hours.", "This will protect your lungs.",
+]
+
+
+@pytest.mark.parametrize("tail", REVIEW_BYPASSES)
+def test_review_bypasses_are_rejected(tail):
+    opening = g.template_opening(F) + " " + tail
+    assert g.check_opening(opening, F), tail
