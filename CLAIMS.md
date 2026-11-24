@@ -1,13 +1,13 @@
 # CLAIMS: every public number and feature claim, with its source
 
-Last verified: 23 Nov 2026 (section N added for the pre-registered 2026 test); sections A–K verified 22–23 Nov 2026 on top of commit `6a9bbb1`. Every number below was read out of `eval/results/backtest.json` (written by `eval/backtest.py`), `rules/thresholds.json`, `data/make_patients.py` or `data/patients.csv`, not typed from memory. The numbers appear in `README.md`, `DEVPOST_DRAFT.md`, `demo/backtest.html`, `docs/results_table.md` and the video (`video/STORYBOARD.md`, `video/film/script.json`, `video/film/compositions/*.html`).
+Last verified: 23 Nov 2026 (section N added for the pre-registered 2026 test); sections A–K verified 22–23 Nov 2026 on top of commit `1f826e6`. Every number below was read out of `eval/results/backtest.json` (written by `eval/backtest.py`), `rules/thresholds.json`, `data/make_patients.py` or `data/patients.csv`, not typed from memory. The numbers appear in `README.md`, `DEVPOST_DRAFT.md`, `demo/backtest.html`, `docs/results_table.md` and the video (`video/STORYBOARD.md`, `video/film/script.json`, `video/film/compositions/*.html`).
 
 ## How to reproduce from a fresh clone
 
 ```bash
 python -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python eval/backtest.py              # rewrites eval/results/backtest.json, eval/results/misses.csv, docs/results_table.md from data/cache/ (no network, no key)
-.venv/bin/pytest -q                            # all pass. At commit 6a9bbb1: 86 passed; working tree 22 Nov 2026: 112 passed (38 backtest rules, 53 demo, 7 patients, 14 reminders)
+.venv/bin/pytest -q                            # all pass. At commit 1f826e6: 86 passed; working tree 22 Nov 2026: 112 passed (38 backtest rules, 53 demo, 7 patients, 14 reminders)
 .venv/bin/python eval/render_demo.py --check   # exit 0 = the onset table in demo/backtest.html matches backtest.json
 git diff --stat eval/results docs/results_table.md   # empty output = the re-run reproduced the committed results exactly
 ```
@@ -27,7 +27,7 @@ Shorthand used in the tables: `BT` = `eval/results/backtest.json`. `cell(city, s
 
 ## N. Pre-registered 2026 test (current headline)
 
-Source: `NC` = `eval/results/nowcast_2026.json`, written once by `eval/nowcast.py --test-2026` from the lock `eval/results/nowcast_lock.json` (commit `6ac1700`, pushed before `data/fetch_2026.py` downloaded any 2026 file; deviations in `docs/PREREG_NOWCAST_2026.md` §9). Checked by `eval/verify_claims.py` (section N).
+Source: `NC` = `eval/results/nowcast_2026.json`, written once by `eval/nowcast.py --test-2026` from the lock `eval/results/nowcast_lock.json` (commit `5c45eaf`, pushed before `data/fetch_2026.py` downloaded any 2026 file; deviations in `docs/PREREG_NOWCAST_2026.md` §9). Checked by `eval/verify_claims.py` (section N).
 
 | # | Claim | Where it appears | Source key | Exact value |
 |---|---|---|---|---|
@@ -57,6 +57,8 @@ Source: `AI` = `eval/results/ai_layer.json` (written by `eval/ai_layer.py`, mode
 | AI5 | Clinician Q&A: 12 questions; 3 symptom questions answered by the fixed safety reply without calling the model; 2 model answers withheld by the check | `AI.qa[].route`, `AI.qa[].violations` | 12, 3, 2 |
 | AI6 | Held-out red team (20 new attacks written after the last gate change, × 2 patients = 40): the model broke a rule 21 times; 0 reached the nurse | `AI.red_team_heldout_summary` | 40, 21, 0 |
 | AI7 | Independent review of the run-2 gate found 25 bypasses; all 25 are in the fixed test set and rejected | `tests/test_message_guard.py::REVIEW_BYPASSES` | 25 |
+
+> **Legacy sections (A–G, K).** These rows record the 2021–2025 backtest and the retired 22 Nov 2026 film. Since the 23 Nov 2026 rebuild, their numbers are published only in `docs/results_table.md`, `eval/results/backtest.json` and the README's section marked superseded. They are no longer on the headline, the Devpost draft, the demo page or the V5 film. The "Where it appears" column shows where each number appeared before the rebuild. The current headline is section N.
 
 ## A. Scale of the backtest
 
@@ -143,7 +145,7 @@ F8 caveat: the module docstring says the approve step and the `approved_at` log 
 | # | Claim | Source | Command |
 |---|---|---|---|
 | G1 | Duration 2:16 | `ffprobe` duration 136.3 s | `ffprobe -v error -show_entries format=duration -of csv=p=0 video/film/renders/film_2026-11-22_21-15-36.mp4` |
-| G2 | "Eighty-six tests, green" | `pytest -q` summary line. 86 passed at commit `6a9bbb1`, which is the state the video was filmed on. Re-run on 22 Nov 2026 after the final console edits: `pytest -q` = 112 passed (`tests/test_demo.py` grew from 41 to 53 tests with the nurse console, threshold-boundary and NASA telemetry tests; `tests/test_backtest_rules.py` has 38). | `PY=$PWD/.venv/bin/python; git worktree add /tmp/pp 6a9bbb1 && (cd /tmp/pp && $PY -m pytest -q tests)`; run on 22 Nov 2026 gives 86 passed. Remove with `git worktree remove --force /tmp/pp`. |
+| G2 | "Eighty-six tests, green" | `pytest -q` summary line. 86 passed at commit `1f826e6`, which is the state the video was filmed on. Re-run on 22 Nov 2026 after the final console edits: `pytest -q` = 112 passed (`tests/test_demo.py` grew from 41 to 53 tests with the nurse console, threshold-boundary and NASA telemetry tests; `tests/test_backtest_rules.py` has 38). | `PY=$PWD/.venv/bin/python; git worktree add /tmp/pp 1f826e6 && (cd /tmp/pp && $PY -m pytest -q tests)`; run on 22 Nov 2026 gives 86 passed. Remove with `git worktree remove --force /tmp/pp`. |
 | G3 | "863 events, 7,373 city-days", "41.6" / "41", "13.6" / "31.4", "+2.88" | rows A1, A2, B1, B3, C1, C2, D1 above | `.venv/bin/python eval/verify_claims.py` |
 | G4 | "Six rules, frozen before the run" | row A5. `docs/DATA_PLAN.md` first entered git in `705451d` (22 Nov 2026 18:28 +0100); `eval/backtest.py` first entered in `bb879ed` (19:12 +0100). Git order shows the plan came first. It cannot prove nobody looked at results in between. | `git log --follow --format='%h %ad %s' --date=iso docs/DATA_PLAN.md eval/backtest.py` |
 | G5 | "-13.6 LUFS" note: removed from `DEVPOST_DRAFT.md` on 22 Nov 2026 (unverified). Re-measure with `ffmpeg -i <mp4> -af ebur128 -f null -` before any re-use. | see left |
