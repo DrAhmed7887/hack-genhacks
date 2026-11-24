@@ -1,7 +1,7 @@
 {
  "status": "pre-registered test, scored once",
  "prereg": "docs/PREREG_NOWCAST_2026.md",
- "lock_commit": "6ac17005d69e1f497bbeed274fb35b6a0f4d78f9",
+ "lock_commit": "5c45eafc99f96a5d56be2138e8342bcdba61761d",
  "test_window": [
   "2026-01-01",
   "2026-10-31"
