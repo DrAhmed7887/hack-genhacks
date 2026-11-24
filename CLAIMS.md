@@ -58,7 +58,7 @@ Source: `AI` = `eval/results/ai_layer.json` (written by `eval/ai_layer.py`, mode
 | AI6 | Held-out red team (20 new attacks written after the last gate change, × 2 patients = 40): the model broke a rule 21 times; 0 reached the nurse | `AI.red_team_heldout_summary` | 40, 21, 0 |
 | AI7 | Independent review of the run-2 gate found 25 bypasses; all 25 are in the fixed test set and rejected | `tests/test_message_guard.py::REVIEW_BYPASSES` | 25 |
 
-> **Legacy sections (A–G, K).** These rows record the 2021–2025 backtest and the retired 22 Nov 2026 film. Since the 23 Nov 2026 rebuild, their numbers are published only in `docs/results_table.md`, `eval/results/backtest.json` and the README's section marked superseded. They are no longer on the headline, the Devpost draft, the demo page or the V5 film. The "Where it appears" column shows where each number appeared before the rebuild. The current headline is section N.
+> **Legacy sections (A–E, K).** These rows record the 2021–2025 backtest of the earlier rules, now superseded. Its totals (863 high days, six rules) are quoted only as background on the front page and in the Devpost draft. The full numbers appear only on pages and sections marked superseded (`demo/backtest.html`), in `docs/results_table.md` and in `eval/results/backtest.json`. The "Where it appears" column shows where each number appeared before the 23 Nov 2026 rebuild. The current headline is section N.
 
 ## A. Scale of the backtest
 
