@@ -1,6 +1,8 @@
 # PollenPlan: read the trap, not the forecast
 
-**Headline (pre-registered, untouched 2026 season):** on 215 high-pollen days in Madrid, Basel and Zürich (1 Jan – 31 Oct 2026, 1,706 city-days), **yesterday's count from the local pollen trap flagged 164 (76.3%)**. Europe's free CAMS forecast for the same day flagged **70 (32.6%)**. The CSI difference is +0.332, with a 95% CI of 0.203 to 0.457. The model and rules were locked, committed and pushed ([`6ac1700`](https://github.com/DrAhmed7887/hack-genhacks/commit/6ac1700)) before any 2026 file was downloaded ([pre-registration](docs/PREREG_NOWCAST_2026.md)). A fusion model and a NASA-weather variant did not beat the simple rule, so the product ships the simple rule.
+**Headline (pre-registered, untouched 2026 season):** on 215 high-pollen days in Madrid, Basel and Zürich (1 Jan – 31 Oct 2026, 1,706 city-days), **yesterday's count from the local pollen trap flagged 164 (76.3%)**. Europe's free CAMS forecast for the same day flagged **70 (32.6%)**. The CSI difference is +0.332, with a 95% CI of 0.203 to 0.457. The model and rules were locked, committed and pushed ([`6ac1700`](https://github.com/DrAhmed7887/hack-genhacks/commit/6ac1700)) before any 2026 file was downloaded ([pre-registration](docs/PREREG_NOWCAST_2026.md)); the tag [`prereg-lock-2026`](https://github.com/DrAhmed7887/hack-genhacks/tree/prereg-lock-2026) keeps that commit. The branch was rebased afterwards, so the same lock files (identical blobs) appear in `main` history as `5c45eaf`. A fusion model and a NASA-weather variant did not beat the simple rule, so the product ships the simple rule.
+
+**What this comparison is, in plain words:** "trap beats CAMS" compares *yesterday's measured count* (a persistence rule) with *today's forecast*. It is not one forecast beating another. The rule is **untested outside Madrid, Basel and Zürich**.
 
 **Live demo, no account:** <https://drahmed7887.github.io/hack-genhacks/> · **Reproduce with no keys:**
 
@@ -190,9 +192,11 @@ Season windows are derived from training years (2021-2023) only:
 
 **2021–2025 kill-check verdict (R1 only)**: R1 did not beat P2 on pooled recall, so no claim is made for R1. The current headline is the separate, pre-registered 2026 test of P0 (top of this README).
 
-## Results Summary
+## 2021–2025 backtest of the earlier rules (R1, R2): superseded
 
-### Overall Headline
+This section documents the first design, which was retired. It is **not** the current headline (that is the 2026 test at the top).
+
+### Legacy kill-check verdict (R1 vs the API only)
 
 ```
 measured_P2_skill_only_no_beats_api_claim
