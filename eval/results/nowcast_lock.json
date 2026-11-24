@@ -1,6 +1,6 @@
 {
  "prereg": "docs/PREREG_NOWCAST_2026.md",
- "locked_from_git_sha": "6ac17005d69e1f497bbeed274fb35b6a0f4d78f9",
+ "locked_from_git_sha": "5c45eafc99f96a5d56be2138e8342bcdba61761d",
  "nowcast_py_sha256": "65cc62300bfaae2fb1425130ca850cd9bed2b5041af046d73056d6d1ee5b0d8e",
  "fetch_2026_py_sha256": "b51b438cac7dd97f487ad5efa82442b1aeebbe031e7d040f9ff0ac5bf0e6214d",
  "test_window": [
