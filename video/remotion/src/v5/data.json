@@ -1,0 +1,2974 @@
+{
+ "fps": 30,
+ "totalFrames": 5297,
+ "scenes": [
+  {
+   "id": "s1",
+   "from": 0,
+   "frames": 365,
+   "voiceAt": 0.15,
+   "audio": "v5/vo/s1.mp3",
+   "audioSeconds": 11.564,
+   "words": [
+    {
+     "w": "Every",
+     "start": 0.15,
+     "end": 0.417
+    },
+    {
+     "w": "morning",
+     "start": 0.475,
+     "end": 0.8
+    },
+    {
+     "w": "in",
+     "start": 0.87,
+     "end": 0.974
+    },
+    {
+     "w": "pollen",
+     "start": 1.044,
+     "end": 1.323
+    },
+    {
+     "w": "season,",
+     "start": 1.392,
+     "end": 1.915
+    },
+    {
+     "w": "an",
+     "start": 2.217,
+     "end": 2.344
+    },
+    {
+     "w": "allergy",
+     "start": 2.414,
+     "end": 2.762
+    },
+    {
+     "w": "clinic",
+     "start": 2.82,
+     "end": 3.145
+    },
+    {
+     "w": "asks",
+     "start": 3.308,
+     "end": 3.714
+    },
+    {
+     "w": "one",
+     "start": 3.819,
+     "end": 4.063
+    },
+    {
+     "w": "question.",
+     "start": 4.121,
+     "end": 4.806
+    },
+    {
+     "w": "Is",
+     "start": 5.456,
+     "end": 5.607
+    },
+    {
+     "w": "today",
+     "start": 5.665,
+     "end": 6.048
+    },
+    {
+     "w": "a",
+     "start": 6.129,
+     "end": 6.176
+    },
+    {
+     "w": "high-pollen",
+     "start": 6.28,
+     "end": 6.884
+    },
+    {
+     "w": "day,",
+     "start": 6.953,
+     "end": 7.418
+    },
+    {
+     "w": "so",
+     "start": 7.72,
+     "end": 7.859
+    },
+    {
+     "w": "our",
+     "start": 7.929,
+     "end": 8.045
+    },
+    {
+     "w": "patients",
+     "start": 8.103,
+     "end": 8.556
+    },
+    {
+     "w": "should",
+     "start": 8.718,
+     "end": 8.962
+    },
+    {
+     "w": "use",
+     "start": 9.02,
+     "end": 9.217
+    },
+    {
+     "w": "the",
+     "start": 9.252,
+     "end": 9.322
+    },
+    {
+     "w": "medicine",
+     "start": 9.38,
+     "end": 9.844
+    },
+    {
+     "w": "they",
+     "start": 9.984,
+     "end": 10.158
+    },
+    {
+     "w": "already",
+     "start": 10.227,
+     "end": 10.611
+    },
+    {
+     "w": "have?",
+     "start": 10.68,
+     "end": 11.714
+    }
+   ],
+   "captions": [
+    {
+     "text": "Every morning in pollen season,",
+     "start": 0.15,
+     "end": 1.915
+    },
+    {
+     "text": "an allergy clinic asks one question.",
+     "start": 2.217,
+     "end": 4.806
+    },
+    {
+     "text": "Is today a high-pollen day, so our patients",
+     "start": 5.456,
+     "end": 8.556
+    },
+    {
+     "text": "should use the medicine they already have?",
+     "start": 8.718,
+     "end": 11.714
+    }
+   ]
+  },
+  {
+   "id": "s2",
+   "from": 365,
+   "frames": 564,
+   "voiceAt": 0.15,
+   "audio": "v5/vo/s2.mp3",
+   "audioSeconds": 18.204,
+   "words": [
+    {
+     "w": "Most",
+     "start": 0.15,
+     "end": 0.405
+    },
+    {
+     "w": "tools",
+     "start": 0.452,
+     "end": 0.754
+    },
+    {
+     "w": "answer",
+     "start": 0.823,
+     "end": 1.102
+    },
+    {
+     "w": "with",
+     "start": 1.148,
+     "end": 1.265
+    },
+    {
+     "w": "a",
+     "start": 1.299,
+     "end": 1.323
+    },
+    {
+     "w": "forecast.",
+     "start": 1.381,
+     "end": 2.205
+    },
+    {
+     "w": "We",
+     "start": 2.611,
+     "end": 2.739
+    },
+    {
+     "w": "asked",
+     "start": 2.809,
+     "end": 3.052
+    },
+    {
+     "w": "a",
+     "start": 3.087,
+     "end": 3.122
+    },
+    {
+     "w": "simpler",
+     "start": 3.192,
+     "end": 3.54
+    },
+    {
+     "w": "source:",
+     "start": 3.61,
+     "end": 4.19
+    },
+    {
+     "w": "the",
+     "start": 4.597,
+     "end": 4.69
+    },
+    {
+     "w": "clinic's",
+     "start": 4.736,
+     "end": 5.096
+    },
+    {
+     "w": "own",
+     "start": 5.166,
+     "end": 5.398
+    },
+    {
+     "w": "pollen",
+     "start": 5.467,
+     "end": 5.769
+    },
+    {
+     "w": "trap,",
+     "start": 5.827,
+     "end": 6.338
+    },
+    {
+     "w": "read",
+     "start": 6.64,
+     "end": 6.872
+    },
+    {
+     "w": "yesterday.",
+     "start": 6.942,
+     "end": 7.696
+    },
+    {
+     "w": "And",
+     "start": 8.056,
+     "end": 8.196
+    },
+    {
+     "w": "we",
+     "start": 8.242,
+     "end": 8.323
+    },
+    {
+     "w": "tested",
+     "start": 8.381,
+     "end": 8.753
+    },
+    {
+     "w": "it",
+     "start": 8.799,
+     "end": 8.869
+    },
+    {
+     "w": "the",
+     "start": 8.904,
+     "end": 8.974
+    },
+    {
+     "w": "hard",
+     "start": 9.032,
+     "end": 9.252
+    },
+    {
+     "w": "way.",
+     "start": 9.31,
+     "end": 9.751
+    },
+    {
+     "w": "We",
+     "start": 10.158,
+     "end": 10.286
+    },
+    {
+     "w": "wrote",
+     "start": 10.332,
+     "end": 10.576
+    },
+    {
+     "w": "the",
+     "start": 10.599,
+     "end": 10.669
+    },
+    {
+     "w": "test",
+     "start": 10.703,
+     "end": 10.936
+    },
+    {
+     "w": "down,",
+     "start": 10.994,
+     "end": 11.481
+    },
+    {
+     "w": "locked",
+     "start": 11.841,
+     "end": 12.108
+    },
+    {
+     "w": "the",
+     "start": 12.143,
+     "end": 12.213
+    },
+    {
+     "w": "model,",
+     "start": 12.259,
+     "end": 12.689
+    },
+    {
+     "w": "and",
+     "start": 12.805,
+     "end": 12.956
+    },
+    {
+     "w": "pushed",
+     "start": 13.025,
+     "end": 13.304
+    },
+    {
+     "w": "it",
+     "start": 13.351,
+     "end": 13.455
+    },
+    {
+     "w": "before",
+     "start": 13.652,
+     "end": 13.978
+    },
+    {
+     "w": "we",
+     "start": 14.012,
+     "end": 14.094
+    },
+    {
+     "w": "downloaded",
+     "start": 14.163,
+     "end": 14.779
+    },
+    {
+     "w": "a",
+     "start": 15.034,
+     "end": 15.115
+    },
+    {
+     "w": "single",
+     "start": 15.22,
+     "end": 15.545
+    },
+    {
+     "w": "day",
+     "start": 15.58,
+     "end": 15.847
+    },
+    {
+     "w": "of",
+     "start": 15.951,
+     "end": 16.067
+    },
+    {
+     "w": "the",
+     "start": 16.114,
+     "end": 16.183
+    },
+    {
+     "w": "twenty",
+     "start": 16.23,
+     "end": 16.567
+    },
+    {
+     "w": "twenty-six",
+     "start": 16.625,
+     "end": 17.205
+    },
+    {
+     "w": "season.",
+     "start": 17.263,
+     "end": 18.354
+    }
+   ],
+   "captions": [
+    {
+     "text": "Most tools answer with a forecast.",
+     "start": 0.15,
+     "end": 2.205
+    },
+    {
+     "text": "We asked a simpler source:",
+     "start": 2.611,
+     "end": 4.19
+    },
+    {
+     "text": "the clinic's own pollen trap, read yesterday.",
+     "start": 4.597,
+     "end": 7.696
+    },
+    {
+     "text": "And we tested it the hard way.",
+     "start": 8.056,
+     "end": 9.751
+    },
+    {
+     "text": "We wrote the test down, locked the model, and pushed it",
+     "start": 10.158,
+     "end": 13.455
+    },
+    {
+     "text": "before we downloaded a single day of the 2026 season.",
+     "start": 13.652,
+     "end": 18.354
+    }
+   ]
+  },
+  {
+   "id": "s3",
+   "from": 929,
+   "frames": 534,
+   "voiceAt": 0.15,
+   "audio": "v5/vo/s3.mp3",
+   "audioSeconds": 15.0,
+   "words": [
+    {
+     "w": "Two",
+     "start": 0.15,
+     "end": 0.382
+    },
+    {
+     "w": "hundred",
+     "start": 0.452,
+     "end": 0.742
+    },
+    {
+     "w": "fifteen",
+     "start": 0.8,
+     "end": 1.299
+    },
+    {
+     "w": "high-pollen",
+     "start": 1.706,
+     "end": 2.333
+    },
+    {
+     "w": "days",
+     "start": 2.402,
+     "end": 2.785
+    },
+    {
+     "w": "in",
+     "start": 3.087,
+     "end": 3.238
+    },
+    {
+     "w": "Madrid,",
+     "start": 3.296,
+     "end": 3.888
+    },
+    {
+     "w": "Basel",
+     "start": 4.086,
+     "end": 4.515
+    },
+    {
+     "w": "and",
+     "start": 4.817,
+     "end": 4.968
+    },
+    {
+     "w": "Zürich.",
+     "start": 5.026,
+     "end": 5.665
+    },
+    {
+     "w": "Yesterday's",
+     "start": 6.141,
+     "end": 6.698
+    },
+    {
+     "w": "trap",
+     "start": 6.756,
+     "end": 7.081
+    },
+    {
+     "w": "flagged",
+     "start": 7.638,
+     "end": 8.103
+    },
+    {
+     "w": "one",
+     "start": 8.172,
+     "end": 8.347
+    },
+    {
+     "w": "hundred",
+     "start": 8.393,
+     "end": 8.683
+    },
+    {
+     "w": "sixty-four",
+     "start": 8.741,
+     "end": 9.333
+    },
+    {
+     "w": "of",
+     "start": 9.392,
+     "end": 9.45
+    },
+    {
+     "w": "them.",
+     "start": 9.496,
+     "end": 9.856
+    },
+    {
+     "w": "Europe's",
+     "start": 10.332,
+     "end": 10.785
+    },
+    {
+     "w": "free",
+     "start": 10.843,
+     "end": 11.11
+    },
+    {
+     "w": "CAMS",
+     "start": 11.179,
+     "end": 11.609
+    },
+    {
+     "w": "forecast",
+     "start": 11.667,
+     "end": 12.317
+    },
+    {
+     "w": "for",
+     "start": 12.387,
+     "end": 12.515
+    },
+    {
+     "w": "the",
+     "start": 12.561,
+     "end": 12.631
+    },
+    {
+     "w": "same",
+     "start": 12.689,
+     "end": 12.967
+    },
+    {
+     "w": "day",
+     "start": 13.014,
+     "end": 13.292
+    },
+    {
+     "w": "flagged",
+     "start": 13.594,
+     "end": 14.024
+    },
+    {
+     "w": "seventy.",
+     "start": 14.128,
+     "end": 15.15
+    }
+   ],
+   "captions": [
+    {
+     "text": "215 high-pollen days in Madrid, Basel and Zürich.",
+     "start": 0.15,
+     "end": 5.665
+    },
+    {
+     "text": "Yesterday's trap flagged 164 of them.",
+     "start": 6.141,
+     "end": 9.856
+    },
+    {
+     "text": "Europe's free CAMS forecast for the same day flagged 70.",
+     "start": 10.332,
+     "end": 15.15
+    }
+   ]
+  },
+  {
+   "id": "s4",
+   "from": 1463,
+   "frames": 412,
+   "voiceAt": 0.15,
+   "audio": "v5/vo/s4.mp3",
+   "audioSeconds": 13.142,
+   "words": [
+    {
+     "w": "Day",
+     "start": 0.15,
+     "end": 0.347
+    },
+    {
+     "w": "by",
+     "start": 0.405,
+     "end": 0.545
+    },
+    {
+     "w": "day",
+     "start": 0.614,
+     "end": 0.916
+    },
+    {
+     "w": "it",
+     "start": 1.276,
+     "end": 1.415
+    },
+    {
+     "w": "looks",
+     "start": 1.474,
+     "end": 1.694
+    },
+    {
+     "w": "like",
+     "start": 1.741,
+     "end": 1.938
+    },
+    {
+     "w": "this.",
+     "start": 1.973,
+     "end": 2.426
+    },
+    {
+     "w": "The",
+     "start": 2.727,
+     "end": 2.855
+    },
+    {
+     "w": "forecast",
+     "start": 2.902,
+     "end": 3.401
+    },
+    {
+     "w": "missed",
+     "start": 3.459,
+     "end": 3.726
+    },
+    {
+     "w": "one",
+     "start": 4.028,
+     "end": 4.272
+    },
+    {
+     "w": "hundred",
+     "start": 4.33,
+     "end": 4.655
+    },
+    {
+     "w": "forty-five",
+     "start": 4.724,
+     "end": 5.467
+    },
+    {
+     "w": "high",
+     "start": 5.525,
+     "end": 5.827
+    },
+    {
+     "w": "days.",
+     "start": 5.885,
+     "end": 6.524
+    },
+    {
+     "w": "The",
+     "start": 7.081,
+     "end": 7.197
+    },
+    {
+     "w": "trap",
+     "start": 7.255,
+     "end": 7.522
+    },
+    {
+     "w": "missed",
+     "start": 7.627,
+     "end": 7.894
+    },
+    {
+     "w": "fifty-one,",
+     "start": 7.94,
+     "end": 8.741
+    },
+    {
+     "w": "and",
+     "start": 8.997,
+     "end": 9.136
+    },
+    {
+     "w": "it",
+     "start": 9.194,
+     "end": 9.252
+    },
+    {
+     "w": "won",
+     "start": 9.31,
+     "end": 9.531
+    },
+    {
+     "w": "in",
+     "start": 9.891,
+     "end": 10.03
+    },
+    {
+     "w": "every",
+     "start": 10.169,
+     "end": 10.518
+    },
+    {
+     "w": "city",
+     "start": 10.587,
+     "end": 10.912
+    },
+    {
+     "w": "and",
+     "start": 11.214,
+     "end": 11.4
+    },
+    {
+     "w": "every",
+     "start": 11.539,
+     "end": 11.888
+    },
+    {
+     "w": "species.",
+     "start": 11.946,
+     "end": 13.292
+    }
+   ],
+   "captions": [
+    {
+     "text": "Day by day it looks like this.",
+     "start": 0.15,
+     "end": 2.426
+    },
+    {
+     "text": "The forecast missed 145 high days.",
+     "start": 2.727,
+     "end": 6.524
+    },
+    {
+     "text": "The trap missed 51,",
+     "start": 7.081,
+     "end": 8.741
+    },
+    {
+     "text": "and it won in every city and every species.",
+     "start": 8.997,
+     "end": 13.292
+    }
+   ]
+  },
+  {
+   "id": "s5",
+   "from": 1875,
+   "frames": 542,
+   "voiceAt": 0.15,
+   "audio": "v5/vo/s5.mp3",
+   "audioSeconds": 17.461,
+   "words": [
+    {
+     "w": "One",
+     "start": 0.15,
+     "end": 0.498
+    },
+    {
+     "w": "real",
+     "start": 0.568,
+     "end": 0.835
+    },
+    {
+     "w": "morning:",
+     "start": 0.905,
+     "end": 1.497
+    },
+    {
+     "w": "Madrid,",
+     "start": 1.961,
+     "end": 2.681
+    },
+    {
+     "w": "fifth",
+     "start": 3.029,
+     "end": 3.308
+    },
+    {
+     "w": "of",
+     "start": 3.366,
+     "end": 3.424
+    },
+    {
+     "w": "May.",
+     "start": 3.494,
+     "end": 3.912
+    },
+    {
+     "w": "Yesterday's",
+     "start": 4.364,
+     "end": 4.887
+    },
+    {
+     "w": "grass",
+     "start": 4.933,
+     "end": 5.2
+    },
+    {
+     "w": "count",
+     "start": 5.258,
+     "end": 5.514
+    },
+    {
+     "w": "was",
+     "start": 5.862,
+     "end": 6.025
+    },
+    {
+     "w": "one",
+     "start": 6.094,
+     "end": 6.373
+    },
+    {
+     "w": "hundred",
+     "start": 6.443,
+     "end": 6.791
+    },
+    {
+     "w": "and",
+     "start": 6.814,
+     "end": 6.884
+    },
+    {
+     "w": "four.",
+     "start": 6.953,
+     "end": 7.441
+    },
+    {
+     "w": "The",
+     "start": 8.08,
+     "end": 8.184
+    },
+    {
+     "w": "forecast",
+     "start": 8.242,
+     "end": 8.741
+    },
+    {
+     "w": "for",
+     "start": 8.788,
+     "end": 8.881
+    },
+    {
+     "w": "that",
+     "start": 8.916,
+     "end": 9.055
+    },
+    {
+     "w": "day",
+     "start": 9.125,
+     "end": 9.357
+    },
+    {
+     "w": "said",
+     "start": 9.461,
+     "end": 9.798
+    },
+    {
+     "w": "nineteen",
+     "start": 10.146,
+     "end": 10.576
+    },
+    {
+     "w": "point",
+     "start": 10.645,
+     "end": 10.854
+    },
+    {
+     "w": "five,",
+     "start": 10.924,
+     "end": 11.481
+    },
+    {
+     "w": "below",
+     "start": 11.772,
+     "end": 12.085
+    },
+    {
+     "w": "the",
+     "start": 12.155,
+     "end": 12.236
+    },
+    {
+     "w": "alert",
+     "start": 12.294,
+     "end": 12.596
+    },
+    {
+     "w": "line.",
+     "start": 12.666,
+     "end": 13.142
+    },
+    {
+     "w": "The",
+     "start": 13.501,
+     "end": 13.606
+    },
+    {
+     "w": "trap",
+     "start": 13.652,
+     "end": 13.885
+    },
+    {
+     "w": "that",
+     "start": 13.931,
+     "end": 14.082
+    },
+    {
+     "w": "day",
+     "start": 14.152,
+     "end": 14.43
+    },
+    {
+     "w": "measured",
+     "start": 14.779,
+     "end": 15.127
+    },
+    {
+     "w": "seventy-nine.",
+     "start": 15.197,
+     "end": 16.125
+    },
+    {
+     "w": "A",
+     "start": 16.416,
+     "end": 16.485
+    },
+    {
+     "w": "high",
+     "start": 16.578,
+     "end": 16.822
+    },
+    {
+     "w": "day.",
+     "start": 16.88,
+     "end": 17.611
+    }
+   ],
+   "captions": [
+    {
+     "text": "One real morning: Madrid, fifth of May.",
+     "start": 0.15,
+     "end": 3.912
+    },
+    {
+     "text": "Yesterday's grass count was 104.",
+     "start": 4.364,
+     "end": 7.441
+    },
+    {
+     "text": "The forecast for that day said 19.5, below the alert line.",
+     "start": 8.08,
+     "end": 13.142
+    },
+    {
+     "text": "The trap that day measured 79.",
+     "start": 13.501,
+     "end": 16.125
+    },
+    {
+     "text": "A high day.",
+     "start": 16.416,
+     "end": 17.611
+    }
+   ]
+  },
+  {
+   "id": "s6",
+   "from": 2417,
+   "frames": 595,
+   "voiceAt": 0.15,
+   "audio": "v5/vo/s6.mp3",
+   "audioSeconds": 19.226,
+   "words": [
+    {
+     "w": "So",
+     "start": 0.15,
+     "end": 0.336
+    },
+    {
+     "w": "the",
+     "start": 0.394,
+     "end": 0.463
+    },
+    {
+     "w": "clinic",
+     "start": 0.51,
+     "end": 0.823
+    },
+    {
+     "w": "drafts",
+     "start": 0.881,
+     "end": 1.253
+    },
+    {
+     "w": "reminders.",
+     "start": 1.311,
+     "end": 2.077
+    },
+    {
+     "w": "One",
+     "start": 2.484,
+     "end": 2.716
+    },
+    {
+     "w": "hundred",
+     "start": 2.774,
+     "end": 3.076
+    },
+    {
+     "w": "eleven",
+     "start": 3.122,
+     "end": 3.47
+    },
+    {
+     "w": "of",
+     "start": 3.529,
+     "end": 3.598
+    },
+    {
+     "w": "two",
+     "start": 3.668,
+     "end": 3.912
+    },
+    {
+     "w": "hundred",
+     "start": 4.016,
+     "end": 4.341
+    },
+    {
+     "w": "synthetic",
+     "start": 4.399,
+     "end": 4.887
+    },
+    {
+     "w": "patients,",
+     "start": 4.945,
+     "end": 5.642
+    },
+    {
+     "w": "each",
+     "start": 5.897,
+     "end": 6.118
+    },
+    {
+     "w": "sensitised",
+     "start": 6.176,
+     "end": 6.895
+    },
+    {
+     "w": "to",
+     "start": 6.93,
+     "end": 7.0
+    },
+    {
+     "w": "grass",
+     "start": 7.07,
+     "end": 7.534
+    },
+    {
+     "w": "with",
+     "start": 7.836,
+     "end": 8.01
+    },
+    {
+     "w": "a",
+     "start": 8.045,
+     "end": 8.068
+    },
+    {
+     "w": "medicine",
+     "start": 8.126,
+     "end": 8.509
+    },
+    {
+     "w": "on",
+     "start": 8.544,
+     "end": 8.625
+    },
+    {
+     "w": "file.",
+     "start": 8.707,
+     "end": 9.252
+    },
+    {
+     "w": "Code",
+     "start": 9.612,
+     "end": 9.914
+    },
+    {
+     "w": "names",
+     "start": 9.949,
+     "end": 10.262
+    },
+    {
+     "w": "only",
+     "start": 10.332,
+     "end": 10.553
+    },
+    {
+     "w": "the",
+     "start": 10.611,
+     "end": 10.68
+    },
+    {
+     "w": "medicine",
+     "start": 10.715,
+     "end": 11.11
+    },
+    {
+     "w": "already",
+     "start": 11.156,
+     "end": 11.539
+    },
+    {
+     "w": "on",
+     "start": 11.609,
+     "end": 11.702
+    },
+    {
+     "w": "file",
+     "start": 11.783,
+     "end": 12.317
+    },
+    {
+     "w": "and",
+     "start": 12.457,
+     "end": 12.677
+    },
+    {
+     "w": "adds",
+     "start": 12.735,
+     "end": 12.979
+    },
+    {
+     "w": "the",
+     "start": 13.025,
+     "end": 13.095
+    },
+    {
+     "w": "signed",
+     "start": 13.164,
+     "end": 13.536
+    },
+    {
+     "w": "safety",
+     "start": 13.606,
+     "end": 13.977
+    },
+    {
+     "w": "line.",
+     "start": 14.035,
+     "end": 14.546
+    },
+    {
+     "w": "A",
+     "start": 14.848,
+     "end": 14.918
+    },
+    {
+     "w": "nurse",
+     "start": 15.022,
+     "end": 15.394
+    },
+    {
+     "w": "approves.",
+     "start": 15.44,
+     "end": 16.241
+    },
+    {
+     "w": "Nothing",
+     "start": 16.647,
+     "end": 16.961
+    },
+    {
+     "w": "is",
+     "start": 17.019,
+     "end": 17.112
+    },
+    {
+     "w": "sent",
+     "start": 17.158,
+     "end": 17.46
+    },
+    {
+     "w": "without",
+     "start": 17.82,
+     "end": 18.192
+    },
+    {
+     "w": "that",
+     "start": 18.238,
+     "end": 18.401
+    },
+    {
+     "w": "click.",
+     "start": 18.47,
+     "end": 19.376
+    }
+   ],
+   "captions": [
+    {
+     "text": "So the clinic drafts reminders.",
+     "start": 0.15,
+     "end": 2.077
+    },
+    {
+     "text": "111 of 200 synthetic patients,",
+     "start": 2.484,
+     "end": 5.642
+    },
+    {
+     "text": "each sensitised to grass with a medicine on file.",
+     "start": 5.897,
+     "end": 9.252
+    },
+    {
+     "text": "Code names only the medicine already on",
+     "start": 9.612,
+     "end": 11.702
+    },
+    {
+     "text": "file and adds the signed safety line.",
+     "start": 11.783,
+     "end": 14.546
+    },
+    {
+     "text": "A nurse approves.",
+     "start": 14.848,
+     "end": 16.241
+    },
+    {
+     "text": "Nothing is sent without that click.",
+     "start": 16.647,
+     "end": 19.376
+    }
+   ]
+  },
+  {
+   "id": "s6b",
+   "from": 3012,
+   "frames": 713,
+   "voiceAt": 0.15,
+   "audio": "v5/vo/s6b.mp3",
+   "audioSeconds": 23.174,
+   "words": [
+    {
+     "w": "An",
+     "start": 0.15,
+     "end": 0.313
+    },
+    {
+     "w": "AI",
+     "start": 0.382,
+     "end": 0.707
+    },
+    {
+     "w": "model",
+     "start": 0.777,
+     "end": 1.044
+    },
+    {
+     "w": "writes",
+     "start": 1.09,
+     "end": 1.381
+    },
+    {
+     "w": "each",
+     "start": 1.462,
+     "end": 1.671
+    },
+    {
+     "w": "reminder,",
+     "start": 1.741,
+     "end": 2.414
+    },
+    {
+     "w": "and",
+     "start": 2.669,
+     "end": 2.82
+    },
+    {
+     "w": "code",
+     "start": 2.902,
+     "end": 3.296
+    },
+    {
+     "w": "checks",
+     "start": 3.378,
+     "end": 3.784
+    },
+    {
+     "w": "every",
+     "start": 3.854,
+     "end": 4.121
+    },
+    {
+     "w": "word.",
+     "start": 4.179,
+     "end": 4.69
+    },
+    {
+     "w": "No",
+     "start": 5.096,
+     "end": 5.27
+    },
+    {
+     "w": "dose,",
+     "start": 5.351,
+     "end": 5.943
+    },
+    {
+     "w": "no",
+     "start": 6.083,
+     "end": 6.222
+    },
+    {
+     "w": "drug",
+     "start": 6.292,
+     "end": 6.535
+    },
+    {
+     "w": "name,",
+     "start": 6.605,
+     "end": 7.058
+    },
+    {
+     "w": "no",
+     "start": 7.22,
+     "end": 7.371
+    },
+    {
+     "w": "symptom",
+     "start": 7.476,
+     "end": 7.836
+    },
+    {
+     "w": "advice,",
+     "start": 7.882,
+     "end": 8.498
+    },
+    {
+     "w": "and",
+     "start": 8.753,
+     "end": 8.892
+    },
+    {
+     "w": "the",
+     "start": 8.927,
+     "end": 8.997
+    },
+    {
+     "w": "signed",
+     "start": 9.043,
+     "end": 9.392
+    },
+    {
+     "w": "safety",
+     "start": 9.45,
+     "end": 9.809
+    },
+    {
+     "w": "lines",
+     "start": 9.868,
+     "end": 10.239
+    },
+    {
+     "w": "are",
+     "start": 10.46,
+     "end": 10.669
+    },
+    {
+     "w": "added",
+     "start": 10.715,
+     "end": 10.97
+    },
+    {
+     "w": "by",
+     "start": 11.029,
+     "end": 11.156
+    },
+    {
+     "w": "code,",
+     "start": 11.261,
+     "end": 11.818
+    },
+    {
+     "w": "not",
+     "start": 12.039,
+     "end": 12.248
+    },
+    {
+     "w": "the",
+     "start": 12.294,
+     "end": 12.375
+    },
+    {
+     "w": "model.",
+     "start": 12.422,
+     "end": 12.886
+    },
+    {
+     "w": "We",
+     "start": 13.443,
+     "end": 13.594
+    },
+    {
+     "w": "then",
+     "start": 13.652,
+     "end": 13.792
+    },
+    {
+     "w": "attacked",
+     "start": 13.838,
+     "end": 14.198
+    },
+    {
+     "w": "it",
+     "start": 14.233,
+     "end": 14.314
+    },
+    {
+     "w": "forty",
+     "start": 14.43,
+     "end": 14.79
+    },
+    {
+     "w": "times",
+     "start": 14.86,
+     "end": 15.348
+    },
+    {
+     "w": "with",
+     "start": 15.708,
+     "end": 15.893
+    },
+    {
+     "w": "attacks",
+     "start": 15.928,
+     "end": 16.335
+    },
+    {
+     "w": "it",
+     "start": 16.404,
+     "end": 16.485
+    },
+    {
+     "w": "had",
+     "start": 16.532,
+     "end": 16.636
+    },
+    {
+     "w": "never",
+     "start": 16.706,
+     "end": 16.903
+    },
+    {
+     "w": "seen.",
+     "start": 16.973,
+     "end": 17.507
+    },
+    {
+     "w": "The",
+     "start": 17.914,
+     "end": 18.041
+    },
+    {
+     "w": "model",
+     "start": 18.088,
+     "end": 18.331
+    },
+    {
+     "w": "broke",
+     "start": 18.39,
+     "end": 18.645
+    },
+    {
+     "w": "a",
+     "start": 18.68,
+     "end": 18.703
+    },
+    {
+     "w": "rule",
+     "start": 18.773,
+     "end": 19.237
+    },
+    {
+     "w": "twenty-one",
+     "start": 19.434,
+     "end": 20.085
+    },
+    {
+     "w": "times.",
+     "start": 20.131,
+     "end": 20.758
+    },
+    {
+     "w": "None",
+     "start": 21.06,
+     "end": 21.257
+    },
+    {
+     "w": "of",
+     "start": 21.292,
+     "end": 21.338
+    },
+    {
+     "w": "those",
+     "start": 21.397,
+     "end": 21.756
+    },
+    {
+     "w": "reached",
+     "start": 21.896,
+     "end": 22.221
+    },
+    {
+     "w": "the",
+     "start": 22.256,
+     "end": 22.325
+    },
+    {
+     "w": "nurse.",
+     "start": 22.383,
+     "end": 23.324
+    }
+   ],
+   "captions": [
+    {
+     "text": "An AI model writes each reminder, and code checks every word.",
+     "start": 0.15,
+     "end": 4.69
+    },
+    {
+     "text": "No dose, no drug name, no symptom advice,",
+     "start": 5.096,
+     "end": 8.498
+    },
+    {
+     "text": "and the signed safety lines are added by code, not the model.",
+     "start": 8.753,
+     "end": 12.886
+    },
+    {
+     "text": "We then attacked it 40 times with attacks it had never seen.",
+     "start": 13.443,
+     "end": 17.507
+    },
+    {
+     "text": "The model broke a rule 21 times.",
+     "start": 17.914,
+     "end": 20.758
+    },
+    {
+     "text": "None of those reached the nurse.",
+     "start": 21.06,
+     "end": 23.324
+    }
+   ]
+  },
+  {
+   "id": "s7",
+   "from": 3725,
+   "frames": 393,
+   "voiceAt": 0.15,
+   "audio": "v5/vo/s7.mp3",
+   "audioSeconds": 12.492,
+   "words": [
+    {
+     "w": "We",
+     "start": 0.15,
+     "end": 0.313
+    },
+    {
+     "w": "also",
+     "start": 0.371,
+     "end": 0.696
+    },
+    {
+     "w": "tested",
+     "start": 0.765,
+     "end": 1.137
+    },
+    {
+     "w": "ideas",
+     "start": 1.195,
+     "end": 1.683
+    },
+    {
+     "w": "of",
+     "start": 1.787,
+     "end": 1.903
+    },
+    {
+     "w": "our",
+     "start": 1.973,
+     "end": 2.1
+    },
+    {
+     "w": "own.",
+     "start": 2.17,
+     "end": 2.646
+    },
+    {
+     "w": "A",
+     "start": 3.203,
+     "end": 3.273
+    },
+    {
+     "w": "fusion",
+     "start": 3.378,
+     "end": 3.726
+    },
+    {
+     "w": "model",
+     "start": 3.796,
+     "end": 4.097
+    },
+    {
+     "w": "didn't",
+     "start": 4.457,
+     "end": 4.736
+    },
+    {
+     "w": "beat",
+     "start": 4.782,
+     "end": 4.968
+    },
+    {
+     "w": "the",
+     "start": 5.015,
+     "end": 5.084
+    },
+    {
+     "w": "simple",
+     "start": 5.142,
+     "end": 5.467
+    },
+    {
+     "w": "trap",
+     "start": 5.514,
+     "end": 5.781
+    },
+    {
+     "w": "rule.",
+     "start": 5.85,
+     "end": 6.257
+    },
+    {
+     "w": "NASA",
+     "start": 6.733,
+     "end": 7.023
+    },
+    {
+     "w": "weather",
+     "start": 7.058,
+     "end": 7.383
+    },
+    {
+     "w": "didn't",
+     "start": 7.743,
+     "end": 8.033
+    },
+    {
+     "w": "improve",
+     "start": 8.08,
+     "end": 8.451
+    },
+    {
+     "w": "the",
+     "start": 8.474,
+     "end": 8.544
+    },
+    {
+     "w": "score.",
+     "start": 8.59,
+     "end": 9.171
+    },
+    {
+     "w": "So",
+     "start": 9.426,
+     "end": 9.566
+    },
+    {
+     "w": "we",
+     "start": 9.624,
+     "end": 9.717
+    },
+    {
+     "w": "ship",
+     "start": 9.775,
+     "end": 9.995
+    },
+    {
+     "w": "the",
+     "start": 10.065,
+     "end": 10.135
+    },
+    {
+     "w": "simple",
+     "start": 10.181,
+     "end": 10.494
+    },
+    {
+     "w": "rule,",
+     "start": 10.541,
+     "end": 10.947
+    },
+    {
+     "w": "and",
+     "start": 11.145,
+     "end": 11.272
+    },
+    {
+     "w": "we",
+     "start": 11.33,
+     "end": 11.412
+    },
+    {
+     "w": "say",
+     "start": 11.481,
+     "end": 11.679
+    },
+    {
+     "w": "so.",
+     "start": 11.748,
+     "end": 12.642
+    }
+   ],
+   "captions": [
+    {
+     "text": "We also tested ideas of our own.",
+     "start": 0.15,
+     "end": 2.646
+    },
+    {
+     "text": "A fusion model didn't beat the simple trap rule.",
+     "start": 3.203,
+     "end": 6.257
+    },
+    {
+     "text": "NASA weather didn't improve the score.",
+     "start": 6.733,
+     "end": 9.171
+    },
+    {
+     "text": "So we ship the simple rule, and we say so.",
+     "start": 9.426,
+     "end": 12.642
+    }
+   ]
+  },
+  {
+   "id": "s8",
+   "from": 4118,
+   "frames": 783,
+   "voiceAt": 0.15,
+   "audio": "v5/vo/s8.mp3",
+   "audioSeconds": 23.917,
+   "words": [
+    {
+     "w": "The",
+     "start": 0.15,
+     "end": 0.266
+    },
+    {
+     "w": "forecast's",
+     "start": 0.313,
+     "end": 0.858
+    },
+    {
+     "w": "map",
+     "start": 0.916,
+     "end": 1.125
+    },
+    {
+     "w": "stops",
+     "start": 1.532,
+     "end": 1.961
+    },
+    {
+     "w": "at",
+     "start": 2.031,
+     "end": 2.182
+    },
+    {
+     "w": "thirty",
+     "start": 2.251,
+     "end": 2.553
+    },
+    {
+     "w": "degrees",
+     "start": 2.6,
+     "end": 2.96
+    },
+    {
+     "w": "north.",
+     "start": 3.029,
+     "end": 3.529
+    },
+    {
+     "w": "South",
+     "start": 4.179,
+     "end": 4.515
+    },
+    {
+     "w": "of",
+     "start": 4.573,
+     "end": 4.643
+    },
+    {
+     "w": "that",
+     "start": 4.701,
+     "end": 4.852
+    },
+    {
+     "w": "line,",
+     "start": 4.922,
+     "end": 5.398
+    },
+    {
+     "w": "across",
+     "start": 5.537,
+     "end": 5.909
+    },
+    {
+     "w": "most",
+     "start": 5.967,
+     "end": 6.187
+    },
+    {
+     "w": "of",
+     "start": 6.245,
+     "end": 6.315
+    },
+    {
+     "w": "Africa,",
+     "start": 6.385,
+     "end": 6.953
+    },
+    {
+     "w": "it",
+     "start": 7.209,
+     "end": 7.325
+    },
+    {
+     "w": "gives",
+     "start": 7.371,
+     "end": 7.58
+    },
+    {
+     "w": "no",
+     "start": 7.638,
+     "end": 7.789
+    },
+    {
+     "w": "pollen",
+     "start": 7.894,
+     "end": 8.184
+    },
+    {
+     "w": "value",
+     "start": 8.254,
+     "end": 8.544
+    },
+    {
+     "w": "at",
+     "start": 8.579,
+     "end": 8.649
+    },
+    {
+     "w": "all.",
+     "start": 8.707,
+     "end": 9.136
+    },
+    {
+     "w": "North",
+     "start": 9.693,
+     "end": 9.984
+    },
+    {
+     "w": "of",
+     "start": 10.018,
+     "end": 10.077
+    },
+    {
+     "w": "it,",
+     "start": 10.135,
+     "end": 10.471
+    },
+    {
+     "w": "in",
+     "start": 10.669,
+     "end": 10.785
+    },
+    {
+     "w": "Alexandria",
+     "start": 10.843,
+     "end": 11.574
+    },
+    {
+     "w": "and",
+     "start": 11.772,
+     "end": 11.957
+    },
+    {
+     "w": "Cairo,",
+     "start": 12.027,
+     "end": 12.689
+    },
+    {
+     "w": "it",
+     "start": 12.944,
+     "end": 13.072
+    },
+    {
+     "w": "does",
+     "start": 13.13,
+     "end": 13.362
+    },
+    {
+     "w": "give",
+     "start": 13.42,
+     "end": 13.606
+    },
+    {
+     "w": "numbers,",
+     "start": 13.652,
+     "end": 14.268
+    },
+    {
+     "w": "and",
+     "start": 14.57,
+     "end": 14.721
+    },
+    {
+     "w": "we",
+     "start": 14.767,
+     "end": 14.848
+    },
+    {
+     "w": "found",
+     "start": 14.918,
+     "end": 15.185
+    },
+    {
+     "w": "no",
+     "start": 15.29,
+     "end": 15.429
+    },
+    {
+     "w": "one",
+     "start": 15.51,
+     "end": 15.742
+    },
+    {
+     "w": "who",
+     "start": 15.801,
+     "end": 15.963
+    },
+    {
+     "w": "has",
+     "start": 16.021,
+     "end": 16.137
+    },
+    {
+     "w": "checked",
+     "start": 16.184,
+     "end": 16.462
+    },
+    {
+     "w": "them",
+     "start": 16.497,
+     "end": 16.648
+    },
+    {
+     "w": "against",
+     "start": 16.753,
+     "end": 17.101
+    },
+    {
+     "w": "a",
+     "start": 17.159,
+     "end": 17.194
+    },
+    {
+     "w": "trap.",
+     "start": 17.252,
+     "end": 17.751
+    },
+    {
+     "w": "This",
+     "start": 18.401,
+     "end": 18.61
+    },
+    {
+     "w": "rule",
+     "start": 18.691,
+     "end": 18.982
+    },
+    {
+     "w": "needs",
+     "start": 19.028,
+     "end": 19.284
+    },
+    {
+     "w": "only",
+     "start": 19.353,
+     "end": 19.643
+    },
+    {
+     "w": "that",
+     "start": 19.713,
+     "end": 19.887
+    },
+    {
+     "w": "trap.",
+     "start": 19.945,
+     "end": 20.468
+    },
+    {
+     "w": "We",
+     "start": 20.828,
+     "end": 20.955
+    },
+    {
+     "w": "haven't",
+     "start": 21.013,
+     "end": 21.257
+    },
+    {
+     "w": "tested",
+     "start": 21.292,
+     "end": 21.64
+    },
+    {
+     "w": "it",
+     "start": 21.687,
+     "end": 21.745
+    },
+    {
+     "w": "there",
+     "start": 21.791,
+     "end": 21.977
+    },
+    {
+     "w": "yet.",
+     "start": 22.035,
+     "end": 22.418
+    },
+    {
+     "w": "That's",
+     "start": 22.778,
+     "end": 23.045
+    },
+    {
+     "w": "next.",
+     "start": 23.115,
+     "end": 24.067
+    }
+   ],
+   "captions": [
+    {
+     "text": "The forecast's map stops at 30° north.",
+     "start": 0.15,
+     "end": 3.529
+    },
+    {
+     "text": "South of that line, across most of Africa,",
+     "start": 4.179,
+     "end": 6.953
+    },
+    {
+     "text": "it gives no pollen value at all.",
+     "start": 7.209,
+     "end": 9.136
+    },
+    {
+     "text": "North of it, in Alexandria and Cairo, it does give numbers,",
+     "start": 9.693,
+     "end": 14.268
+    },
+    {
+     "text": "and we found no one who has checked them against a trap.",
+     "start": 14.57,
+     "end": 17.751
+    },
+    {
+     "text": "This rule needs only that trap.",
+     "start": 18.401,
+     "end": 20.468
+    },
+    {
+     "text": "We haven't tested it there yet.",
+     "start": 20.828,
+     "end": 22.418
+    },
+    {
+     "text": "That's next.",
+     "start": 22.778,
+     "end": 24.067
+    }
+   ]
+  },
+  {
+   "id": "s9",
+   "from": 4901,
+   "frames": 396,
+   "voiceAt": 0.15,
+   "audio": "v5/vo/s9.mp3",
+   "audioSeconds": 9.613,
+   "words": [
+    {
+     "w": "Three",
+     "start": 0.15,
+     "end": 0.463
+    },
+    {
+     "w": "cities,",
+     "start": 0.533,
+     "end": 1.079
+    },
+    {
+     "w": "one",
+     "start": 1.276,
+     "end": 1.566
+    },
+    {
+     "w": "season,",
+     "start": 1.636,
+     "end": 2.205
+    },
+    {
+     "w": "a",
+     "start": 2.368,
+     "end": 2.437
+    },
+    {
+     "w": "pre-registered",
+     "start": 2.507,
+     "end": 3.18
+    },
+    {
+     "w": "test,",
+     "start": 3.215,
+     "end": 3.645
+    },
+    {
+     "w": "and",
+     "start": 3.807,
+     "end": 3.958
+    },
+    {
+     "w": "every",
+     "start": 4.028,
+     "end": 4.248
+    },
+    {
+     "w": "number",
+     "start": 4.306,
+     "end": 4.62
+    },
+    {
+     "w": "checks",
+     "start": 4.782,
+     "end": 5.061
+    },
+    {
+     "w": "itself.",
+     "start": 5.107,
+     "end": 5.688
+    },
+    {
+     "w": "Open",
+     "start": 6.164,
+     "end": 6.501
+    },
+    {
+     "w": "the",
+     "start": 6.57,
+     "end": 6.64
+    },
+    {
+     "w": "PollenPlan",
+     "start": 6.675,
+     "end": 7.244
+    },
+    {
+     "w": "demo.",
+     "start": 7.325,
+     "end": 7.847
+    },
+    {
+     "w": "No",
+     "start": 8.323,
+     "end": 8.567
+    },
+    {
+     "w": "setup",
+     "start": 8.672,
+     "end": 9.032
+    },
+    {
+     "w": "needed.",
+     "start": 9.09,
+     "end": 9.763
+    }
+   ],
+   "captions": [
+    {
+     "text": "Three cities, one season, a pre-registered test,",
+     "start": 0.15,
+     "end": 3.645
+    },
+    {
+     "text": "and every number checks itself.",
+     "start": 3.807,
+     "end": 5.688
+    },
+    {
+     "text": "Open the PollenPlan demo.",
+     "start": 6.164,
+     "end": 7.847
+    },
+    {
+     "text": "No setup needed.",
+     "start": 8.323,
+     "end": 9.763
+    }
+   ]
+  }
+ ],
+ "lock": {
+  "sha": "5c45eafc99f96a5d56be2138e8342bcdba61761d",
+  "short": "5c45eaf",
+  "prereg": "docs/PREREG_NOWCAST_2026.md",
+  "time": "2026-11-23T10:54:53+01:00",
+  "subject": "feat: lock trap-first nowcast F1/F2 before the 2026 download"
+ },
+ "pooled": {
+  "events": 215,
+  "days": 1706,
+  "trapHits": 164,
+  "trapMiss": 51,
+  "trapFalse": 40,
+  "camsHits": 70,
+  "camsMiss": 145,
+  "camsFalse": 10
+ },
+ "hypotheses": {
+  "H1": {
+   "diff": 0.3320261437908497,
+   "ci": [
+    0.2027374812783578,
+    0.4574676621051201
+   ],
+   "passes": true
+  },
+  "H2": {
+   "diff": 0.2911616161616162,
+   "ci": [
+    0.17574983641196584,
+    0.40558770634889185
+   ],
+   "passes": true
+  },
+  "H3": {
+   "diff": -0.04086452762923354,
+   "ci": [
+    -0.11656315020883742,
+    0.027557028208935564
+   ],
+   "passes": false
+  },
+  "H4": {
+   "diff": 0.01972039987503904,
+   "ci": [
+    -0.020878026682771264,
+    0.06356368905130204
+   ],
+   "passes": false
+  }
+ },
+ "cells": [
+  {
+   "key": "madrid/olive",
+   "city": "Madrid",
+   "species": "Olive",
+   "threshold": 162,
+   "n": 11,
+   "trap": 9,
+   "cams": 0,
+   "trapCsi": 0.6923076923076923,
+   "camsCsi": 0.0
+  },
+  {
+   "key": "madrid/grass",
+   "city": "Madrid",
+   "species": "Grass",
+   "threshold": 35,
+   "n": 36,
+   "trap": 29,
+   "cams": 1,
+   "trapCsi": 0.6744186046511628,
+   "camsCsi": 0.027777777777777776
+  },
+  {
+   "key": "basel/birch",
+   "city": "Basel",
+   "species": "Birch",
+   "threshold": 30,
+   "n": 33,
+   "trap": 26,
+   "cams": 14,
+   "trapCsi": 0.6842105263157895,
+   "camsCsi": 0.4
+  },
+  {
+   "key": "basel/grass",
+   "city": "Basel",
+   "species": "Grass",
+   "threshold": 35,
+   "n": 56,
+   "trap": 39,
+   "cams": 26,
+   "trapCsi": 0.6,
+   "camsCsi": 0.4262295081967213
+  },
+  {
+   "key": "zurich/birch",
+   "city": "Zürich",
+   "species": "Birch",
+   "threshold": 30,
+   "n": 29,
+   "trap": 22,
+   "cams": 3,
+   "trapCsi": 0.6285714285714286,
+   "camsCsi": 0.10344827586206896
+  },
+  {
+   "key": "zurich/grass",
+   "city": "Zürich",
+   "species": "Grass",
+   "threshold": 35,
+   "n": 50,
+   "trap": 39,
+   "cams": 26,
+   "trapCsi": 0.639344262295082,
+   "camsCsi": 0.49056603773584906
+  }
+ ],
+ "cellsWon": 6,
+ "madridGrass": {
+  "threshold": 35,
+  "days": [
+   [
+    "2026-04-10",
+    8.0,
+    3.9,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-04-11",
+    8.0,
+    3.2,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-04-12",
+    3.0,
+    2.3,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-04-13",
+    8.0,
+    3.4,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-04-14",
+    7.0,
+    4.0,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-04-15",
+    16.0,
+    5.3,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-04-16",
+    25.0,
+    6.1,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-04-17",
+    26.0,
+    6.7,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-04-18",
+    26.0,
+    7.0,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-04-19",
+    25.0,
+    7.5,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-04-20",
+    43.0,
+    8.1,
+    1,
+    0,
+    0
+   ],
+   [
+    "2026-04-21",
+    33.0,
+    9.0,
+    0,
+    1,
+    0
+   ],
+   [
+    "2026-04-22",
+    42.0,
+    9.9,
+    1,
+    0,
+    0
+   ],
+   [
+    "2026-04-23",
+    23.0,
+    9.4,
+    0,
+    1,
+    0
+   ],
+   [
+    "2026-04-28",
+    31.0,
+    13.5,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-04-29",
+    30.0,
+    1.8,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-04-30",
+    152.0,
+    14.4,
+    1,
+    0,
+    0
+   ],
+   [
+    "2026-05-01",
+    123.0,
+    20.0,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-05-02",
+    69.0,
+    8.5,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-05-03",
+    339.0,
+    12.6,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-05-04",
+    104.0,
+    16.3,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-05-05",
+    79.0,
+    19.5,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-05-06",
+    14.0,
+    17.7,
+    0,
+    1,
+    0
+   ],
+   [
+    "2026-05-07",
+    21.0,
+    21.5,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-05-08",
+    47.0,
+    17.1,
+    1,
+    0,
+    0
+   ],
+   [
+    "2026-05-09",
+    16.0,
+    11.3,
+    0,
+    1,
+    0
+   ],
+   [
+    "2026-05-10",
+    16.0,
+    14.3,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-05-11",
+    152.0,
+    24.5,
+    1,
+    0,
+    0
+   ],
+   [
+    "2026-05-12",
+    76.0,
+    20.0,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-05-13",
+    27.0,
+    17.0,
+    0,
+    1,
+    0
+   ],
+   [
+    "2026-05-14",
+    33.0,
+    23.4,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-05-15",
+    10.0,
+    20.5,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-05-16",
+    14.0,
+    28.1,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-05-17",
+    46.0,
+    28.9,
+    1,
+    0,
+    0
+   ],
+   [
+    "2026-05-18",
+    34.0,
+    29.6,
+    0,
+    1,
+    0
+   ],
+   [
+    "2026-05-19",
+    129.0,
+    39.7,
+    1,
+    0,
+    1
+   ],
+   [
+    "2026-05-20",
+    127.0,
+    32.4,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-05-21",
+    112.0,
+    32.2,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-05-22",
+    96.0,
+    31.1,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-05-23",
+    130.0,
+    32.0,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-05-24",
+    126.0,
+    31.6,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-05-25",
+    138.0,
+    30.0,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-05-26",
+    99.0,
+    29.2,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-05-27",
+    121.0,
+    32.0,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-05-28",
+    81.0,
+    27.3,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-05-29",
+    100.0,
+    29.6,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-05-30",
+    231.0,
+    31.5,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-05-31",
+    182.0,
+    27.6,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-06-01",
+    232.0,
+    28.1,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-06-02",
+    179.0,
+    24.7,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-06-03",
+    125.0,
+    28.1,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-06-04",
+    144.0,
+    27.7,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-06-05",
+    118.0,
+    27.3,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-06-06",
+    75.0,
+    28.4,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-06-07",
+    36.0,
+    28.6,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-06-08",
+    60.0,
+    27.1,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-06-09",
+    75.0,
+    24.6,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-06-10",
+    59.0,
+    25.4,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-06-11",
+    43.0,
+    20.6,
+    1,
+    1,
+    0
+   ],
+   [
+    "2026-06-12",
+    25.0,
+    19.3,
+    0,
+    1,
+    0
+   ],
+   [
+    "2026-06-13",
+    13.0,
+    18.4,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-06-14",
+    17.0,
+    16.7,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-06-15",
+    10.0,
+    13.9,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-06-16",
+    3.0,
+    18.0,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-06-17",
+    4.0,
+    17.4,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-06-18",
+    2.0,
+    15.4,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-06-19",
+    7.0,
+    15.5,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-06-20",
+    6.0,
+    14.8,
+    0,
+    0,
+    0
+   ],
+   [
+    "2026-06-21",
+    5.0,
+    13.9,
+    0,
+    0,
+    0
+   ]
+  ]
+ },
+ "featured": {
+  "city": "Madrid",
+  "species": "grass",
+  "date": "2026-05-05",
+  "yesterday": 104.0,
+  "cams_today": 19.5,
+  "observed_today": 79.0,
+  "threshold": 35
+ },
+ "batch": {
+  "roster": 200,
+  "eligible": 111,
+  "passedGate": 111
+ },
+ "redTeam": {
+  "n": 40,
+  "broke": 21,
+  "reached": 0
+ },
+ "scored": {
+  "short": "23bff19",
+  "time": "2026-11-23T10:56:30+01:00",
+  "subject": "feat: score the locked nowcast once on untouched 2026 (Jan-Oct)"
+ },
+ "tests": 239,
+ "demoUrl": "https://drahmed7887.github.io/hack-genhacks/"
+}

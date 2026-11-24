@@ -4,9 +4,6 @@ out/*.log
 out/*.png
 out/ln.json
 out/chk/
-public/audio/*
-!public/audio/*.alignment.json
-public/audio/*_v2.*
 public/sfx/
 
 out/*.srt

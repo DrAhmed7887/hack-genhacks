@@ -66,6 +66,7 @@ We found no study comparing those Egyptian values with trap counts. The trap-fir
   - Madrid publishes daily from January to June and weekly after that.
   - The two-day-old reading also beat the forecast.
 - **Thresholds:** single-centre values (`rules/thresholds.json`, signed 22 Nov 2026).
+- **Valencia:** the demo clinic's city has no trap counts in this repo. It is **never scored** and carries no accuracy claim.
 - **Data:** the patients are synthetic. Nothing is sent.
 
 ![PollenPlan Workflow](docs/flow.svg)
@@ -85,170 +86,22 @@ We found no study comparing those Egyptian values with trap counts. The trap-fir
 | `eval/backtest.py` · `eval/results/backtest.json` | The 2021–2025 pre-registered backtest |
 | `CLAIMS.md` · `JUDGES.md` | Every public number with its source, and the judge guide |
 | `rules/thresholds.json` | Alert thresholds (signed 22 Nov 2026) |
+| `video/v5/` · `video/remotion/src/v5/` | The demo film, built in code from the result files (see `video/v5/README.md`) |
 
-## Quick Start
-
-1. Run the backtest to generate results:
-   ```bash
-   make backtest
-   ```
-
-2. Open `demo/index.html` in a browser to see the static demo
-
-3. For a local preview of the Pages site:
-   ```bash
-   python -m http.server 8000 -d demo
-   open http://localhost:8000
-   ```
-
-## Setup
-
-### Prerequisites
-
-- Python 3.9+
-- `requirements.txt` packages (see below)
-
-### Install Dependencies
+## Run it
 
 ```bash
 python -m venv .venv && .venv/bin/pip install -r requirements.txt
+make test                       # the test suite
+.venv/bin/python eval/verify_claims.py   # every number in CLAIMS.md against the committed results
+python -m http.server 8000 -d demo       # then open http://localhost:8000
 ```
 
-### Run the Full Pipeline
+`make all` re-fetches the open data, rebuilds the synthetic patients, and re-runs the tests and the backtest. The live page is deployed from `demo/` by `.github/workflows/deploy-pages.yml`.
 
-```bash
-make all
-```
+## Earlier work: the 2021–2025 backtest
 
-This fetches data, creates synthetic patients, runs tests, and generates backtest results.
-
-### Run Just the Backtest
-
-```bash
-make backtest
-```
-
-### Run Tests
-
-```bash
-make test
-```
-
-## Demo Deployment
-
-### GitHub Pages Setup
-
-Pages can publish from a branch only at `/` (root) or `/docs`, not `/demo`. This repo therefore deploys `demo/` with the workflow `.github/workflows/deploy-pages.yml` (`actions/upload-pages-artifact` + `actions/deploy-pages`).
-
-1. Go to your repository's **Settings** > **Pages**
-2. Under **Build and deployment** > **Source**, select **GitHub Actions**
-3. Push to `main` (or run the `deploy-pages` workflow manually from the **Actions** tab)
-
-Your demo will be available at `https://<username>.github.io/<repo>/`
-
-### Custom Domain (Optional)
-
-Set the custom domain under **Settings** > **Pages** > **Custom domain**, then configure DNS. With an Actions deployment, a `CNAME` file in `demo/` is not used.
-
-## Methodology
-
-### Alert Rules Evaluated
-
-| ID | Rule | Description |
-|----|------|-------------|
-| P0 | Observed(D-1) ≥ T | Persistence baseline |
-| P1 | API(D-1) ≥ T | API persistence |
-| **P2** | **API(D) ≥ T** | **API's own forecast (kill-check baseline)** |
-| R1 | mean(API(D-1), API(D)) ≥ T | Two-day exposure (PollenPlan day rule) |
-| R2 | First in-season day where max(API(D..D+3)) ≥ T | Pre-peak alert |
-| C0 | Climatology: prior year share of high days ≥ 0.5 | Calendar-only reminder |
-
-### Cities Scored
-
-| City | Species | Source |
-|------|---------|--------|
-| Madrid | olive, grass | Comunidad de Madrid (FACF) |
-| Basel | birch, grass | MeteoSwiss (PBS) |
-| Zurich | birch, grass | MeteoSwiss (PZH) |
-
-**Valencia** (the app's target city) has no observed ground truth in this repo, is **never scored**, and is excluded from all evaluation; the Clínica Demo console uses a Valencia 2025 CAMS control replay (labelled model output only, never scored).
-
-### Season Definition
-
-Season windows are derived from training years (2021-2023) only:
-- First/last day with ≥1 grain/m³ observed pollen
-- Clipped to named months (olive Apr-Jun, grass Mar-Jul, birch Mar-Apr)
-- 7-day centred rolling mean applied to training-year averages
-
-### Kill-Check (DATA_PLAN 2.5)
-
-1. Observed counts exist for ≥3 cities over ≥1 year
-2. **"Alert == the API's own forecast"**: R1 and R2 must beat P2
-   - R1 vs P2: recall at equal-or-fewer false-alert days
-   - R2 vs P2: mean lead days with bootstrap CI excluding zero
-   - R2 vs C0: mean lead days with bootstrap CI excluding zero
-3. If P2 recall <50% in Madrid for both species, alert level only lowered with re-sign-off
-4. Valencia never scored
-
-**2021–2025 kill-check verdict (R1 only)**: R1 did not beat P2 on pooled recall, so no claim is made for R1. The current headline is the separate, pre-registered 2026 test of P0 (top of this README).
-
-## 2021–2025 backtest of the earlier rules (R1, R2): superseded
-
-This section documents the first design, which was retired. It is **not** the current headline (that is the 2026 test at the top).
-
-### Legacy kill-check verdict (R1 vs the API only)
-
-```
-measured_P2_skill_only_no_beats_api_claim
-```
-
-### Key Metrics
-
-| Metric | Value |
-|--------|-------|
-| Total events (P2 denominator) | 863 |
-| Evaluated city-days | 7373 |
-| Pooled P2 recall | 0.416 |
-| Pooled R1 recall | 0.410 |
-| Madrid olive P2 recall | 0.136 |
-| Madrid grass P2 recall | 0.314 |
-| R2 vs P2 lead days | +2.88 days (95% CI [+2.64, +3.00]) |
-| R2 vs P2 timing | R2 uses API values for D..D+3: fires up to 3 days before P2 by construction, never after (look-ahead, not extra skill; archived D+1..D+3 may beat a live forecast) |
-| R2 vs C0 lead days | -1.55 days (95% CI [-7.75, +6.00]) |
-| R2 beats C0 (lead days CI excludes zero) | No |
-
-### Madrid Performance
-
-| Species | P2 Recall |
-|---------|-----------|
-| Olive | 13.6% (below 50% threshold) |
-| Grass | 31.4% (below 50% threshold) |
-
-Both Madrid species have P2 recall below 50% → **limits** number per kill-check check3.
-
-## NASA Earth-Observation Layer (POWER + MODIS NDVI)
-
-**Why NASA.** We added NASA POWER (MERRA-2 / CERES: daily `T2M`, `T2M_MAX`, `T2M_MIN`, `PRECTOTCORR`, `ALLSKY_SFC_SW_DWN`, `RH2M`, `GWETROOT`, `WS2M`) and NASA ORNL MODIS `MOD13Q1` (250 m, 16-day `NDVI`, lagged +16 days so a composite is only used once its 16-day window has closed, not counting publication delay; `GWETROOT` and NDVI are contextual telemetry, not N1/N2 decision inputs), cached offline for all four cities (2021-2025). Two extra rules were evaluated, both calibrated on 2021-2023 only and scored on held-out 2024-2025. **They are exploratory:** they were added on 22 Nov 2026, after the pre-registered backtest. All numbers come from `eval/results/backtest.json["nasa_evaluation"]`.
-
-**Bottom line: neither NASA rule beat its control.** N1 lost to a calendar rule; N2's gain over the API forecast came from lowering the alert level, and a no-NASA control that does only that scored higher.
-
-**N1 (negative finding): priming a steroid nasal spray (intranasal corticosteroid) 14 days before onset.** N1 is naive thermal accumulation from 1 January. On the 10 paired held-out rows (2024-2025), R2 (Europe's 4-day CAMS pollen forecast, read as D..D+3) fired 9.7 days *after* onset (0.0% in the 7-28 day window). N1 scored 70% in the 7-28 day window in-sample (2021-2023, 4.8 days MAE from 14 days) but only 30% held-out (2024-2025: 21.9 days MAE) versus 12.5 days MAE and 60% hit for the prior-year calendar rule `C0_14d`. Warm February/March springs triggered N1 early, before olive and grass flowering. N1 is not a usable improvement.
-
-**N2 (negative finding against its control): prior-day (D-1) NASA solar/warm/dry scaling on top of CAMS.** N2 on day D reads only NASA POWER values from D-1 (solar >= train median, Tmax >= train median, precip < 2.0 mm); no same-day NASA value is used (`tests/test_backtest_rules.py` proves invariance). On held-out 2024-2025 (394 observed spikes), CSI rose from 0.382 (P2) to 0.434 (N2, +0.052) and recall from 40.4% to 47.5% (159 to 187 events, including 5 of 8 held-out Madrid olive spikes versus 0 of 8 for P2). The cost is more false-alert days: 22 to 37, precision 87.8% to 83.5%. Pooled 2021-2025 (863 events): CSI 0.392 to 0.454, recall 41.6% to 50.9% (359 to 439), false-alert days 53 to 105. Latency check: NASA POWER (MERRA-2) publishes about 2-3 days late; re-calibrated and re-scored with D-3 predictors, held-out CSI is 0.405, recall 44.4% (175 of 394), 38 false-alert days.
-
-**No-NASA control (added in the 23 Nov 2026 review).** The same scaling applied on every day, with no NASA input and the same training rule (`nasa_evaluation.no_nasa_control`), scored held-out CSI 0.486, recall 54.6% (215 of 394), 48 false-alert days, precision 81.7%; Madrid olive 2 of 8. So the NASA weather condition did not add skill (`nasa_adds_skill_heldout: false`): the N2 gain over P2 is the effect of a lower alert level. The Madrid olive 5-of-8 rests on 8 events and is not a finding.
-
-The legacy kill-check verdict is unchanged (`measured_P2_skill_only_no_beats_api_claim`, because R1 lost to P2). N2 is judged on its own 2021-2023 versus 2024-2025 holdout ledger. Retrospective; two held-out years only.
-
-## Limits & Known Issues
-
-1. **Trap-versus-grid mismatch**: Point measurements vs 11 km grid model
-2. **Open-Meteo has no pollen category**: No stated validation; docs call it a forecast, not measurement
-3. **Thresholds from single-centre studies**: The newest large panel found no consensus thresholds (T5, DATA_PLAN 2.6)
-4. **Only 5 seasons**: Limited statistical power; intervals will be wide
-5. **Pre-Oct-2023 API source unverified**: See DATA_PLAN section 2.1
-6. **Measures alert quality only**: No data on reduced symptoms, visits, or patient outcomes
-7. **Madrid P2 recall below 50%**: Both olive (13.6%) and grass (31.4%) fail this threshold
+Before the 2026 test we scored six rules on 2021–2025 (863 high-pollen days). There, our two-day rule (R1) did not beat the CAMS forecast, and neither NASA rule (POWER weather, MODIS NDVI) beat its own control. We report those as negative results and make no claim for them. The page is `demo/backtest.html`, the method is in `docs/DATA_PLAN.md`, and every number is in `CLAIMS.md` sections A–K.
 
 ## Data Attribution
 

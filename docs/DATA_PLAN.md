@@ -91,7 +91,7 @@ The long-span call was accepted in the 20 Nov test (O4). Attribution lines for R
 ## 5. Licence checklist (done 20 Nov)
 | Dataset | Licence found | Where read | Open item |
 |---|---|---|---|
-| Open-Meteo Air Quality API | CC BY 4.0; free tier non-commercial | licence and terms pages (via subagent, quotes in EVIDENCE O9, O10) | Ahmed's no-monetisation rule already fits |
+| Open-Meteo Air Quality API | CC BY 4.0; free tier non-commercial | licence and terms pages (via subagent, quotes in EVIDENCE O9, O10) | The project is non-commercial, so this fits |
 | Comunidad de Madrid pollen history | Creative Commons Attribution | dataset page text | Exact CC version not stated on the page; cite as "Creative Commons Attribution" |
 | MeteoSwiss pollen | CC-BY | STAC collection field | Confirm the attribution string on the MeteoSwiss page when the README is written |
 | Euskadi pollen | UNVERIFIED | — | Not needed; do not use unless checked |

@@ -1,0 +1,17 @@
+{
+  "source": "video/SCRIPT_V5.md scenes 1-9 + amendment A1 (6b), approved 23 Nov 2026. 'caption' is the script wording; 'say' differs only where a number is written as words for the voice.",
+  "voice": {"name": "Daniel", "voice_id": "onwK4e9ZLuTAKqWW03F9", "model_id": "eleven_multilingual_v2", "speed": 1.08},
+  "scenes": [
+    {"id": "s1", "caption": "Every morning in pollen season, an allergy clinic asks one question. Is today a high-pollen day, so our patients should use the medicine they already have?"},
+    {"id": "s2", "caption": "Most tools answer with a forecast. We asked a simpler source: the clinic's own pollen trap, read yesterday. And we tested it the hard way. We wrote the test down, locked the model, and pushed it before we downloaded a single day of the 2026 season.",
+     "say": "Most tools answer with a forecast. We asked a simpler source: the clinic's own pollen trap, read yesterday. And we tested it the hard way. We wrote the test down, locked the model, and pushed it before we downloaded a single day of the twenty twenty-six season."},
+    {"id": "s3", "caption": "Two hundred fifteen high-pollen days in Madrid, Basel and Zürich. Yesterday's trap flagged one hundred sixty-four of them. Europe's free CAMS forecast for the same day flagged seventy."},
+    {"id": "s4", "caption": "Day by day it looks like this. The forecast missed one hundred forty-five high days. The trap missed fifty-one, and it won in every city and every species."},
+    {"id": "s5", "caption": "One real morning: Madrid, fifth of May. Yesterday's grass count was one hundred and four. The forecast for that day said nineteen point five, below the alert line. The trap that day measured seventy-nine. A high day."},
+    {"id": "s6", "caption": "So the clinic drafts reminders. One hundred eleven of two hundred synthetic patients, each sensitised to grass with a medicine on file. Code names only the medicine already on file and adds the signed safety line. A nurse approves. Nothing is sent without that click."},
+    {"id": "s6b", "caption": "An AI model writes each reminder, and code checks every word. No dose, no drug name, no symptom advice, and the signed safety lines are added by code, not the model. We then attacked it forty times with attacks it had never seen. The model broke a rule twenty-one times. None of those reached the nurse."},
+    {"id": "s7", "caption": "We also tested ideas of our own. A fusion model didn't beat the simple trap rule. NASA weather didn't improve the score. So we ship the simple rule, and we say so."},
+    {"id": "s8", "caption": "The forecast's map stops at thirty degrees north. South of that line, across most of Africa, it gives no pollen value at all. North of it, in Alexandria and Cairo, it does give numbers, and we found no one who has checked them against a trap. This rule needs only that trap. We haven't tested it there yet. That's next."},
+    {"id": "s9", "caption": "Three cities, one season, a pre-registered test, and every number checks itself. Open the PollenPlan demo. No setup needed."}
+  ]
+}

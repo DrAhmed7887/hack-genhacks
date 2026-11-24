@@ -3,3 +3,11 @@ node_modules/
 .venv/
 __pycache__/
 .env*
+
+# V5 film: regenerable renders and captures (source is committed)
+video/remotion/public/v5/3d/
+video/remotion/public/v5/shots/*.png
+video/v5/style_frames/
+video/remotion/out/
+video/remotion/public/v5/music/
+video/remotion/public/v5/flow/
