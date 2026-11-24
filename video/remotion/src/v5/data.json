@@ -2269,8 +2269,8 @@
   }
  ],
  "lock": {
-  "sha": "6ac17005d69e1f497bbeed274fb35b6a0f4d78f9",
-  "short": "6ac1700",
+  "sha": "5c45eafc99f96a5d56be2138e8342bcdba61761d",
+  "short": "5c45eaf",
   "prereg": "docs/PREREG_NOWCAST_2026.md",
   "time": "2026-11-23T10:54:53+01:00",
   "subject": "feat: lock trap-first nowcast F1/F2 before the 2026 download"
@@ -2965,7 +2965,7 @@
   "reached": 0
  },
  "scored": {
-  "short": "7588b26",
+  "short": "23bff19",
   "time": "2026-11-23T10:56:30+01:00",
   "subject": "feat: score the locked nowcast once on untouched 2026 (Jan-Oct)"
  },
