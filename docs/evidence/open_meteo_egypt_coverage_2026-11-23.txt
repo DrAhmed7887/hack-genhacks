@@ -1,0 +1,4 @@
+Open-Meteo Air Quality API, hourly grass_pollen/olive_pollen/birch_pollen, 2025-04-01 to 2025-05-31 UTC, queried 23 Nov 2026.
+Alexandria (lat 31.2, lon 29.92): 1464 hours; non-null pollen values: 4392.
+Cairo (lat 30.04, lon 31.24): 1464 hours; non-null pollen values: 4392.
+Asyut (lat 27.0, lon 31.0): 1464 hours; non-null pollen values: 0.

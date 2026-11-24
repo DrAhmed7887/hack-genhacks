@@ -1,6 +1,6 @@
 # CLAIMS: every public number and feature claim, with its source
 
-Last verified: 22 Nov 2026, working tree on top of commit `6a9bbb1`. Every number below was read out of `eval/results/backtest.json` (written by `eval/backtest.py`), `rules/thresholds.json`, `data/make_patients.py` or `data/patients.csv`, not typed from memory. The numbers appear in `README.md`, `DEVPOST_DRAFT.md`, `demo/index.html`, `docs/results_table.md` and the video (`video/STORYBOARD.md`, `video/film/script.json`, `video/film/compositions/*.html`).
+Last verified: 23 Nov 2026 (section N added for the pre-registered 2026 test); sections A–K verified 22–23 Nov 2026 on top of commit `6a9bbb1`. Every number below was read out of `eval/results/backtest.json` (written by `eval/backtest.py`), `rules/thresholds.json`, `data/make_patients.py` or `data/patients.csv`, not typed from memory. The numbers appear in `README.md`, `DEVPOST_DRAFT.md`, `demo/backtest.html`, `docs/results_table.md` and the video (`video/STORYBOARD.md`, `video/film/script.json`, `video/film/compositions/*.html`).
 
 ## How to reproduce from a fresh clone
 
@@ -8,7 +8,7 @@ Last verified: 22 Nov 2026, working tree on top of commit `6a9bbb1`. Every numbe
 python -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python eval/backtest.py              # rewrites eval/results/backtest.json, eval/results/misses.csv, docs/results_table.md from data/cache/ (no network, no key)
 .venv/bin/pytest -q                            # all pass. At commit 6a9bbb1: 86 passed; working tree 22 Nov 2026: 112 passed (38 backtest rules, 53 demo, 7 patients, 14 reminders)
-.venv/bin/python eval/render_demo.py --check   # exit 0 = the onset table in demo/index.html matches backtest.json
+.venv/bin/python eval/render_demo.py --check   # exit 0 = the onset table in demo/backtest.html matches backtest.json
 git diff --stat eval/results docs/results_table.md   # empty output = the re-run reproduced the committed results exactly
 ```
 
@@ -24,6 +24,39 @@ On 22 Nov 2026 the backtest re-run left `git status` clean for `eval/`, `docs/` 
 Run `.venv/bin/python eval/verify_claims.py` from the repo root (offline, no keys). It exits 0 only if every value in sections A–D and K matches the JSON; `tests/test_verify_claims.py` runs it in CI.
 
 Shorthand used in the tables: `BT` = `eval/results/backtest.json`. `cell(city, species)` = the element of `BT.results[]` whose `city` and `species` fields match. `kc` = `BT.kill_check`. Recall values are shown rounded to 3 decimals; the JSON holds the full float.
+
+## N. Pre-registered 2026 test (current headline)
+
+Source: `NC` = `eval/results/nowcast_2026.json`, written once by `eval/nowcast.py --test-2026` from the lock `eval/results/nowcast_lock.json` (commit `6ac1700`, pushed before `data/fetch_2026.py` downloaded any 2026 file; deviations in `docs/PREREG_NOWCAST_2026.md` §9). Checked by `eval/verify_claims.py` (section N).
+
+| # | Claim | Where it appears | Source key | Exact value |
+|---|---|---|---|---|
+| N1 | 215 high-pollen days, 1,706 city-days, 1 Jan – 31 Oct 2026, Madrid/Basel/Zürich | README, demo, Devpost, film | `NC.pooled.P0.n_events`, `NC.pooled.P0.n_days` | 215, 1706 |
+| N2 | Yesterday's trap flagged 164 of 215 (76.3%), 40 false-alert days, CSI 0.643 | same | `NC.pooled.P0` | tp 164, fp 40, recall 0.763, csi 0.643 |
+| N3 | CAMS forecast flagged 70 of 215 (32.6%), 10 false-alert days, CSI 0.311 | same | `NC.pooled.P2` | tp 70, fp 10, recall 0.326, csi 0.311 |
+| N4 | H1 passed: CSI +0.332, 95% CI 0.203 to 0.457 | same | `NC.hypotheses.H1` | csi_diff 0.332, ci95 [0.203, 0.457], passes true |
+| N5 | H2 passed (+0.291, CI 0.176 to 0.406); H3 failed (−0.041, CI −0.117 to 0.028); H4 failed (+0.020, CI −0.021 to 0.064) | README, demo, film | `NC.hypotheses.H2/H3/H4` | as stated |
+| N6 | Two-day-old trap reading: 151 of 215, CSI 0.572; beats the forecast (CI 0.134 to 0.384) | README, demo | `NC.pooled.P0_D2`, `NC.hypotheses.sensitivity_P0_D2_vs_P2` | tp 151, csi 0.572 |
+| N7 | Fusion F1 159/215 CSI 0.602; F2 (+NASA) 181/215 CSI 0.622; calendar C0 118/215 CSI 0.449 | README, demo | `NC.pooled.F1/F2/C0` | as stated |
+| N8 | Forecast missed 145 high days, yesterday's trap missed 51 | demo, film | `NC.pooled.P2.fn`, `NC.pooled.P0.fn` | 145, 51 |
+| N9 | Yesterday's trap beats the forecast in all six city × species series in 2026 | README, film | `NC.per_cell[*].P0.csi > P2.csi` | true for 6 of 6 |
+| N10 | 2021–2025: trap 670 of 857, forecast 359 of 863 | README, demo | `BT.results[].day_rules.P0/P2` tp and tp+fn | 670/857, 359/863 |
+| N11 | One morning, Madrid grass, 5 May 2026: yesterday 104, forecast 19.5, measured 79 (threshold 35) | demo, film | recomputed by `eval/render_site.py` from `data/cache_2026/` and asserted | 104, 19.5, 79 |
+| N12 | 111 of 200 synthetic patients drafted for a grass alert | demo, film | `src/reminders.build_batch(patients, "grass")` | 111 |
+
+## AI. AI layer (nurse copilot, reminder drafts, clinician Q&A)
+
+Source: `AI` = `eval/results/ai_layer.json` (written by `eval/ai_layer.py`, model Qwen 3.8 27B on RWTHgpt, prompt `rules/assistant_prompt.md`); run 1 in `eval/results/ai_layer_run1.json`. Synthetic patients only. Checked by `eval/verify_claims.py` (section AI) and `tests/test_site.py`.
+
+| # | Claim | Source key | Exact value |
+|---|---|---|---|
+| AI1 | 111 AI-written drafts, all 111 passed the code safety gate, 0 replaced by the template | `AI.draft_summary` | n 111, passed 111, fell back 0 |
+| AI2 | Batch ordered by risk: 9 asthma flag + moderate/severe, 58 asthma flag or moderate/severe, 44 mild | `AI.drafts[].tier` | 9 / 58 / 44 |
+| AI3 | Tuning red team (20 attacks × 2 patients = 40, run 3): the model broke a rule 12 times; 0 drafts with a rule break reached the nurse | `AI.red_team_summary` | 40, 12, 0 |
+| AI4 | Run 1: 2 outputs passed the gate with an efficacy claim ("help prevent asthma attacks"); rule added, re-run | `ai_layer_run1.json` re-checked with today's gate | 2 |
+| AI5 | Clinician Q&A: 12 questions; 3 symptom questions answered by the fixed safety reply without calling the model; 2 model answers withheld by the check | `AI.qa[].route`, `AI.qa[].violations` | 12, 3, 2 |
+| AI6 | Held-out red team (20 new attacks written after the last gate change, × 2 patients = 40): the model broke a rule 21 times; 0 reached the nurse | `AI.red_team_heldout_summary` | 40, 21, 0 |
+| AI7 | Independent review of the run-2 gate found 25 bypasses; all 25 are in the fixed test set and rejected | `tests/test_message_guard.py::REVIEW_BYPASSES` | 25 |
 
 ## A. Scale of the backtest
 
@@ -100,8 +133,8 @@ The signed thresholds are single-centre published values. The newest large panel
 | F6 | Message names only the medicine class already on file | `docs/DATA_PLAN.md` §3 rule 2 | `src/reminders.py` → `MED_CLASS_LABELS`, `build_message` | rule | same (`test_rule2_*`) |
 | F7 | Fixed safety line on every message; asthma line only for asthma-flag patients | `docs/DATA_PLAN.md` §3 rule 3 | `src/reminders.py` → `SAFETY_LINE`, `ASTHMA_LINE`, `build_message` | rule | same (`test_rule3_*`) |
 | F8 | Nurse approves every batch; nothing is sent | README disclaimers, DEVPOST, video | `src/reminders.py` has `build_batch` (a draft list) and no send, network or persistence code. | design fact | `grep -nE "requests\|urllib\|smtplib\|socket\|http" src/reminders.py` prints nothing (exit 1) |
-| F9 | Demo nurse console: roster 200, "Sent Externally" 0, approve freezes the batch and appends an in-page audit line, nothing leaves the page | `demo/index.html` section `#nurse-console` (`#kpi-roster`, `#kpi-sent`, `#approve-batch-btn`, `#nurse-audit-log`, `#nurse-trigger-rule`). Re-checked 22 Nov 2026: all seven DOM ids are present once each in the final HTML. | draft data in the generated `#nurse-console-data` JSON block written by `eval/render_demo.py`; `kpi-sent` is set to the constant 0 in the page script; vanilla JS over embedded JSON, no network call | roster 200 (see F1), sent 0. Replay drafts/blocked (from `console_data()`): Valencia control 0/200, Madrid grass 111/89, Basel birch 17/183, olive simulation 67/133. Trigger badge `#nurse-trigger-rule` = "Trigger: API forecast (P2)" | `.venv/bin/python eval/render_demo.py --check`; `.venv/bin/pytest -q tests/test_demo.py` |
-| F10 | Valencia replay in the console is "model output, demo replay only, never scored against ground truth" | `demo/index.html` `#nurse-caveat` | same rule as `docs/DATA_PLAN.md` §2.5 rule 4 | caption text; `#nurse-caveat` also says "Demo mode: approval is logged in-page; nothing leaves the browser." (re-checked 22 Nov 2026) | read the page |
+| F9 | Demo nurse console: roster 200, "Sent Externally" 0, approve freezes the batch and appends an in-page audit line, nothing leaves the page | `demo/backtest.html` section `#nurse-console` (`#kpi-roster`, `#kpi-sent`, `#approve-batch-btn`, `#nurse-audit-log`, `#nurse-trigger-rule`). Re-checked 22 Nov 2026: all seven DOM ids are present once each in the final HTML. | draft data in the generated `#nurse-console-data` JSON block written by `eval/render_demo.py`; `kpi-sent` is set to the constant 0 in the page script; vanilla JS over embedded JSON, no network call | roster 200 (see F1), sent 0. Replay drafts/blocked (from `console_data()`): Valencia control 0/200, Madrid grass 111/89, Basel birch 17/183, olive simulation 67/133. Trigger badge `#nurse-trigger-rule` = "Trigger: API forecast (P2)" | `.venv/bin/python eval/render_demo.py --check`; `.venv/bin/pytest -q tests/test_demo.py` |
+| F10 | Valencia replay in the console is "model output, demo replay only, never scored against ground truth" | `demo/backtest.html` `#nurse-caveat` | same rule as `docs/DATA_PLAN.md` §2.5 rule 4 | caption text; `#nurse-caveat` also says "Demo mode: approval is logged in-page; nothing leaves the browser." (re-checked 22 Nov 2026) | read the page |
 
 F8 caveat: the module docstring says the approve step and the `approved_at` log are outside the scope of `src/reminders.py`. "0 external sends" is true because no code path in the repo can send. `#kpi-sent` is a fixed 0, not a measured count of sends. F9 and F10 were re-checked against the final HTML on 22 Nov 2026 (DOM ids present, `render_demo.py --check` exit 0, 91 passed).
 

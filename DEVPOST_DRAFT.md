@@ -1,80 +1,53 @@
-# Devpost draft — PollenPlan (GenHacks) — NOT SUBMITTED
+# Devpost draft: PollenPlan (GenHacks), NOT SUBMITTED
 
-Track: Healthcare & Environmental. Deadline: 26 Dec 2026 00:00 ET (submit by 24 Dec, Ahmed in Egypt).
+Track: Healthcare & Environmental. Deadline: 26 Dec 2026 06:00 Valencia (submit by 24 Dec). Every number here is in `CLAIMS.md` §N and is checked by `eval/verify_claims.py`.
 
 ## Tagline
 
-Did a hay-fever alert rule beat the forecast itself? We ran the backtest on
-5 years of real pollen counts (2021–2025) — and published the honest answer.
+Read the trap, not the forecast. On a pollen season we had never seen, yesterday's trap count caught 164 of 215 high-pollen days. Europe's free forecast caught 70.
 
 ## Description
 
-**Problem.** Hay-fever patients may miss the start of the pollen season. Alerts exist, but nobody checks whether a simple alert rule
-beats the raw forecast it is built on.
+**Problem.** An allergy clinic has patients with a known pollen allergy who are already on treatment. On a high-pollen day it wants to remind them to use the medicine they already have. The obvious input is a free pollen forecast. We asked whether that forecast actually flags the high days a local trap measures.
 
-**What we did.** PollenPlan pre-registered 6 alert rules (persistence, API
-persistence, the API's own forecast P2, a 2-day exposure rule R1, a pre-peak
-rule R2, climatology C0) and ran them against observed pollen counts in Madrid,
-Basel and Zurich — 863 high-pollen events over 7,373 city-days, 28 seasons.
+**What we did.**
+- Scored six alert rules against real trap counts (Madrid, Basel, Zürich, 2021–2025; 863 high days).
+- Found that the clinic's own trap reading from yesterday beat the CAMS forecast for the same day, 670 of 857 against 359 of 863.
+- Pre-registered a test on the untouched 2026 season instead of claiming that result. We wrote four hypotheses, built a fusion model and a NASA-weather variant, and locked and pushed everything before downloading a single 2026 file.
 
-**Result.** The API's own forecast (P2) caught 41.6% of high days. Our day
-rule (R1) caught 41.0% — it did not beat the API. So the headline is the
-measured skill, and the app is the delivery layer: a clinic-facing briefing
-that compares the day's modelled pollen against published-panel thresholds and
-drafts reminders for already-prescribed medicine (a nurse approves every batch).
+**Result (1 Jan – 31 Oct 2026, 215 high days, 1,706 city-days).**
+- Yesterday's trap: 164 of 215 (76.3%), 40 false-alert days.
+- CAMS forecast: 70 of 215 (32.6%), 10 false-alert days.
+- CSI +0.332, 95% CI 0.203 to 0.457, the trap winning in all six city × species series.
+- Our own fusion model did not beat the simple rule (H3 failed), and NASA POWER weather did not improve its score (H4 failed). So we ship the simple rule and report both failures.
+- A two-day-old reading still beats the forecast, which matters where trap data publish late.
 
-**NASA layer.** We added NASA POWER (MERRA-2 / CERES: daily T2M, T2M_MAX,
-T2M_MIN, PRECTOTCORR, ALLSKY_SFC_SW_DWN, RH2M, GWETROOT, WS2M) and NASA ORNL
-MODIS MOD13Q1 (250 m 16-day NDVI, lagged +16 days for strict causality),
-cached offline for all four cities (2021–2025), and tested two extra rules
-calibrated on 2021–2023 only. *Negative finding (N1, priming a steroid nasal
-spray, an intranasal corticosteroid, 14 days before onset):* thermal
-accumulation hit the 7–28 d window 70% in-sample (4.8 d MAE from 14 d) but only
-30% on held-out 2024–2025 (n=10 paired rows; 21.9 d MAE), versus 12.5 d
-and 60% for the prior-year calendar rule; R2 (Europe's 4-day CAMS pollen forecast) fired
-9.7 d after onset (0.0% hit). Warm Feb/Mar springs triggered it before
-flowering. *Second negative finding (N2, prior-day D-1 NASA solar/warm/dry
-scaling + CAMS, no same-day NASA value):* on held-out 2024–2025 (394 observed
-spikes) N2 raised CSI from 0.382 to 0.434 over the API forecast, but a
-no-NASA control that scales the forecast the same way on every day scored
-0.486 (recall 54.6% vs 47.5%, 48 vs 37 false-alert days). The gain came from
-lowering the alert level, not from NASA data. Both rules are exploratory:
-they were added after the pre-registered backtest. The kill-check verdict
-stays `measured_P2_skill_only_no_beats_api_claim`.
+**Product.**
+- Each morning the clinic's trap reading for yesterday goes into `src/alert_rule.py`.
+- `src/reminders.py` drafts a reminder only for patients sensitised to that species who already have a medicine on file. Each draft names only that medicine class and carries a fixed, signed safety line.
+- A nurse approves the batch. Nothing is sent without that click.
+- The demo replays a real morning: Madrid, 5 May 2026. Yesterday's grass count was 104, the forecast said 19.5, and the trap measured 79. The demo drafts 111 reminders for 200 synthetic patients.
 
-**Honest limits.** Madrid recall is below our own 50% bar (olive 13.6%, grass
-31.4%) — flagged as limits. The pre-peak rule fires ~3 days earlier by
-construction (it reads 3 days of forecast; archived values may flatter it
-live). Thresholds are single-centre published values, status `signed 22 Nov 2026` (CRITERIA_FOR_SIGNOFF rows 1–4 as proposed).
-Retrospective analysis; not a clinical tool; no Valencia accuracy claim
-(Valencia has no observed counts and is never scored).
+**AI layer, with the AI kept on a leash.**
+- A nurse copilot orders the batch by risk: asthma flag plus moderate/severe rhinitis first.
+- An AI model (Qwen on RWTHgpt, free, offline, synthetic patients) drafts each reminder opening. Code accepts it only if every word is on a short approved list, and it appends the signed safety lines itself.
+- We attacked it with a tuning set, and our own runs and an independent review found holes (efficacy claims, "bid", Unicode lookalikes). We fixed them in public, then ran 20 held-out attacks that were never used for tuning (numbers in CLAIMS.md, AI section).
+- Clinician Q&A answers only from that morning's facts. Symptom questions never reach the model.
 
-**Try it.** Live demo (no account): https://drahmed7887.github.io/hack-genhacks/.
-The interactive Clínica Demo Nurse Briefing & Batch Approval Console is live on
-the same GitHub Pages URL: Valencia control drafts 0 reminders, Madrid
-grass drafts 111 and blocks 89 by code, the nurse sign-off writes an in-page audit
-log, and there are 0 external sends (nothing leaves the browser).
-Video: [VIDEO_URL — Remotion V2 + Blender 3D + Figma + ElevenLabs Director's Cut, ~/Downloads/To-Upload/PollenPlan_GenHacks_v2_FINAL_1080p.mp4]
+**Where next (a hypothesis, not a result).** The CAMS pollen forecast is built for Europe, with a map that stops at 30° N. We queried it for Egypt: Alexandria and Cairo get values, and Asyut (27° N) gets none. We found no study comparing the Egyptian values with trap counts. The rule needs one local trap, and a one-year trap study in Alexandria (2019–20) shows the measurement can be made there. We have not tested it outside the three cities.
 
 ## Built with
 
-Python, pandas, NumPy, pytest, GitHub Pages, Playwright; Figma, Blender 3D,
-Remotion, ElevenLabs, FFmpeg. AI workflow: Claude CLI (Sonnet 4.5 / Opus 4.5),
-Kiro CLI, Codex/GPT-6.1-Sol (cross-family review), Gemini 4 Hydrogen (evidence
-review) — every change human-reviewed against `CRITERIA_FOR_SIGNOFF.md`; all
-numbers from `eval/results/backtest.json` and `eval/render_demo.py`.
+Python (numpy, pandas), Comunidad de Madrid and MeteoSwiss open pollen data, CAMS via Open-Meteo, NASA POWER, GitHub Pages, Remotion.
 
-## Data attribution
+## Limits
 
-Weather data by Open-Meteo.com (https://open-meteo.com/); CAMS European air
-quality forecasts, ENSEMBLE data. Observed Madrid: Comunidad de Madrid,
-Histórico de mediciones de polen (CC BY). Observed Basel/Zurich: Source:
-MeteoSwiss (CC-BY). Synthetic patients: seeded generator.
+- Three trap sites; 2026 had 215 high days, 11 of them for Madrid olive.
+- Retrospective, not a prospective trial; no patient outcome measured.
+- The rule alerts one day late at a sudden onset.
+- Needs yesterday's count by morning (MeteoSwiss publishes "up to yesterday"; Madrid daily January–June, weekly after).
+- Single-centre thresholds; synthetic patients.
 
-## Pre-submit checklist (owner)
+## Links
 
-- [x] Signed 22 Nov (rows 1–11 as-is, Ahmed's call)
-- [x] Committed on `main` + pushed + public + Pages live (CI + deploy green 22 Nov)
-- [ ] Upload video Unlisted, check in private window, paste URL above
-- [ ] Paste demo URL above, open logged-out in private window
-- [ ] Submit by 24 Dec (48 h buffer, in Egypt)
+Demo: https://drahmed7887.github.io/hack-genhacks/ · Code: https://github.com/DrAhmed7887/hack-genhacks · Pre-registration: docs/PREREG_NOWCAST_2026.md
