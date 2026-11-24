@@ -112,7 +112,7 @@ def test_risk_tiers():
     assert g.risk_tier(_p(False, "mild"))[0] == 3
 
 
-# Bypasses found by the independent review of 4c4471a (23 Nov 2026); each must now be rejected.
+# Bypasses found by the independent review of d13c369 (23 Nov 2026); each must now be rejected.
 REVIEW_BYPASSES = [
     "Take fifty mcg of it.", "Use it bid.", "Use it t.i.d.", "Use it hourly.", "Use it weekly.", "Take a puff now.",
     "Take two now and two later.", "Use it on waking and before bed.", "Use 50 m g.", "Take it with food.",

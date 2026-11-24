@@ -64,7 +64,7 @@ checks.update({
  "N8 misses": (P["P2"]["fn"], P["P0"]["fn"]) == (145, 51),
  "N9 all six cells": sum(c["P0"]["csi"] > c["P2"]["csi"] for c in nc["per_cell"].values()) == 6 == len(nc["per_cell"]),
  "N10 2021-2025": (sum(r["day_rules"]["P0"]["tp"] for r in d["results"]), sum(r["day_rules"]["P0"]["tp"] + r["day_rules"]["P0"]["fn"] for r in d["results"])) == (670, 857),
- "N lock commit": nc["lock_commit"].startswith("6ac1700"),
+ "N lock commit": nc["lock_commit"].startswith("5c45eaf"),
  "N madrid olive 11 high days": nc["per_cell"]["madrid/olive"]["P0"]["n_events"] == 11,
  "N10b 2021-2025 trap beats forecast in all six series": sum(r["day_rules"]["P0"]["csi"] > r["day_rules"]["P2"]["csi"] for r in d["results"]) == 6 == len(d["results"]),
  "N bootstrap 10,000 x 7-day blocks": (nc["bootstrap"]["n"], nc["bootstrap"]["block_days"]) == (10000, 7),

@@ -1,13 +1,13 @@
 # CLAIMS: every public number and feature claim, with its source
 
-Last verified: 23 Nov 2026 (section N added for the pre-registered 2026 test); sections A–K verified 22–23 Nov 2026 on top of commit `6a9bbb1`. Every number below was read out of `eval/results/backtest.json` (written by `eval/backtest.py`), `rules/thresholds.json`, `data/make_patients.py` or `data/patients.csv`, not typed from memory. The numbers appear in `README.md`, `DEVPOST_DRAFT.md`, `demo/backtest.html`, `docs/results_table.md` and the video (`video/STORYBOARD.md`, `video/film/script.json`, `video/film/compositions/*.html`).
+Last verified: 23 Nov 2026 (section N added for the pre-registered 2026 test); sections A–K verified 22–23 Nov 2026 on top of commit `1f826e6`. Every number below was read out of `eval/results/backtest.json` (written by `eval/backtest.py`), `rules/thresholds.json`, `data/make_patients.py` or `data/patients.csv`, not typed from memory. The numbers appear in `README.md`, `DEVPOST_DRAFT.md`, `demo/backtest.html`, `docs/results_table.md` and the video (`video/STORYBOARD.md`, `video/film/script.json`, `video/film/compositions/*.html`).
 
 ## How to reproduce from a fresh clone
 
 ```bash
 python -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python eval/backtest.py              # rewrites eval/results/backtest.json, eval/results/misses.csv, docs/results_table.md from data/cache/ (no network, no key)
-.venv/bin/pytest -q                            # all pass. At commit 6a9bbb1: 86 passed; working tree 22 Nov 2026: 112 passed (38 backtest rules, 53 demo, 7 patients, 14 reminders)
+.venv/bin/pytest -q                            # all pass. At commit 1f826e6: 86 passed; working tree 22 Nov 2026: 112 passed (38 backtest rules, 53 demo, 7 patients, 14 reminders)
 .venv/bin/python eval/render_demo.py --check   # exit 0 = the onset table in demo/backtest.html matches backtest.json
 git diff --stat eval/results docs/results_table.md   # empty output = the re-run reproduced the committed results exactly
 ```
@@ -27,7 +27,7 @@ Shorthand used in the tables: `BT` = `eval/results/backtest.json`. `cell(city, s
 
 ## N. Pre-registered 2026 test (current headline)
 
-Source: `NC` = `eval/results/nowcast_2026.json`, written once by `eval/nowcast.py --test-2026` from the lock `eval/results/nowcast_lock.json` (commit `6ac1700`, pushed before `data/fetch_2026.py` downloaded any 2026 file; deviations in `docs/PREREG_NOWCAST_2026.md` §9). Checked by `eval/verify_claims.py` (section N).
+Source: `NC` = `eval/results/nowcast_2026.json`, written once by `eval/nowcast.py --test-2026` from the lock `eval/results/nowcast_lock.json` (commit `5c45eaf`, pushed before `data/fetch_2026.py` downloaded any 2026 file; deviations in `docs/PREREG_NOWCAST_2026.md` §9). Checked by `eval/verify_claims.py` (section N).
 
 | # | Claim | Where it appears | Source key | Exact value |
 |---|---|---|---|---|
