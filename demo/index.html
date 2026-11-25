@@ -81,7 +81,11 @@ tr.hl td { background:var(--trap-soft); font-weight:600; }
 .qa .q { font-weight:600; } .qa .a { margin-top:6px; color:#2C3631; } .qa .how { margin-top:6px; font-size:12px; color:var(--muted); }
 .chip.pass { background:var(--trap-soft); color:var(--trap); } .chip.fail { background:var(--fail-soft); color:var(--fail); }
 .scroll { overflow-x:auto; }
-.two { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; }
+.two > * { min-width:0; }
+.sandbox code { overflow-wrap:anywhere; }
+select,textarea,input { max-width:100%; }
+@media (max-width:760px) { main table, section table { display:block; max-width:100%; overflow-x:auto; } }
 .two h3 { margin:0 0 6px; font-size:18px; }
 .src { font-size:13px; color:var(--muted); }
 blockquote { margin:10px 0; padding:8px 12px; border-left:3px solid var(--line); color:#3A443F; font-size:14px; }
@@ -141,7 +145,7 @@ pre { background:var(--ink); color:#E8F2EC; padding:16px; border-radius:12px; ov
 .guard-patient-row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:8px 0; }
 .guard-patient-row select { font:600 13px Inter,system-ui,sans-serif; border:1px solid var(--line); border-radius:8px; padding:6px 10px; background:#fff; color:var(--ink); }
 footer { padding:40px 0 60px; color:var(--muted); font-size:13px; }
-@media (max-width:760px) { .score,.morning,.two,.city-grid { grid-template-columns:1fr; } header.top nav { display:none; } }
+@media (max-width:760px) { .score,.morning,.two,.city-grid { grid-template-columns:minmax(0,1fr); } header.top nav { display:none; } }
 </style>
 </head>
 <body>
@@ -545,9 +549,9 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
     const left = mk('div');
     const latLabel = Math.abs(city.lat).toFixed(2) + '°' + (city.lat >= 0 ? 'N' : 'S');
     const lonLabel = Math.abs(city.lon).toFixed(2) + '°' + (city.lon >= 0 ? 'E' : 'W');
-    left.append(mk('b', null, city.name + ' (' + latLabel + ', ' + lonLabel + ') '), mk('span', 'src', '· ' + city.role));
+    left.append(mk('b', null, city.notFound ? city.name + ' ' : city.name + ' (' + latLabel + ', ' + lonLabel + ') '), mk('span', 'src', '· ' + city.role));
     const badges = mk('div', 'chips');
-    badges.appendChild(mk('span', 'chip ' + (city.inside_box ? 'pass' : 'fail'), city.inside_box ? 'Inside CAMS 30°N–72°N' : 'Outside CAMS (' + latLabel + ' < 30°N)'));
+    if (!city.notFound) badges.appendChild(mk('span', 'chip ' + (city.inside_box ? 'pass' : 'fail'), city.inside_box ? 'Inside CAMS 30°N–72°N' : 'Outside CAMS (' + latLabel + ' < 30°N)'));
     badges.appendChild(mk('span', 'chip ' + (state.mode === 'live' ? 'pass' : 'neutral'), state.badge));
     head.append(left, badges);
     cityPanel.appendChild(head);
@@ -571,7 +575,7 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
     });
     cityPanel.appendChild(grid);
     cityPanel.appendChild(mk('div', 'src', state.detail));
-    cityPanel.appendChild(renderLatBar(city));
+    if (!city.notFound) cityPanel.appendChild(renderLatBar(city));
     renderModelBox();
     updateTrapVerdict();
   }
@@ -678,7 +682,7 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
       if (reqId !== activeCityReq) return;
       const hit = gj.results && gj.results[0];
       if (!hit) {
-        renderCityState({id: 'custom', name: q, lat: 0, lon: 0, inside_box: false, role: 'Not found', snapshot: null}, {
+        renderCityState({id: 'custom', name: q, lat: 0, lon: 0, inside_box: false, role: 'Not found', notFound: true, snapshot: null}, {
           mode: 'fallback', badge: 'City not found', values: null,
           detail: 'No match for "' + q + '" in Open-Meteo geocoding. Try a city name (e.g. Cairo, Nairobi) or lat,lon (e.g. 27.0, 31.0).'
         });
@@ -828,6 +832,8 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
     while ((um = unitRx.exec(disp)) !== null) safeRanges.push([um.index, um.index + um[0].length]);
     const inSafe = (s, e) => safeRanges.some(([a, b]) => s >= a && e <= b);
 
+    if (/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f\x85]/.test(text)) v.push('control_character');
+    if (/\uFEFF/.test(text) && !v.includes('non_ascii_character')) v.push('non_ascii_character');  // trim() eats U+FEFF; Python keeps it
     if (/[^\x00-\x7f]/.test(t)) {
       v.push('non_ascii_character');
       for (let i = 0; i < disp.length; i++) {
@@ -895,6 +901,8 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
     let nm;
     while ((nm = numRx.exec(t)) !== null) {
       if (!ALLOWED_NUMS.has(nm[0].replace(',', '.'))) v.push('unexplained_number:' + nm[0]);
+      else if (!(/^\s*grainsunit\b/i.test(t.slice(nm.index + nm[0].length)) ||
+                 /\b(?:line|level|threshold)(?:\s+of)?\s*$/i.test(t.slice(Math.max(0, nm.index - 16), nm.index)))) v.push('number_without_unit:' + nm[0]);
     }
     const dNumRx = /\d+(?:[.,]\d+)?/g;
     while ((nm = dNumRx.exec(disp)) !== null) {
@@ -912,7 +920,9 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
 
   function prettyViolation(code) {
     const base = code.split(':')[0];
-    const lbl = base === 'unexplained_number' ? 'number not in the facts' : (G.rule_labels[base] || base);
+    const lbl = base === 'unexplained_number' ? 'number not in the facts'
+      : base === 'number_without_unit' ? 'number without its unit or alert line'
+      : base === 'control_character' ? 'control character' : (G.rule_labels[base] || base);
     return code.includes(':') ? lbl + ' (' + code.split(':')[1] + ')' : lbl;
   }
 

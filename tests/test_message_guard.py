@@ -127,3 +127,31 @@ REVIEW_BYPASSES = [
 def test_review_bypasses_are_rejected(tail):
     opening = g.template_opening(F) + " " + tail
     assert g.check_opening(opening, F), tail
+
+
+# Stress round, 25 Nov 2026: holes found by the JS/Python parity corpus.
+def test_bare_allowed_number_is_rejected():
+    base = g.template_opening(F)
+    for tail in (" Use 104.", " Use 35."):
+        assert any(v.startswith("number_without_unit") for v in g.check_opening(base + tail, F))
+
+
+def test_control_characters_are_rejected():
+    base = g.template_opening(F)
+    for ch in ("\x00", "\x1b", "\x07"):
+        assert "control_character" in g.check_opening(base + ch, F)
+
+
+def test_template_numbers_still_pass():
+    assert g.check_opening(g.template_opening(F), F) == []
+
+
+def test_long_run_of_allowed_numbers_is_fast():
+    import time
+    t0 = time.perf_counter()
+    assert g.check_opening(g.template_opening(F) + " " + "104 " * 25000, F)
+    assert time.perf_counter() - t0 < 2.0
+
+
+def test_next_line_character_is_rejected():
+    assert "control_character" in g.check_opening(g.template_opening(F) + "\x85", F)
