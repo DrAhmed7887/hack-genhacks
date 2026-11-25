@@ -1,0 +1,39 @@
+{
+  "ige_cutoff_kul": 0.35,
+  "n_rows": 578,
+  "olive_note": "Olea europaea IgE not assayed in US NHANES 2005-2006",
+  "selection_rule": "RIDAGEYR >= 6 AND AGQ010 == 1 AND complete LBXIG5/LBXIG2/LBXIT3",
+  "source": "CDC NCHS NHANES 2005-2006 (public domain, de-identified SEQN)",
+  "xpt_sources": {
+    "AGQ_D": {
+      "bytes": 1889920,
+      "sha256": "63fbcaf363d47703c59d9096ec2ad05690d3458f7d0cb9bd94492589fedc9bd5",
+      "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2005/DataFiles/AGQ_D.xpt"
+    },
+    "AL_IGE_D": {
+      "bytes": 3102800,
+      "sha256": "d5f735d56bde86ce7acce17ab1a0dd72edd22f2ff05435e6f21bc5227791f259",
+      "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2005/DataFiles/AL_IGE_D.xpt"
+    },
+    "DEMO_D": {
+      "bytes": 3566560,
+      "sha256": "bf9cc79cce501b2fbe5aa8d5b403b618548d02d4aefeb528335cdd9f4c40a3af",
+      "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2005/DataFiles/DEMO_D.xpt"
+    },
+    "MCQ_D": {
+      "bytes": 7006480,
+      "sha256": "12bf5f557c97284e096a8cd8aefbc8e3ab9f12a410c2f50474c4dfddd2ebf6f4",
+      "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2005/DataFiles/MCQ_D.xpt"
+    },
+    "RDQ_D": {
+      "bytes": 1102800,
+      "sha256": "76ddb4830013e7df9fed1dafa3fe023d031f12af3ab27b640187dc5c5e2bb059",
+      "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2005/DataFiles/RDQ_D.xpt"
+    },
+    "RXQ_RX_D": {
+      "bytes": 2882560,
+      "sha256": "76f606f7f0add0c887e1bd1929ecc5d1b347c3e6916a164963a403cff66e1aae",
+      "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2005/DataFiles/RXQ_RX_D.xpt"
+    }
+  }
+}

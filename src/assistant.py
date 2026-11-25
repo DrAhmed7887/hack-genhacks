@@ -1,10 +1,10 @@
 """PollenPlan Clinical Assistant: prompt assembly, model call, clinician Q&A guard.
 
-The model is a free text model run offline (RWTHgpt Qwen via the local
-`rwth-ask` CLI; synthetic patients only, no real data leaves the machine).
-Its output is never trusted: drafts go through src/message_guard.py, and
-Q&A answers go through `check_answer` below. Symptom questions never reach
-the model (`is_symptom_question`).
+The language model (`mistralai-mistral-small-4-119b` via `rwth-ask`) runs in batch over the
+de-identified public-domain CDC NHANES 2005-2006 allergy cohort (SEQN IDs
+only, zero PHI). Its output is never trusted: drafts go through
+src/message_guard.py, and Q&A answers go through `check_answer` below. Symptom
+questions never reach the model (`is_symptom_question`).
 """
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ import hashlib
 import json
 import re
 import subprocess
+import time
 import unicodedata
 from pathlib import Path
 
@@ -19,7 +20,8 @@ from src import message_guard as g
 
 ROOT = Path(__file__).resolve().parents[1]
 PROMPT_FILE = ROOT / "rules" / "assistant_prompt.md"
-MODEL = "qwen3.8-27b (RWTHgpt, via rwth-ask)"
+MODEL_ID = "mistralai-mistral-small-4-119b"
+MODEL = f"{MODEL_ID} (RWTHgpt, via rwth-ask)"
 SYMPTOM_REPLY = "Please contact your clinic, or emergency services if it is severe."
 NOT_IN_DATA = "Not in today's data."
 WITHHELD = "Answer withheld: it failed the code safety check."
@@ -47,14 +49,21 @@ def prompt_sha256() -> str:
     return hashlib.sha256(system_prompt().encode()).hexdigest()
 
 
-def call_model(prompt: str, timeout: int = 120) -> str | None:
-    try:
-        out = subprocess.run(["rwth-ask", "Follow the instructions below exactly."], input=prompt, capture_output=True, text=True, timeout=timeout)
-    except (OSError, subprocess.TimeoutExpired):
-        return None
-    text = out.stdout.strip()
-    text = re.sub(r"<think>.*?</think>", "", text, flags=re.S).strip()  # drop any reasoning block
-    return text if out.returncode == 0 and text else None
+def call_model(prompt: str, timeout: int = 90) -> str | None:
+    for attempt in range(3):
+        try:
+            out = subprocess.run(
+                ["rwth-ask", "-m", MODEL_ID, "Follow the instructions below exactly."],
+                input=prompt, capture_output=True, text=True, timeout=timeout,
+            )
+            text = re.sub(r"<think>.*?</think>", "", out.stdout.strip(), flags=re.S).strip()
+            if out.returncode == 0 and text:
+                return text
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+        if attempt < 2:
+            time.sleep(2 ** attempt)
+    return None
 
 
 def draft_prompt(f: g.Facts, age_band: str, clinician_note: str | None = None) -> str:

@@ -1,9 +1,16 @@
 node_modules/
+out/
 out/*.mp4
 out/*.log
 out/*.png
 out/ln.json
 out/chk/
 public/sfx/
-
 out/*.srt
+public/v5/3d
+public/v5/flow
+public/v5/music
+public/v5/3d/
+public/v5/flow/
+public/v5/music/
+public/v5/shots/*.png

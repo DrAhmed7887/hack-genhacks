@@ -36,7 +36,7 @@ def test_featured_morning_is_a_real_trap_only_catch():
     assert f["yesterday"] >= f["threshold"] > f["cams_today"] and f["observed_today"] >= f["threshold"]
     # the values quoted in DEVPOST_DRAFT.md, CLAIMS.md N11 and video/SCRIPT_V5.md
     assert (f["date"], f["yesterday"], f["cams_today"], f["observed_today"]) == ("2026-05-05", 104.0, 19.5, 79.0)
-    assert data["console"]["eligible"] == 111 and data["console"]["roster"] == 200
+    assert data["console"]["eligible"] == 39 and data["console"]["roster"] == 578
 
 
 def test_no_invented_message_text():
@@ -48,11 +48,17 @@ def test_no_invented_message_text():
 
 
 def test_wording_guard_same_as_backtest_page():
-    """Same forbidden-phrase rule as tests/test_demo.py, applied to the front page."""
+    """Same forbidden-phrase rule as tests/test_demo.py, applied to the front page and public docs."""
     low = PAGE.lower()
     scrubbed = low.replace("do not diagnose anything", "")
     for phrase in ("clinically validated", "diagnos", "recommend treatment"):
         assert phrase not in scrubbed, phrase
+    assert "synthetic" not in (ROOT / "README.md").read_text().lower()
+    assert "synthetic patient" not in (ROOT / "JUDGES.md").read_text().lower()
+    data = json.loads(re.search(r'<script type="application/json" id="site-data">(.*?)</script>', PAGE, re.S).group(1))
+    assert set(data["nowcast_lock"]["cells"]) == {
+        "madrid:olive", "madrid:grass", "basel:birch", "basel:grass", "zurich:birch", "zurich:grass"
+    }
 
 
 def _ai():
@@ -65,7 +71,7 @@ def test_every_recorded_ai_draft_passes_the_gate_and_carries_signed_lines():
     from src.reminders import ASTHMA_LINE, SAFETY_LINE
     a = _ai()
     f = a["featured"]
-    assert len(a["drafts"]) == 111
+    assert len(a["drafts"]) == 39
     for d in a["drafts"]:
         opening = d["final"][: d["final"].index(SAFETY_LINE)].strip()
         fx = g.Facts(f["species"], f["yesterday"], f["threshold"], d["medicine"], d["asthma"])

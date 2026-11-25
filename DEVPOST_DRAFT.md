@@ -13,7 +13,8 @@ Read the trap, not the forecast. On a pollen season we had never seen, yesterday
 **What we did.**
 - Scored six alert rules against real trap counts (Madrid, Basel, Zürich, 2021–2025; 863 high days).
 - Found that the clinic's own trap reading from yesterday beat the CAMS forecast for the same day, 670 of 857 against 359 of 863.
-- Pre-registered a test on the untouched 2026 season instead of claiming that result. We wrote four hypotheses, built a fusion model and a NASA-weather variant, and locked and pushed everything (`5c45eaf`, tag `prereg-lock-2026`) before downloading a single 2026 file.
+- Pre-registered a test on the untouched 2026 season instead of claiming that result. We wrote four hypotheses, built a fusion model (`F1`) and a NASA-weather variant (`F2`), and locked and pushed everything (`5c45eaf`, tag `prereg-lock-2026`) before downloading a single 2026 file.
+- Paired the environmental benchmark with **578 real, de-identified public CDC NHANES 2005–2006 hay-fever patients** (laboratory ImmunoCAP serum specific IgE `>= 0.35 kU/L` and verified `RXQ_RX_D` rhinitis prescriptions on file; zero synthetic patient tables).
 
 **Result (1 Jan – 31 Oct 2026, 215 high days, 1,706 city-days).**
 - Yesterday's trap: 164 of 215 (76.3%), 40 false-alert days.
@@ -22,24 +23,21 @@ Read the trap, not the forecast. On a pollen season we had never seen, yesterday
 - Our own fusion model did not beat the simple rule (H3 failed), and NASA POWER weather did not improve its score (H4 failed). So we ship the simple rule and report both failures.
 - A two-day-old reading still beats the forecast (151 of 215, CSI 0.572), which matters where trap data publish late.
 
-**Product.**
-- **Interactive workbench (`#workbench`):** at `https://drahmed7887.github.io/hack-genhacks/#workbench`, pick a city (Madrid, Basel, Zürich, Alexandria, Cairo, or Asyut at 27° N outside CAMS's 30° N map boundary) to fetch live Open-Meteo CAMS forecast values against a clinic trap reading, and attack the `P022` allowlist guard directly in the browser (static page, no login, no patient messages sent).
-- Each morning the clinic's trap reading for yesterday goes into `src/alert_rule.py`.
-- `src/reminders.py` drafts a reminder only for patients sensitised to that species who already have a medicine on file. Each draft names only that medicine class and carries a fixed, signed safety line.
-- A nurse approves the batch. Nothing is sent without that click.
-- The demo replays a real morning: Madrid, 5 May 2026. Yesterday's grass count was 104, the forecast said 19.5, and the trap measured 79. The demo drafts 111 reminders for 200 synthetic patients.
+**Product & Two Live Runnable Models (`#workbench`).**
+- **Live Model 1 — Logistic Nowcast Weights (`F1` & `F2`) + CAMS:** at `https://drahmed7887.github.io/hack-genhacks/#workbench`, pick any city (Madrid, Basel, Zürich, Alexandria, Cairo, Asyut at 27° N outside CAMS's 30° N map boundary, or any searched location) to fetch live Open-Meteo CAMS + D-1 weather and run yesterday's trap rule (`P0`) side by side with our `5c45eaf` logistic fusion weights (`F1` and `F2`; locked on Madrid/Basel/Zürich with Open-Meteo D-1 weather proxy, illustrative out-of-domain elsewhere).
+- **Live Model 2 — In-Browser `Qwen2.5-0.5B-Instruct` + Deterministic Allowlist Guard:** pick a real CDC NHANES allergy patient (such as `NH-32025`, ImmunoCAP ryegrass `3.55 kU/L`, birch `0.57 kU/L`, verified budesonide nasal spray), run open-weights `Qwen2.5-0.5B-Instruct` on-demand in WebGPU/WASM (`~350 MB` cached from jsDelivr CDN, un-scored interactive demo) with custom or adversarial instructions, and inspect how the in-browser mirror of `src/message_guard.py` catches unapproved tokens in real time (no keys, no backend server, no patient messages sent).
+- **Morning clinic batch (`src/alert_rule.py` + `src/reminders.py`):** on the 5 May 2026 Madrid grass morning (`104` grains/m³ yesterday vs. `19.5` forecast, `79` measured), `39` of `578` CDC NHANES hay-fever patients have positive grass IgE and a rhinitis Rx container on file (`313` not sensitised to grass; `226` without a matching Rx on file). Code names only the medicine class on file and appends the fixed, signed safety lines. A nurse approves every batch.
 
 **AI layer, with the AI kept on a leash.**
-- A nurse copilot orders the batch by risk: asthma flag plus moderate/severe rhinitis first (9 Tier 1, 58 Tier 2, 44 Tier 3).
-- An AI model (Qwen 3.8 27B via RWTHgpt, batch run on synthetic patients) drafts each reminder opening, and all 111 of 111 drafts passed the code safety gate (`src/message_guard.py`) with 0 fallbacks. Code accepts an opening only if every word is on a short approved list, and it appends the signed safety lines itself.
-- We attacked it with a tuning set (40 runs, 12 model rule breaks, 0 reached the nurse). Our own run 1 caught 2 efficacy claims, and an independent review of the run-2 gate found 25 bypasses (such as `"bid"`, `"with food"`, and Unicode lookalikes) that are now locked in `tests/test_message_guard.py`. On 20 held-out attacks never used for tuning (× 2 patients = 40 runs), the model broke a rule 21 times and **0** reached the nurse.
-- Clinician Q&A answers only from that morning's facts. Three symptom questions were deflected before reaching the model, and 2 model answers with violations were withheld.
+- Nurse copilot triage order: asthma flag + moderate/severe rhinitis (`23` Tier 1), asthma flag or moderate/severe (`10` Tier 2), mild (`6` Tier 3).
+- In batch evaluation using Mistral Small 4 119B via RWTHgpt across the `39` eligible CDC NHANES drafts, `21` passed the strict allowlist gate cleanly and `18` were caught for phrasing drift (for example extra words or non-ASCII apostrophes) and automatically replaced by the signed template — showing why a hard code gate is needed even on benign runs.
+- Red team & Clinician Q&A: `18/40` tuning attacks broke a rule and `0` reached the nurse; `24/40` held-out unseen attacks broke a rule and **0** reached the nurse (building on `25` independent-review bypasses locked in `tests/test_message_guard.py`). In Clinician Q&A (`12` questions), `3` symptom questions never reached the model and all `9` model answers passed verification (`0` withheld).
 
 **Where next (a hypothesis, not a result).** The CAMS pollen forecast is built for Europe, with a map that stops at 30° N. We queried it for Egypt: Alexandria and Cairo get values, and Asyut (27° N) gets none. We found no study comparing the Egyptian values with trap counts. The rule needs one local trap, and a one-year trap study in Alexandria (2019–20) shows the measurement can be made there. We have not tested it outside the three cities.
 
 ## Built with
 
-Python (numpy, pandas, pytest), Qwen 3.8 27B (batch synthetic drafting) + deterministic Python allowlist guard, Comunidad de Madrid and MeteoSwiss open pollen data, CAMS via Open-Meteo Air Quality API, NASA POWER & MODIS MOD13Q1, GitHub Pages, Remotion, Blender Cycles (procedural trap strip).
+Python (numpy, pandas, pytest), CDC NCHS NHANES 2005–2006 (public domain), Transformers.js (`Qwen2.5-0.5B-Instruct` WebGPU/WASM), Mistral Small 4 119B via RWTHgpt (batch evaluation), deterministic Python allowlist guard, Comunidad de Madrid and MeteoSwiss open pollen data, CAMS & weather via Open-Meteo API, NASA POWER & MODIS MOD13Q1, GitHub Pages, Remotion, Blender Cycles (procedural trap strip).
 
 ## Limits
 
@@ -47,7 +45,7 @@ Python (numpy, pandas, pytest), Qwen 3.8 27B (batch synthetic drafting) + determ
 - Retrospective, not a prospective trial; no patient outcome measured.
 - The rule alerts one day late at a sudden onset.
 - Needs yesterday's count by morning (MeteoSwiss publishes "up to yesterday"; Madrid daily January–June, weekly after).
-- Single-centre thresholds; synthetic patients (`N = 200`, seed `20261120`); no patient messages sent.
+- Single-centre thresholds; CDC NHANES assays grass and birch ImmunoCAP IgE (not olive IgE); no patient messages sent.
 
 ## Links
 

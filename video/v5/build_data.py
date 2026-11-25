@@ -23,14 +23,14 @@ FPS = 30
 
 LEAD = 0.15     # silence before the voice in each scene (s)
 TAIL = 0.45     # silence after the voice in each scene (s)
-EXTRA_TAIL = {"s3": 2.2, "s8": 1.6, "s9": 3.0}   # holds: CI bar, "Not yet tested here", end card
+EXTRA_TAIL = {"s3": 1.8, "s8": 1.3, "s9": 2.2}   # holds: CI bar, "Not yet tested here", end card (<180s total cap)
 
 # caption display text differs from spoken text only for numbers spoken as words
 DISPLAY = [  # longest first
     ("twenty twenty-six", "2026"), ("Two hundred fifteen", "215"), ("one hundred sixty-four", "164"),
-    ("one hundred forty-five", "145"), ("one hundred and four", "104"), ("One hundred eleven of two hundred", "111 of 200"),
+    ("one hundred forty-five", "145"), ("one hundred and four", "104"), ("Thirty-nine of five hundred seventy-eight", "39 of 578"),
     ("nineteen point five", "19.5"), ("seventy-nine", "79"), ("flagged seventy.", "flagged 70."), ("fifty-one", "51"),
-    ("forty times", "40 times"), ("twenty-one times", "21 times"), ("thirty degrees north", "30° north"),
+    ("forty times", "40 times"), ("twenty-four times", "24 times"), ("thirty degrees north", "30° north"),
 ]
 
 

@@ -10,13 +10,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src import assistant as ai  # noqa: E402
 
 FACTS = {"species": "grass", "trap_count_yesterday_grains_m3": 104.0, "alert_threshold_grains_m3": 35,
-         "cams_forecast_today_grains_m3": 19.5, "batch": {"roster": 200, "drafted": 111},
+         "cams_forecast_today_grains_m3": 19.5, "batch": {"roster": 578, "drafted": 39},
          "test_2026": {"high_days": 215, "trap_flagged": 164, "cams_flagged": 70}}
 
 
 @pytest.mark.parametrize("q", [
     "A patient says her eyes are burning and she is going out tomorrow morning. What should she do?",
-    "Patient P009 reports chest tightness. Can you advise?",
+    "Patient NH-32511 reports chest tightness. Can you advise?",
     "One of the children has a bad cough today, what should the parent do?",
     "He feels worse since yesterday",
     "Is sneezing normal at this count?",

@@ -44,7 +44,7 @@ SCENARIOS = (
      "open_meteo_madrid_facf.csv", "2025-05-18", "replay"),
     ("basel_birch", "Basel · 2025-04-05 (CAMS Replay — Birch Alert >= 30 grains/m³)",
      "open_meteo_basel_pbs.csv", "2025-04-05", "replay"),
-    ("olive_sim", "Clinic Threshold-Crossing Replay · Olive Alert >= 162 grains/m³ (Scenario)",
+    ("olive_sim", "Clinic Threshold-Crossing Replay · Olive Alert >= 162 grains/m³ (Simulated; olive IgE not assayed in NHANES)",
      None, None, "simulated"),
 )
 # scenario id -> (NASA cache key, date, species for GDD base, source label)

@@ -485,7 +485,7 @@ class TestNurseConsole:
     def test_counts_and_ids_match_build_batch(self):
         reminders, patients = self._patients()
         data = embedded_console_data(load_demo_html())
-        assert data["roster_size"] == len(patients) == 200
+        assert data["roster_size"] == len(patients) == 578
         by_id = {s["id"]: s for s in data["scenarios"]}
         expected = {"valencia_control": None, "madrid_grass": "grass", "basel_birch": "birch", "olive_sim": "olive"}
         assert set(by_id) == set(expected)
@@ -495,14 +495,15 @@ class TestNurseConsole:
             assert sc["alerting_species"] == species
             assert [d["patient_id"] for d in sc["drafts"]] == [m.patient_id for m in batch]
             assert sc["eligible_count"] == len(batch)
-            assert sc["filtered_count"] == 200 - len(batch)
+            assert sc["filtered_count"] == 578 - len(batch)
             assert sum(sc["filtered_reasons"].values()) == sc["filtered_count"]
             for d, m in zip(sc["drafts"], batch):
                 assert d["message"] == " ".join(m.lines)
                 assert d["med_class_on_file"] == m.medicine_class
         assert by_id["valencia_control"]["eligible_count"] == 0
-        for sid in ("madrid_grass", "basel_birch", "olive_sim"):
+        for sid in ("madrid_grass", "basel_birch"):
             assert by_id[sid]["eligible_count"] > 0
+        assert by_id["olive_sim"]["eligible_count"] == 0
 
     def test_valencia_control_below_thresholds(self):
         data = embedded_console_data(load_demo_html())

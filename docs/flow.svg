@@ -75,7 +75,7 @@
   <text class="path mono" x="982" y="192" text-anchor="middle">demo/index.html</text>
   <text class="body" x="982" y="214" text-anchor="middle">nurse approves every batch</text>
   <text class="tag" x="982" y="244" text-anchor="middle" style="fill:#b91c1c">0 external sends</text>
-  <text class="body" x="982" y="262" text-anchor="middle">200 synthetic patients</text>
+  <text class="body" x="982" y="262" text-anchor="middle">578 CDC NHANES patients</text>
 
   <!-- arrows -->
   <line x1="208" y1="185" x2="244" y2="185" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
@@ -85,6 +85,6 @@
 
   <!-- footer -->
   <line x1="30" y1="304" x2="1070" y2="304" stroke="#e2e8f0" stroke-width="1"/>
-  <text x="30" y="327" font-size="12" style="fill:#475569">Thresholds are single-centre published values, retrospective use only. Not a clinical tool. Patients are synthetic (seed 20261120).</text>
-  <text x="30" y="345" font-size="12" style="fill:#475569">Sources: Open-Meteo (CC BY 4.0), CAMS ENSEMBLE, Comunidad de Madrid (CC BY), MeteoSwiss (CC-BY).</text>
+  <text x="30" y="327" font-size="12" style="fill:#475569">Thresholds are single-centre published values, retrospective use only. Not a clinical tool. Cohort: 578 de-identified CDC NHANES patients.</text>
+  <text x="30" y="345" font-size="12" style="fill:#475569">Sources: Open-Meteo (CC BY 4.0), CAMS ENSEMBLE, Comunidad de Madrid (CC BY), MeteoSwiss (CC-BY), CDC NHANES 2005–2006.</text>
 </svg>

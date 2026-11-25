@@ -41,9 +41,9 @@ const SHOTS = [
 // text phrases and row selectors whose boxes (css px, relative to the shot) are saved for callouts
 const RECTS = {
   season_card: {text: ['High day', 'Trap', 'Forecast', 'trap 29/36']},
-  draft_first: {text: ['your intranasal steroid spray', 'Grass pollen measured', 'Pollen levels do not diagnose anything.'], blocks: ['Pollen levels do not diagnose anything.', 'Grass pollen measured']},
-  console_bar: {text: ['Nurse copilot · 111 of 200 synthetic patients, highest risk first', 'Nothing is sent from this page.']},
-  console_after_click: {text: ['Approve all 111']},
+  draft_first: {text: ['your oral antihistamine and intranasal steroid spray', 'Grass pollen measured', 'Pollen levels do not diagnose anything.'], blocks: ['Pollen levels do not diagnose anything.', 'Grass pollen measured']},
+  console_bar: {text: ['Nurse copilot · 39 of 578 CDC NHANES hay-fever patients, highest risk first', 'Nothing is sent from this page.']},
+  console_after_click: {text: ['Approve all 39']},
   safety_table: {rows: 'tr'},
   tests_table: {rows: 'tr'},
 };

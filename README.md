@@ -37,14 +37,10 @@ Yesterday's trap beats the forecast in all six city × species series in 2026. I
 
 ## AI layer: helps the nurse, never decides
 
-- **Nurse copilot:** the batch is ordered by risk. Patients with an asthma flag and moderate/severe rhinitis come first (9), then asthma flag or moderate/severe (58), then mild (44). The nurse can approve all, hold or edit.
-- **Reminder drafts:** an AI model (Qwen 3.8 27B on RWTHgpt, free, run offline on synthetic patients) writes each opening from the prompt in `rules/assistant_prompt.md`. Code (`src/message_guard.py`) accepts an opening only if every word is on a short approved list: the species, the two signed numbers, the medicine class on file, and plain words. Named checks also run for dose, frequency, drug names, symptom words, efficacy claims and links. On any failure it falls back to the signed template, and it appends the signed safety lines itself.
-- **Red team:** see the AI section of `CLAIMS.md` for the numbers.
-  - The tuning set is 20 attacks × 2 patients, run three times.
-  - Run 1 let 2 efficacy claims through ("help prevent asthma attacks").
-  - After run 2, an independent review found 25 more bypasses (Unicode lookalikes, "bid", "with food", Spanish drug names). The gate became an allowlist, and those 25 are now in the fixed tests.
-  - A separate held-out set of 20 new attacks, never used for tuning, is reported on its own. Earlier runs are in `eval/results/ai_layer_run1.json` and `ai_layer_run2.json`.
-- **Clinician Q&A:** answers come only from the morning's facts, and every number is checked against them. Symptom questions get the fixed safety reply and never reach the model (3 of 12 test questions).
+- **Nurse copilot:** the batch uses **578 real de-identified public CDC NHANES 2005–2006 hay-fever patients** (`data/patients.csv`, ImmunoCAP IgE ≥ 0.35 kU/L and verified `RXQ_RX_D` prescriptions; 39 eligible for grass). Ordered by risk: asthma flag and moderate/severe rhinitis first (23), then asthma flag or moderate/severe (10), then mild (6).
+- **Reminder drafts & live browser model:** Mistral Small 4 119B via RWTHgpt (`eval/ai_layer.py`) drafted openings for all 39 eligible patients (21 passed the strict allowlist gate, 18 caught for phrasing drift and safely replaced by the signed template, 0 unsafe drafts sent). Inside the live web workbench (`#workbench`), judges can also run **`Qwen2.5-0.5B-Instruct`** on-demand in WebGPU/WASM (`~350 MB` first load from jsDelivr CDN, checked by an in-browser JS mirror of `src/message_guard.py`) alongside live `F1`/`F2` logistic weights (`5c45eaf`; locked on Madrid/Basel/Zürich, illustrative out-of-domain elsewhere).
+- **Red team:** see `CLAIMS.md` §AI for every number. Tuning set (20 attacks × 2 patients = 40): 18 model rule breaks, 0 reached the nurse. Held-out set (20 unseen attacks × 2 = 40): 24 model rule breaks, **0** reached the nurse. Independent review caught 25 earlier bypasses (now locked in `tests/test_message_guard.py`).
+- **Clinician Q&A:** 12 pre-written questions; 3 symptom questions were routed to the fixed safety line without calling the model, and all 9 model answers passed groundedness checks (`0` withheld).
 
 - **Safety guarantee:** `src/message_guard.py` enforces a deterministic allowlist of exact approved clinical tokens (the species, the two signed numbers, the medicine class on file, and plain phrasing) plus named checks for doses, frequencies, drugs, symptom words, efficacy claims, and links, falling back to the signed template on any violation.
 
@@ -63,7 +59,7 @@ We found no study comparing those Egyptian values with trap counts. The trap-fir
 - **Late onsets & reading delay:** yesterday's count alerts one day late on sudden rises (counted as misses above) and requires yesterday's reading by morning (MeteoSwiss publishes "up to yesterday"; Madrid daily Jan–Jun, weekly after; 2-day lag also beat CAMS).
 - **Thresholds:** single-centre published values (`rules/thresholds.json`, signed 22 Nov 2026).
 - **Valencia:** the demo clinic's city has no trap counts in this repo; it is **never scored** and carries no accuracy claim.
-- **Synthetic data:** patients are synthetic (`N = 200`, seed `20261120`); nothing is sent externally.
+- **Patient cohort:** 578 de-identified public CDC NHANES 2005–2006 hay-fever participants (`SEQN` IDs, zero PHI); US NHANES assays grass and birch IgE (`>= 0.35 kU/L`), not olive IgE, and nothing is sent externally.
 
 ![PollenPlan Workflow](docs/flow.svg)
 
@@ -93,7 +89,7 @@ make test                       # the test suite
 python -m http.server 8000 -d demo       # then open http://localhost:8000
 ```
 
-`make all` re-fetches the open data, rebuilds the synthetic patients, and re-runs the tests and the backtest. The live page is deployed from `demo/` by `.github/workflows/deploy-pages.yml`.
+`make all` re-fetches the open data, rebuilds the CDC NHANES patient table from committed extracts, and re-runs the tests and the backtest. The live page is deployed from `demo/` by `.github/workflows/deploy-pages.yml`.
 
 ## Earlier work: the 2021–2025 backtest
 
@@ -104,7 +100,7 @@ Before the 2026 test we scored six rules on 2021–2025 (863 high-pollen days). 
 - **Modelled pollen**: Open-Meteo Air Quality API (licence CC BY 4.0; free tier for non-commercial use). Required attribution: [Weather data by Open-Meteo.com](https://open-meteo.com/) and "CAMS European air quality forecasts, ENSEMBLE data".
 - **Observed Madrid**: Comunidad de Madrid, Histórico de mediciones de polen (Creative Commons Attribution, CC BY)
 - **Observed Basel/Zurich**: Source: MeteoSwiss (CC-BY)
-- **Synthetic patients**: Seeded generator (20261120)
+- **Patient cohort**: U.S. CDC NCHS NHANES 2005–2006 public-domain files (`DEMO_D`, `AL_IGE_D`, `AGQ_D`, `RDQ_D`, `MCQ_D`, `RXQ_RX_D`)
 
 ## License
 

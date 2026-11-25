@@ -77,7 +77,7 @@ export const S6bAI: React.FC = () => {
     );
   }
   const k40 = cue(s, 'the', 2, -0.25);
-  const k21 = cue(s, 'twenty-one', 0, -0.1);
+  const k21 = cue(s, 'twenty-four', 0, -0.1);
   const k0 = cue(s, 'none', 0, -0.1);
   const big = (n: number, at: number, label: string, size: number) => (
     <div style={{opacity: ramp(f, at, at + 8), textAlign: 'center', width: 520}}>

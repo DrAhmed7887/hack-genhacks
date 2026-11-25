@@ -1,6 +1,6 @@
 {
  "fps": 30,
- "totalFrames": 5297,
+ "totalFrames": 5360,
  "scenes": [
   {
    "id": "s1",
@@ -444,7 +444,7 @@
   {
    "id": "s3",
    "from": 929,
-   "frames": 534,
+   "frames": 522,
    "voiceAt": 0.15,
    "audio": "v5/vo/s3.mp3",
    "audioSeconds": 15.0,
@@ -610,7 +610,7 @@
   },
   {
    "id": "s4",
-   "from": 1463,
+   "from": 1451,
    "frames": 412,
    "voiceAt": 0.15,
    "audio": "v5/vo/s4.mp3",
@@ -782,7 +782,7 @@
   },
   {
    "id": "s5",
-   "from": 1875,
+   "from": 1863,
    "frames": 542,
    "voiceAt": 0.15,
    "audio": "v5/vo/s5.mp3",
@@ -1004,11 +1004,11 @@
   },
   {
    "id": "s6",
-   "from": 2417,
-   "frames": 595,
+   "from": 2405,
+   "frames": 687,
    "voiceAt": 0.15,
    "audio": "v5/vo/s6.mp3",
-   "audioSeconds": 19.226,
+   "audioSeconds": 22.291,
    "words": [
     {
      "w": "So",
@@ -1022,583 +1022,603 @@
     },
     {
      "w": "clinic",
-     "start": 0.51,
-     "end": 0.823
+     "start": 0.498,
+     "end": 0.8
     },
     {
      "w": "drafts",
-     "start": 0.881,
-     "end": 1.253
+     "start": 0.858,
+     "end": 1.218
     },
     {
-     "w": "reminders.",
-     "start": 1.311,
-     "end": 2.077
+     "w": "reminders",
+     "start": 1.265,
+     "end": 1.787
     },
     {
-     "w": "One",
-     "start": 2.484,
-     "end": 2.716
+     "w": "from",
+     "start": 1.833,
+     "end": 1.996
     },
     {
-     "w": "hundred",
-     "start": 2.774,
-     "end": 3.076
+     "w": "real",
+     "start": 2.1,
+     "end": 2.368
     },
     {
-     "w": "eleven",
-     "start": 3.122,
-     "end": 3.47
+     "w": "CDC",
+     "start": 2.472,
+     "end": 2.971
+    },
+    {
+     "w": "NHANES",
+     "start": 3.273,
+     "end": 3.784
+    },
+    {
+     "w": "allergy",
+     "start": 3.854,
+     "end": 4.237
+    },
+    {
+     "w": "records.",
+     "start": 4.306,
+     "end": 4.957
+    },
+    {
+     "w": "Thirty-nine",
+     "start": 5.433,
+     "end": 6.187
     },
     {
      "w": "of",
-     "start": 3.529,
-     "end": 3.598
+     "start": 6.268,
+     "end": 6.385
     },
     {
-     "w": "two",
-     "start": 3.668,
-     "end": 3.912
-    },
-    {
-     "w": "hundred",
-     "start": 4.016,
-     "end": 4.341
-    },
-    {
-     "w": "synthetic",
-     "start": 4.399,
-     "end": 4.887
-    },
-    {
-     "w": "patients,",
-     "start": 4.945,
-     "end": 5.642
-    },
-    {
-     "w": "each",
-     "start": 5.897,
-     "end": 6.118
-    },
-    {
-     "w": "sensitised",
-     "start": 6.176,
+     "w": "five",
+     "start": 6.547,
      "end": 6.895
     },
     {
-     "w": "to",
-     "start": 6.93,
-     "end": 7.0
+     "w": "hundred",
+     "start": 6.942,
+     "end": 7.267
+    },
+    {
+     "w": "seventy-eight",
+     "start": 7.337,
+     "end": 7.929
+    },
+    {
+     "w": "hay-fever",
+     "start": 7.975,
+     "end": 8.451
+    },
+    {
+     "w": "patients",
+     "start": 8.509,
+     "end": 8.962
+    },
+    {
+     "w": "have",
+     "start": 9.264,
+     "end": 9.45
+    },
+    {
+     "w": "positive",
+     "start": 9.508,
+     "end": 9.96
     },
     {
      "w": "grass",
-     "start": 7.07,
-     "end": 7.534
+     "start": 9.995,
+     "end": 10.355
     },
     {
-     "w": "with",
-     "start": 7.836,
-     "end": 8.01
-    },
-    {
-     "w": "a",
-     "start": 8.045,
-     "end": 8.068
-    },
-    {
-     "w": "medicine",
-     "start": 8.126,
-     "end": 8.509
-    },
-    {
-     "w": "on",
-     "start": 8.544,
-     "end": 8.625
-    },
-    {
-     "w": "file.",
-     "start": 8.707,
-     "end": 9.252
-    },
-    {
-     "w": "Code",
-     "start": 9.612,
-     "end": 9.914
-    },
-    {
-     "w": "names",
-     "start": 9.949,
-     "end": 10.262
-    },
-    {
-     "w": "only",
-     "start": 10.332,
-     "end": 10.553
-    },
-    {
-     "w": "the",
-     "start": 10.611,
-     "end": 10.68
-    },
-    {
-     "w": "medicine",
-     "start": 10.715,
-     "end": 11.11
-    },
-    {
-     "w": "already",
-     "start": 11.156,
-     "end": 11.539
-    },
-    {
-     "w": "on",
-     "start": 11.609,
-     "end": 11.702
-    },
-    {
-     "w": "file",
-     "start": 11.783,
-     "end": 12.317
+     "w": "IgE",
+     "start": 10.425,
+     "end": 11.156
     },
     {
      "w": "and",
-     "start": 12.457,
-     "end": 12.677
+     "start": 11.458,
+     "end": 11.609
     },
     {
-     "w": "adds",
-     "start": 12.735,
-     "end": 12.979
+     "w": "a",
+     "start": 11.667,
+     "end": 11.69
     },
     {
-     "w": "the",
-     "start": 13.025,
-     "end": 13.095
+     "w": "prescription",
+     "start": 11.737,
+     "end": 12.34
     },
     {
-     "w": "signed",
-     "start": 13.164,
-     "end": 13.536
+     "w": "on",
+     "start": 12.445,
+     "end": 12.608
     },
     {
-     "w": "safety",
-     "start": 13.606,
-     "end": 13.977
+     "w": "file.",
+     "start": 12.689,
+     "end": 13.223
     },
     {
-     "w": "line.",
-     "start": 14.035,
-     "end": 14.546
+     "w": "Code",
+     "start": 13.629,
+     "end": 13.908
     },
     {
-     "w": "A",
-     "start": 14.848,
-     "end": 14.918
+     "w": "names",
+     "start": 13.943,
+     "end": 14.256
     },
     {
-     "w": "nurse",
-     "start": 15.022,
-     "end": 15.394
-    },
-    {
-     "w": "approves.",
-     "start": 15.44,
-     "end": 16.241
-    },
-    {
-     "w": "Nothing",
-     "start": 16.647,
-     "end": 16.961
-    },
-    {
-     "w": "is",
-     "start": 17.019,
-     "end": 17.112
-    },
-    {
-     "w": "sent",
-     "start": 17.158,
-     "end": 17.46
-    },
-    {
-     "w": "without",
-     "start": 17.82,
-     "end": 18.192
+     "w": "only",
+     "start": 14.338,
+     "end": 14.558
     },
     {
      "w": "that",
-     "start": 18.238,
-     "end": 18.401
+     "start": 14.616,
+     "end": 14.756
+    },
+    {
+     "w": "medicine",
+     "start": 14.825,
+     "end": 15.197
+    },
+    {
+     "w": "class",
+     "start": 15.232,
+     "end": 15.615
+    },
+    {
+     "w": "and",
+     "start": 15.917,
+     "end": 16.102
+    },
+    {
+     "w": "adds",
+     "start": 16.172,
+     "end": 16.416
+    },
+    {
+     "w": "the",
+     "start": 16.462,
+     "end": 16.544
+    },
+    {
+     "w": "signed",
+     "start": 16.613,
+     "end": 16.985
+    },
+    {
+     "w": "safety",
+     "start": 17.054,
+     "end": 17.414
+    },
+    {
+     "w": "line.",
+     "start": 17.472,
+     "end": 17.902
+    },
+    {
+     "w": "A",
+     "start": 18.262,
+     "end": 18.331
+    },
+    {
+     "w": "nurse",
+     "start": 18.413,
+     "end": 18.726
+    },
+    {
+     "w": "approves.",
+     "start": 18.784,
+     "end": 19.504
+    },
+    {
+     "w": "Nothing",
+     "start": 19.864,
+     "end": 20.201
+    },
+    {
+     "w": "is",
+     "start": 20.27,
+     "end": 20.386
+    },
+    {
+     "w": "sent",
+     "start": 20.444,
+     "end": 20.758
+    },
+    {
+     "w": "without",
+     "start": 20.979,
+     "end": 21.315
+    },
+    {
+     "w": "that",
+     "start": 21.362,
+     "end": 21.513
     },
     {
      "w": "click.",
-     "start": 18.47,
-     "end": 19.376
+     "start": 21.571,
+     "end": 22.441
     }
    ],
    "captions": [
     {
-     "text": "So the clinic drafts reminders.",
+     "text": "So the clinic drafts reminders from",
      "start": 0.15,
-     "end": 2.077
+     "end": 1.996
     },
     {
-     "text": "111 of 200 synthetic patients,",
-     "start": 2.484,
-     "end": 5.642
+     "text": "real CDC NHANES allergy records.",
+     "start": 2.1,
+     "end": 4.957
     },
     {
-     "text": "each sensitised to grass with a medicine on file.",
-     "start": 5.897,
-     "end": 9.252
+     "text": "39 of 578 hay-fever patients have positive",
+     "start": 5.433,
+     "end": 9.96
     },
     {
-     "text": "Code names only the medicine already on",
-     "start": 9.612,
-     "end": 11.702
+     "text": "grass IgE and a prescription on file.",
+     "start": 9.995,
+     "end": 13.223
     },
     {
-     "text": "file and adds the signed safety line.",
-     "start": 11.783,
-     "end": 14.546
+     "text": "Code names only that medicine class",
+     "start": 13.629,
+     "end": 15.615
+    },
+    {
+     "text": "and adds the signed safety line.",
+     "start": 15.917,
+     "end": 17.902
     },
     {
      "text": "A nurse approves.",
-     "start": 14.848,
-     "end": 16.241
+     "start": 18.262,
+     "end": 19.504
     },
     {
      "text": "Nothing is sent without that click.",
-     "start": 16.647,
-     "end": 19.376
+     "start": 19.864,
+     "end": 22.441
     }
    ]
   },
   {
    "id": "s6b",
-   "from": 3012,
-   "frames": 713,
+   "from": 3092,
+   "frames": 729,
    "voiceAt": 0.15,
    "audio": "v5/vo/s6b.mp3",
-   "audioSeconds": 23.174,
+   "audioSeconds": 23.684,
    "words": [
     {
      "w": "An",
      "start": 0.15,
-     "end": 0.313
+     "end": 0.289
     },
     {
      "w": "AI",
-     "start": 0.382,
-     "end": 0.707
+     "start": 0.359,
+     "end": 0.661
     },
     {
      "w": "model",
-     "start": 0.777,
-     "end": 1.044
+     "start": 0.73,
+     "end": 0.974
     },
     {
      "w": "writes",
-     "start": 1.09,
-     "end": 1.381
+     "start": 1.032,
+     "end": 1.334
     },
     {
      "w": "each",
-     "start": 1.462,
-     "end": 1.671
+     "start": 1.404,
+     "end": 1.59
     },
     {
      "w": "reminder,",
-     "start": 1.741,
-     "end": 2.414
+     "start": 1.648,
+     "end": 2.333
     },
     {
      "w": "and",
-     "start": 2.669,
-     "end": 2.82
+     "start": 2.693,
+     "end": 2.855
     },
     {
      "w": "code",
-     "start": 2.902,
+     "start": 2.936,
      "end": 3.296
     },
     {
      "w": "checks",
-     "start": 3.378,
-     "end": 3.784
+     "start": 3.354,
+     "end": 3.726
     },
     {
      "w": "every",
-     "start": 3.854,
-     "end": 4.121
+     "start": 3.865,
+     "end": 4.179
     },
     {
      "w": "word.",
-     "start": 4.179,
-     "end": 4.69
+     "start": 4.237,
+     "end": 4.782
     },
     {
      "w": "No",
-     "start": 5.096,
-     "end": 5.27
+     "start": 5.142,
+     "end": 5.293
     },
     {
      "w": "dose,",
-     "start": 5.351,
-     "end": 5.943
+     "start": 5.374,
+     "end": 5.955
     },
     {
      "w": "no",
-     "start": 6.083,
-     "end": 6.222
+     "start": 6.118,
+     "end": 6.292
     },
     {
      "w": "drug",
-     "start": 6.292,
-     "end": 6.535
+     "start": 6.373,
+     "end": 6.628
     },
     {
      "w": "name,",
-     "start": 6.605,
-     "end": 7.058
+     "start": 6.698,
+     "end": 7.128
     },
     {
      "w": "no",
-     "start": 7.22,
-     "end": 7.371
+     "start": 7.325,
+     "end": 7.499
     },
     {
      "w": "symptom",
-     "start": 7.476,
-     "end": 7.836
+     "start": 7.604,
+     "end": 7.975
     },
     {
      "w": "advice,",
-     "start": 7.882,
-     "end": 8.498
+     "start": 8.022,
+     "end": 8.637
     },
     {
      "w": "and",
-     "start": 8.753,
-     "end": 8.892
+     "start": 8.939,
+     "end": 9.078
     },
     {
      "w": "the",
-     "start": 8.927,
-     "end": 8.997
+     "start": 9.125,
+     "end": 9.194
     },
     {
      "w": "signed",
-     "start": 9.043,
-     "end": 9.392
+     "start": 9.252,
+     "end": 9.577
     },
     {
      "w": "safety",
-     "start": 9.45,
-     "end": 9.809
+     "start": 9.647,
+     "end": 10.007
     },
     {
      "w": "lines",
-     "start": 9.868,
-     "end": 10.239
+     "start": 10.077,
+     "end": 10.471
     },
     {
      "w": "are",
-     "start": 10.46,
-     "end": 10.669
+     "start": 10.669,
+     "end": 10.854
     },
     {
      "w": "added",
-     "start": 10.715,
-     "end": 10.97
+     "start": 10.889,
+     "end": 11.145
     },
     {
      "w": "by",
-     "start": 11.029,
-     "end": 11.156
+     "start": 11.191,
+     "end": 11.33
     },
     {
      "w": "code,",
-     "start": 11.261,
-     "end": 11.818
+     "start": 11.435,
+     "end": 11.969
     },
     {
      "w": "not",
-     "start": 12.039,
-     "end": 12.248
+     "start": 12.271,
+     "end": 12.549
     },
     {
      "w": "the",
-     "start": 12.294,
-     "end": 12.375
+     "start": 12.747,
+     "end": 12.875
     },
     {
      "w": "model.",
-     "start": 12.422,
-     "end": 12.886
+     "start": 12.933,
+     "end": 13.397
     },
     {
      "w": "We",
-     "start": 13.443,
-     "end": 13.594
+     "start": 13.954,
+     "end": 14.094
     },
     {
      "w": "then",
-     "start": 13.652,
-     "end": 13.792
+     "start": 14.14,
+     "end": 14.279
     },
     {
      "w": "attacked",
-     "start": 13.838,
-     "end": 14.198
+     "start": 14.326,
+     "end": 14.662
     },
     {
      "w": "it",
-     "start": 14.233,
-     "end": 14.314
+     "start": 14.709,
+     "end": 14.779
     },
     {
      "w": "forty",
-     "start": 14.43,
-     "end": 14.79
+     "start": 14.848,
+     "end": 15.15
     },
     {
      "w": "times",
-     "start": 14.86,
-     "end": 15.348
+     "start": 15.22,
+     "end": 15.626
     },
     {
      "w": "with",
-     "start": 15.708,
-     "end": 15.893
+     "start": 15.672,
+     "end": 15.812
     },
     {
      "w": "attacks",
-     "start": 15.928,
-     "end": 16.335
+     "start": 15.847,
+     "end": 16.241
     },
     {
      "w": "it",
-     "start": 16.404,
-     "end": 16.485
+     "start": 16.311,
+     "end": 16.392
     },
     {
      "w": "had",
-     "start": 16.532,
-     "end": 16.636
+     "start": 16.427,
+     "end": 16.532
     },
     {
      "w": "never",
-     "start": 16.706,
-     "end": 16.903
+     "start": 16.59,
+     "end": 16.787
     },
     {
      "w": "seen.",
-     "start": 16.973,
-     "end": 17.507
+     "start": 16.857,
+     "end": 17.402
     },
     {
      "w": "The",
-     "start": 17.914,
-     "end": 18.041
+     "start": 17.96,
+     "end": 18.064
     },
     {
      "w": "model",
-     "start": 18.088,
-     "end": 18.331
+     "start": 18.122,
+     "end": 18.366
     },
     {
      "w": "broke",
-     "start": 18.39,
-     "end": 18.645
+     "start": 18.424,
+     "end": 18.679
     },
     {
      "w": "a",
-     "start": 18.68,
-     "end": 18.703
+     "start": 18.714,
+     "end": 18.737
     },
     {
      "w": "rule",
-     "start": 18.773,
-     "end": 19.237
+     "start": 18.807,
+     "end": 19.225
     },
     {
-     "w": "twenty-one",
-     "start": 19.434,
-     "end": 20.085
+     "w": "twenty-four",
+     "start": 19.585,
+     "end": 20.258
     },
     {
      "w": "times.",
-     "start": 20.131,
-     "end": 20.758
+     "start": 20.328,
+     "end": 21.036
     },
     {
      "w": "None",
-     "start": 21.06,
-     "end": 21.257
+     "start": 21.443,
+     "end": 21.652
     },
     {
      "w": "of",
-     "start": 21.292,
-     "end": 21.338
+     "start": 21.686,
+     "end": 21.733
     },
     {
      "w": "those",
-     "start": 21.397,
-     "end": 21.756
+     "start": 21.779,
+     "end": 22.209
     },
     {
      "w": "reached",
-     "start": 21.896,
-     "end": 22.221
+     "start": 22.371,
+     "end": 22.673
     },
     {
      "w": "the",
-     "start": 22.256,
-     "end": 22.325
+     "start": 22.696,
+     "end": 22.766
     },
     {
      "w": "nurse.",
-     "start": 22.383,
-     "end": 23.324
+     "start": 22.824,
+     "end": 23.834
     }
    ],
    "captions": [
     {
      "text": "An AI model writes each reminder, and code checks every word.",
      "start": 0.15,
-     "end": 4.69
+     "end": 4.782
     },
     {
      "text": "No dose, no drug name, no symptom advice,",
-     "start": 5.096,
-     "end": 8.498
+     "start": 5.142,
+     "end": 8.637
     },
     {
      "text": "and the signed safety lines are added by code, not the model.",
-     "start": 8.753,
-     "end": 12.886
+     "start": 8.939,
+     "end": 13.397
     },
     {
      "text": "We then attacked it 40 times with attacks it had never seen.",
-     "start": 13.443,
-     "end": 17.507
+     "start": 13.954,
+     "end": 17.402
     },
     {
-     "text": "The model broke a rule 21 times.",
-     "start": 17.914,
-     "end": 20.758
+     "text": "The model broke a rule 24 times.",
+     "start": 17.96,
+     "end": 21.036
     },
     {
      "text": "None of those reached the nurse.",
-     "start": 21.06,
-     "end": 23.324
+     "start": 21.443,
+     "end": 23.834
     }
    ]
   },
   {
    "id": "s7",
-   "from": 3725,
+   "from": 3821,
    "frames": 393,
    "voiceAt": 0.15,
    "audio": "v5/vo/s7.mp3",
@@ -1790,8 +1810,8 @@
   },
   {
    "id": "s8",
-   "from": 4118,
-   "frames": 783,
+   "from": 4214,
+   "frames": 774,
    "voiceAt": 0.15,
    "audio": "v5/vo/s8.mp3",
    "audioSeconds": 23.917,
@@ -2142,8 +2162,8 @@
   },
   {
    "id": "s9",
-   "from": 4901,
-   "frames": 396,
+   "from": 4988,
+   "frames": 372,
    "voiceAt": 0.15,
    "audio": "v5/vo/s9.mp3",
    "audioSeconds": 9.613,
@@ -2955,13 +2975,13 @@
   "threshold": 35
  },
  "batch": {
-  "roster": 200,
-  "eligible": 111,
-  "passedGate": 111
+  "roster": 578,
+  "eligible": 39,
+  "passedGate": 21
  },
  "redTeam": {
   "n": 40,
-  "broke": 21,
+  "broke": 24,
   "reached": 0
  },
  "scored": {
@@ -2969,6 +2989,6 @@
   "time": "2026-11-23T10:56:30+01:00",
   "subject": "feat: score the locked nowcast once on untouched 2026 (Jan-Oct)"
  },
- "tests": 239,
+ "tests": 238,
  "demoUrl": "https://drahmed7887.github.io/hack-genhacks/"
 }

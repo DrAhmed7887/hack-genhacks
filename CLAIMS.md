@@ -42,20 +42,20 @@ Source: `NC` = `eval/results/nowcast_2026.json`, written once by `eval/nowcast.p
 | N9 | Yesterday's trap beats the forecast in all six city × species series in 2026 | README, film | `NC.per_cell[*].P0.csi > P2.csi` | true for 6 of 6 |
 | N10 | 2021–2025: trap 670 of 857, forecast 359 of 863 | README, demo | `BT.results[].day_rules.P0/P2` tp and tp+fn | 670/857, 359/863 |
 | N11 | One morning, Madrid grass, 5 May 2026: yesterday 104, forecast 19.5, measured 79 (threshold 35) | demo, film | recomputed by `eval/render_site.py` from `data/cache_2026/` and asserted | 104, 19.5, 79 |
-| N12 | 111 of 200 synthetic patients drafted for a grass alert | demo, film | `src/reminders.build_batch(patients, "grass")` | 111 |
+| N12 | 39 of 578 CDC NHANES hay-fever patients drafted for a grass alert | demo, film | `src/reminders.build_batch` (`data/patients.csv`, `"grass"`) | 39 |
 
 ## AI. AI layer (nurse copilot, reminder drafts, clinician Q&A)
 
-Source: `AI` = `eval/results/ai_layer.json` (written by `eval/ai_layer.py`, model Qwen 3.8 27B on RWTHgpt, prompt `rules/assistant_prompt.md`); run 1 in `eval/results/ai_layer_run1.json`. Synthetic patients only. Checked by `eval/verify_claims.py` (section AI) and `tests/test_site.py`.
+Source: `AI` = `eval/results/ai_layer.json` (written by `eval/ai_layer.py`, model `mistralai-mistral-small-4-119b (RWTHgpt, via rwth-ask)`, prompt `rules/assistant_prompt.md`, run on the `578`-patient de-identified CDC NHANES 2005–2006 cohort with SEQN IDs only and zero PHI). Historical `AI4` (`eval/results/ai_layer_run1.json`) and `AI7` record earlier Qwen development runs on the prior development roster, so `AI3`/`AI6` rule-break counts are not direct like-for-like model regressions against Run 1/2. Checked by `eval/verify_claims.py` (section AI) and `tests/test_site.py`.
 
 | # | Claim | Source key | Exact value |
 |---|---|---|---|
-| AI1 | 111 AI-written drafts, all 111 passed the code safety gate, 0 replaced by the template | `AI.draft_summary` | n 111, passed 111, fell back 0 |
-| AI2 | Batch ordered by risk: 9 asthma flag + moderate/severe, 58 asthma flag or moderate/severe, 44 mild | `AI.drafts[].tier` | 9 / 58 / 44 |
-| AI3 | Tuning red team (20 attacks × 2 patients = 40, run 3): the model broke a rule 12 times; 0 drafts with a rule break reached the nurse | `AI.red_team_summary` | 40, 12, 0 |
+| AI1 | 39 AI-written drafts: 21 passed the code safety gate, 18 replaced by the signed template | `AI.draft_summary` | n 39, passed 21, fell back 18 |
+| AI2 | Batch ordered by risk: 23 asthma flag + moderate/severe, 10 asthma flag or moderate/severe, 6 mild | `AI.drafts[].tier` | 23 / 10 / 6 |
+| AI3 | Tuning red team (20 attacks × 2 patients = 40): the model broke a rule 18 times; 0 drafts with a rule break reached the nurse | `AI.red_team_summary` | 40, 18, 0 |
 | AI4 | Run 1: 2 outputs passed the gate with an efficacy claim ("help prevent asthma attacks"); rule added, re-run | `eval/results/ai_layer_run1.json` re-checked with today's gate | 2 |
-| AI5 | Clinician Q&A: 12 questions; 3 symptom questions answered by the fixed safety reply without calling the model; 2 model answers withheld by the check | `AI.qa[].route`, `AI.qa[].violations` | 12, 3, 2 |
-| AI6 | Held-out red team (20 new attacks written after the last gate change, × 2 patients = 40): the model broke a rule 21 times; 0 reached the nurse | `AI.red_team_heldout_summary` | 40, 21, 0 |
+| AI5 | Clinician Q&A: 12 questions; 3 symptom questions answered by the fixed safety reply without calling the model; 0 model answers withheld by the check | `AI.qa[].route`, `AI.qa[].violations` | 12, 3, 0 |
+| AI6 | Held-out red team (20 new attacks written after the last gate change, × 2 patients = 40): the model broke a rule 24 times; 0 reached the nurse | `AI.red_team_heldout_summary` | 40, 24, 0 |
 | AI7 | Independent review of the run-2 gate found 25 bypasses; all 25 are in the fixed test set and rejected | `tests/test_message_guard.py` (`REVIEW_BYPASSES`) | 25 |
 
 > **Legacy sections (A–E, K).** These rows record the 2021–2025 backtest of the earlier rules, now superseded. Its totals (863 high days, six rules) are quoted only as background on the front page and in the Devpost draft. The full numbers appear only on pages and sections marked superseded (`demo/backtest.html`), in `docs/results_table.md` and in `eval/results/backtest.json`. The "Where it appears" column shows where each number appeared before the 23 Nov 2026 rebuild. The current headline is section N.
@@ -123,22 +123,22 @@ The Madrid confidence intervals are wide: olive `recall_ci95` = [0.000, 0.334], 
 
 The signed thresholds are single-centre published values. The newest large panel found none (`docs/DATA_PLAN.md` §2.6). They are for retrospective use, not clinical guidance.
 
-## F. Synthetic patients and reminder rules
+## F. Real CDC NHANES 2005–2006 patients and reminder rules
 
 | # | Claim | Where it appears | Source file and key path | Exact value | Command |
 |---|---|---|---|---|---|
-| F1 | N = 200 synthetic patients | `data/DATA_CARD.md`, `docs/DATA_PLAN.md` §3, demo (if shown) | `data/make_patients.py` → `N_PATIENTS`; `data/patients.csv` (header + 200 rows, IDs `P001` to `P200`) | 200 | `.venv/bin/pytest -q tests/test_make_patients.py`; `wc -l data/patients.csv` prints 201 (header + 200) |
-| F2 | Seed 20261120, deterministic | `data/DATA_CARD.md` | `data/make_patients.py` → `SEED` | 20261120; same seed gives identical output | `.venv/bin/pytest -q tests/test_make_patients.py` |
-| F3 | No real patient data; IDs only, no names or contact data | `data/DATA_CARD.md`, README | `data/patients.csv` header: `patient_id,age_band,sensitised_to,current_med_on_file,severity,asthma_flag,language` | 7 columns, none identifying | `head -1 data/patients.csv` |
-| F4 | Sensitisation, medicine, asthma shares are assumptions, not epidemiology | `data/DATA_CARD.md` §5 | `data/DATA_CARD.md` §5 table | grass 70%, olive 45%, birch 5%; asthma 25%, labelled "illustrative" | read the file |
+| F1 | N = 578 CDC NHANES 2005–2006 hay-fever participants (`AGE >= 6`, `AGQ010 == 1`, complete grass/birch IgE) | `data/DATA_CARD.md`, `demo/index.html` | `data/make_patients.py` → `N_PATIENTS`; `data/patients.csv` (header + 578 rows, IDs `NH-31133` to `NH-41467`) | 578 | `.venv/bin/python data/make_patients.py && .venv/bin/pytest -q tests/test_make_patients.py` |
+| F2 | Deterministic offline build from cached public CDC NHANES tables | `data/DATA_CARD.md` | `data/cache/nhanes_2005_2006_hayfever_cohort.csv` + `data/make_patients.py` | deterministic byte-identical output | `.venv/bin/pytest -q tests/test_make_patients.py` |
+| F3 | De-identified public SEQN respondent IDs only (`NH-<SEQN>`), zero PHI, no names or contact data | `data/DATA_CARD.md`, README | `data/patients.csv` header: `patient_id,age_band,sensitised_to,current_med_on_file,severity,asthma_flag,language` | 7 columns, zero PHI | `head -1 data/patients.csv` |
+| F4 | ImmunoCAP sIgE `>= 0.35 kU/L` (`LBXIG5`/`LBXIG2` grass, `LBXIT3` birch) and verified `RXQ_RX_D` Rx containers (olive not assayed in US NHANES) | `data/DATA_CARD.md` §6 | `data/cache/nhanes_2005_2006_manifest.json` | grass eligible 39/578, birch 24/578, olive 0/578 | `.venv/bin/pytest -q tests/test_make_patients.py` |
 | F5 | Eligible only if sensitised to the alerting species and a medicine is on file | `docs/DATA_PLAN.md` §3 rule 1 | `src/reminders.py` → `is_eligible` | rule | `.venv/bin/pytest -q tests/test_reminders.py` (the `test_rule1_*` tests) |
 | F6 | Message names only the medicine class already on file | `docs/DATA_PLAN.md` §3 rule 2 | `src/reminders.py` → `MED_CLASS_LABELS`, `build_message` | rule | same (`test_rule2_*`) |
 | F7 | Fixed safety line on every message; asthma line only for asthma-flag patients | `docs/DATA_PLAN.md` §3 rule 3 | `src/reminders.py` → `SAFETY_LINE`, `ASTHMA_LINE`, `build_message` | rule | same (`test_rule3_*`) |
 | F8 | Nurse approves every batch; nothing is sent | README disclaimers, DEVPOST, video | `src/reminders.py` has `build_batch` (a draft list) and no send, network or persistence code. | design fact | `grep -nE "requests\|urllib\|smtplib\|socket\|http" src/reminders.py` prints nothing (exit 1) |
-| F9 | Demo nurse console: roster 200, "Sent Externally" 0, approve freezes the batch and appends an in-page audit line, nothing leaves the page | `demo/backtest.html` section `#nurse-console` (`#kpi-roster`, `#kpi-sent`, `#approve-batch-btn`, `#nurse-audit-log`, `#nurse-trigger-rule`). Re-checked 22 Nov 2026: all seven DOM ids are present once each in the final HTML. | draft data in the generated `#nurse-console-data` JSON block written by `eval/render_demo.py`; `kpi-sent` is set to the constant 0 in the page script; vanilla JS over embedded JSON, no network call | roster 200 (see F1), sent 0. Replay drafts/blocked (from `console_data()`): Valencia control 0/200, Madrid grass 111/89, Basel birch 17/183, olive simulation 67/133. Trigger badge `#nurse-trigger-rule` = "Trigger: API forecast (P2)" | `.venv/bin/python eval/render_demo.py --check`; `.venv/bin/pytest -q tests/test_demo.py` |
-| F10 | Valencia replay in the console is "model output, demo replay only, never scored against ground truth" | `demo/backtest.html` `#nurse-caveat` | same rule as `docs/DATA_PLAN.md` §2.5 rule 4 | caption text; `#nurse-caveat` also says "Demo mode: approval is logged in-page; nothing leaves the browser." (re-checked 22 Nov 2026) | read the page |
+| F9 | Demo nurse console: roster 578, "Sent Externally" 0, approve freezes the batch and appends an in-page audit line, nothing leaves the page | `demo/backtest.html` section `#nurse-console` (`#kpi-roster`, `#kpi-sent`, `#approve-batch-btn`, `#nurse-audit-log`, `#nurse-trigger-rule`). | draft data in the generated `#nurse-console-data` JSON block written by `eval/render_demo.py`; `kpi-sent` is set to the constant 0 in the page script; vanilla JS over embedded JSON, no network call | roster 578 (see F1), sent 0. Replay drafts/blocked (from `eval/render_demo.py`): Valencia control 0/578, Madrid grass 39/539, Basel birch 24/554, olive simulation 0/578 (not assayed in NHANES). Trigger badge `#nurse-trigger-rule` = "Trigger: API forecast (P2)" | `.venv/bin/python eval/render_demo.py --check`; `.venv/bin/pytest -q tests/test_demo.py` |
+| F10 | Valencia replay in the console is "model output, demo replay only, never scored against ground truth" | `demo/backtest.html` `#nurse-caveat` | same rule as `docs/DATA_PLAN.md` §2.5 rule 4 | caption text; `#nurse-caveat` also says "Demo mode: approval is logged in-page; nothing leaves the browser." | read the page |
 
-F8 caveat: the module docstring says the approve step and the `approved_at` log are outside the scope of `src/reminders.py`. "0 external sends" is true because no code path in the repo can send. `#kpi-sent` is a fixed 0, not a measured count of sends. F9 and F10 were re-checked against the final HTML on 22 Nov 2026 (DOM ids present, `render_demo.py --check` exit 0, 91 passed).
+F8 caveat: the module docstring says the approve step and the `approved_at` log are outside the scope of `src/reminders.py`. "0 external sends" is true because no code path in the repo can send. `#kpi-sent` is a fixed 0, not a measured count of sends.
 
 ## G. Video claims (V5 film, `video/remotion/src/v5/`)
 
@@ -146,10 +146,10 @@ Every number in the film is read at build time from `video/remotion/src/v5/data.
 
 | # | Claim | Source | Command |
 |---|---|---|---|
-| G1 | Duration 2:57 (176.6 s) | `ffprobe` on the mastered file | `ffprobe -v error -show_entries format=duration -of csv=p=0 video/remotion/out/PollenPlan_GenHacks_v5_FINAL_1080p.mp4` |
+| G1 | Duration 2:59 (178.7 s) | `ffprobe` on the mastered file | `ffprobe -v error -show_entries format=duration -of csv=p=0 video/remotion/out/PollenPlan_GenHacks_v5_FINAL_1080p.mp4` |
 | G2 | Pooled 2026 counts on screen (215 events, trap 164 hits, CAMS 70 hits) | rows N1–N4 above; `video/remotion/src/v5/data.json` → `pooled` | `python3 video/v5/build_data.py` then read `video/remotion/src/v5/data.json` |
-| G3 | Nurse batch 111 of 200, all 111 passed the safety gate; held-out red team 40 attacks, 21 rule breaks, 0 reached the nurse | rows AI1, AI6 above; `video/remotion/src/v5/data.json` → `batch`, `redTeam` | as G2 |
-| G4 | "239 tests" | `pytest -q` summary line, run by `video/v5/build_data.py` | `.venv/bin/python -m pytest -q tests` |
+| G3 | Nurse batch 39 of 578 CDC NHANES hay-fever patients, 21 passed safety gate (18 fell back to template, 0 unsafe); held-out red team 40 attacks, 24 rule breaks, 0 reached the nurse | rows AI1, AI6 above; `video/remotion/src/v5/data.json` → `batch`, `redTeam` | as G2 |
+| G4 | "238 tests" | `pytest -q` summary line, run by `video/v5/build_data.py` | `.venv/bin/python -m pytest -q tests` |
 | G5 | Loudness −16 LUFS integrated, true peak below −1.5 dBTP | `ebur128` on the mastered file | `ffmpeg -i <mp4> -af ebur128=peak=true -f null -` |
 | G6 | AI-generated voice, music and b-roll are labelled; product screens and charts are not AI-generated | `video/v5/README.md` "AI-generated material in the film" | read the file |
 
@@ -159,7 +159,7 @@ Every number in the film is read at build time from `video/remotion/src/v5/data.
 |---|---|---|
 | H1 | **No "beats the API" claim.** R1 recall 0.410 is below P2 recall 0.416 and R2 versus C0 has a CI that includes zero. | `kill_check.check2_beats_api.passed_beats_api_claim` = `false`; `docs/DATA_PLAN.md` §2.5 rule 2 |
 | H2 | **No Valencia accuracy claim.** Valencia has no observed counts, is never scored, and appears in no result row. Any Valencia view is "model output, not validated against counts in this city". | `BT` → `valencia_scored` = `false`; `docs/DATA_PLAN.md` §2.5 rule 4; `data/cache/open_meteo_valencia_demo.csv` is demo input only |
-| H3 | **No patient outcome claim.** The backtest measures alert quality against observed pollen days. It does not measure fewer symptoms, fewer visits or better adherence. The patients are synthetic. | `docs/DATA_PLAN.md` §2.6 last bullet; `data/DATA_CARD.md` §5 |
+| H3 | **No patient outcome claim.** The backtest measures alert quality against observed pollen days. It does not measure fewer symptoms, fewer visits or better adherence. Patient records come from de-identified CDC NHANES 2005–2006 (`data/DATA_CARD.md` §6); no patient outcomes were measured. | `docs/DATA_PLAN.md` §2.6 last bullet; `data/DATA_CARD.md` §5–6 |
 | H4 | **No ARIA day recommendation.** The project does not recommend when to start treatment under the ARIA guideline and does not name any new drug or dose. Messages repeat a medicine class already on file. Thresholds are signed single-centre research values. | `rules/thresholds.json` → `note` ("retrospective use only"); `src/reminders.py` rule 2 |
 | H5 | Not a clinical tool or medical device. | README disclaimers, demo disclaimers |
 | H6 | R2's +2.88-day lead is not evidence of better skill. It comes from reading D..D+3 of archived forecast values. A live forecast may do worse. | row D3 |

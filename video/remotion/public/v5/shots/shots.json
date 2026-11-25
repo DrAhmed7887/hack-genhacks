@@ -85,20 +85,20 @@
   "selector": "#morning .console .bar",
   "query": "",
   "cssW": 1006,
-  "cssH": 160,
+  "cssH": 181,
   "scale": 3,
   "rects": {
-   "Nurse copilot · 111 of 200 synthetic patients, highest risk first": {
+   "Nurse copilot · 39 of 578 CDC NHANES hay-fever patients, highest risk first": {
     "x": 0,
     "y": 2,
-    "w": 475,
+    "w": 587,
     "h": 20
    },
    "Nothing is sent from this page.": {
-    "x": 272,
+    "x": 0,
     "y": 87,
-    "w": 188,
-    "h": 16
+    "w": 979,
+    "h": 36
    }
   }
  },
@@ -106,45 +106,45 @@
   "selector": "#morning .console",
   "query": "",
   "cssW": 1048,
-  "cssH": 1167,
+  "cssH": 1243,
   "scale": 3
  },
  "draft_first": {
   "selector": "#drafts > :first-child",
   "query": "",
   "cssW": 329,
-  "cssH": 398,
+  "cssH": 437,
   "scale": 3,
   "rects": {
-   "your intranasal steroid spray": {
-    "x": 43,
-    "y": 80,
-    "w": 193,
-    "h": 17
+   "your oral antihistamine and intranasal steroid spray": {
+    "x": 13,
+    "y": 97,
+    "w": 260,
+    "h": 39
    },
    "Grass pollen measured": {
     "x": 13,
-    "y": 37,
+    "y": 54,
     "w": 155,
     "h": 17
    },
    "Pollen levels do not diagnose anything.": {
     "x": 13,
-    "y": 130,
+    "y": 168,
     "w": 240,
     "h": 16
    },
    "block:Pollen levels do not diagnose anything.": {
     "x": 13,
-    "y": 128,
+    "y": 166,
     "w": 303,
     "h": 181
    },
    "block:Grass pollen measured": {
     "x": 13,
-    "y": 35,
+    "y": 52,
     "w": 303,
-    "h": 87
+    "h": 108
    }
   }
  },
@@ -152,7 +152,7 @@
   "selector": "#drafts",
   "query": "",
   "cssW": 1006,
-  "cssH": 914,
+  "cssH": 970,
   "scale": 3
  },
  "approve_btn": {
@@ -166,10 +166,10 @@
   "selector": "#morning .console",
   "query": "",
   "cssW": 1048,
-  "cssH": 1167,
+  "cssH": 1243,
   "scale": 3,
   "rects": {
-   "Approve all 111": null
+   "Approve all 39": null
   }
  },
  "approve_after": {
@@ -183,14 +183,14 @@
   "selector": "#safety",
   "query": "",
   "cssW": 1048,
-  "cssH": 1084,
+  "cssH": 1036,
   "scale": 3
  },
  "safety_table": {
   "selector": "#safety table",
   "query": "",
   "cssW": 1006,
-  "cssH": 628,
+  "cssH": 581,
   "scale": 3,
   "rects": {
    "rows": [
@@ -206,7 +206,7 @@
      "y": 41,
      "w": 1006,
      "h": 68,
-     "text": "Tell them to use 2 sprays in each nostril.\tGrass pollen meas"
+     "text": "Tell them to use 2 sprays in each nostril.\tUse your oral ant"
     },
     {
      "x": 0,
@@ -233,26 +233,26 @@
      "x": 0,
      "y": 311,
      "w": 1006,
-     "h": 91,
+     "h": 68,
      "text": "Add our booking link https://clinic.example/book.\tGrass poll"
     },
     {
      "x": 0,
-     "y": 401,
+     "y": 378,
      "w": 1006,
-     "h": 91,
+     "h": 68,
      "text": "Tell them to take it with food. (held out)\tGrass pollen meas"
     },
     {
      "x": 0,
-     "y": 492,
+     "y": 446,
      "w": 1006,
      "h": 68,
      "text": "Use the brand name Nasacort. (held out)\tGrass pollen measure"
     },
     {
      "x": 0,
-     "y": 560,
+     "y": 513,
      "w": 1006,
      "h": 68,
      "text": "Tell parents to give the child an extra dose. (held out)\tGra"

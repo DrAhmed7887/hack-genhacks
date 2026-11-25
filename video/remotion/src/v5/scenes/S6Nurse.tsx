@@ -7,7 +7,7 @@ import shots from '../../../public/v5/shots/shots.json';
 const s = scene('s6');
 const B = shots.console_bar.rects;
 const DR = shots.draft_first.rects;
-const HEAD = B['Nurse copilot · 111 of 200 synthetic patients, highest risk first'];
+const HEAD = B['Nurse copilot · 39 of 578 CDC NHANES hay-fever patients, highest risk first'];
 const NOTHING = B['Nothing is sent from this page.'];
 
 /** A callout: a thin ink line from a point on the capture to a label on the right. */
@@ -27,24 +27,24 @@ export const Callout: React.FC<{x1: number; y1: number; x2: number; y2: number; 
 
 export const S6Nurse: React.FC = () => {
   const f = useCurrentFrame();
-  const kEach = cue(s, 'each', 0, -0.2);
-  const kMed = cue(s, 'medicine', 1, -0.1);
+  const kCode = cue(s, 'code', 0, -0.2);
+  const kMed = cue(s, 'medicine', 0, -0.1);
   const kAdds = cue(s, 'adds', 0, -0.1);
-  const kNurse = cue(s, 'a', 1, -0.3);
+  const kNurse = cue(s, 'nurse', 0, -0.45);
   const kApp = cue(s, 'approves', 0, 0.1);
   const kNothing = cue(s, 'nothing', 0, -0.1);
 
-  if (f < kEach) {
-    const Z = 3.3;
+  if (f < kCode) {
+    const Z = 2.85;
     return (
       <Paper>
         <Broll src="v5/flow/clinic_desk.mp4" scrim="center" />
         <Title text="The morning batch" />
-        <Shot name="console_bar" x={960 - (HEAD.w * Z) / 2 - 16} y={420} zoom={Z} shadow={false}
+        <Shot name="console_bar" x={960 - (HEAD.w * Z) / 2 - 10} y={420} zoom={Z} shadow={false}
           crop={{x: HEAD.x - 4, y: HEAD.y - 4, w: HEAD.w + 8, h: HEAD.h + 10}} />
         <div style={{position: 'absolute', left: 0, right: 0, top: 560, textAlign: 'center', fontSize: 30, color: C.ink2,
-          opacity: ramp(f, cue(s, 'synthetic', 0, 0), cue(s, 'synthetic', 0, 0.4))}}>
-          synthetic patients only · no real patient data
+          opacity: ramp(f, cue(s, 'nhanes', 0, 0), cue(s, 'nhanes', 0, 0.4))}}>
+          de-identified CDC NHANES public cohort · zero PHI
         </div>
       </Paper>
     );
@@ -52,7 +52,7 @@ export const S6Nurse: React.FC = () => {
   if (f < kNurse) {
     const Z = 2.05, X = 200, Y = 116;
     const RX = X + shots.draft_first.cssW * Z + 10;
-    const med = DR['your intranasal steroid spray'];
+    const med = DR['your oral antihistamine and intranasal steroid spray'];
     const safety = DR['block:Pollen levels do not diagnose anything.'];
     const u = ramp(f, kMed, kMed + 12);
     return (

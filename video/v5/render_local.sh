@@ -11,7 +11,7 @@ for ((a=0; a<TOTAL; a+=1000)); do
   b=$(( a+999 < TOTAL-1 ? a+999 : TOTAL-1 ))
   f=out/chunks_v5/c_$(printf %05d $a).mp4
   if [ ! -s "$f" ]; then
-    npx remotion render src/v5/index.ts FilmV5 "$f" --frames=$a-$b --muted --concurrency=2 --crf=16 \
+    npx remotion render src/v5/index.ts FilmV5 "$f" --frames=$a-$b --muted --concurrency=4 --crf=16 \
       --browser-executable="$CHROME" --log=error
   fi
   echo "file '$(basename "$f")'" >> out/chunks_v5/list.txt
