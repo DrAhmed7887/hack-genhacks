@@ -144,3 +144,14 @@ def test_control_characters_are_rejected():
 
 def test_template_numbers_still_pass():
     assert g.check_opening(g.template_opening(F), F) == []
+
+
+def test_long_run_of_allowed_numbers_is_fast():
+    import time
+    t0 = time.perf_counter()
+    assert g.check_opening(g.template_opening(F) + " " + "104 " * 25000, F)
+    assert time.perf_counter() - t0 < 2.0
+
+
+def test_next_line_character_is_rejected():
+    assert "control_character" in g.check_opening(g.template_opening(F) + "\x85", F)

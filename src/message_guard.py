@@ -108,7 +108,7 @@ def check_opening(text: str, f: Facts) -> list[str]:
         return ["empty"]
     if re.search(r"[^\x00-\x7f]", t):
         v.append("non_ascii_character")
-    if re.search(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]", text):
+    if re.search(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f\x85]", text):
         v.append("control_character")  # NUL, ESC etc. survive NFKC and are ASCII
     allowed = ALLOWED_WORDS | {f.species} | set(re.findall(r"[a-z]+", f.medicine_class.lower()))
     for w in re.findall(r"[a-z]+(?:'[a-z]+)?", low):
@@ -136,7 +136,7 @@ def check_opening(text: str, f: Facts) -> list[str]:
         if n.replace(",", ".") not in nums:
             v.append(f"unexplained_number:{n}")
         elif not (re.match(r"\s*grainsunit\b", t[m.end():], re.I)
-                  or re.search(r"\b(?:line|level|threshold)(?:\s+of)?\s*$", t[:m.start()], re.I)):
+                  or re.search(r"\b(?:line|level|threshold)(?:\s+of)?\s*$", t[max(0, m.start() - 16):m.start()], re.I)):
             v.append(f"number_without_unit:{n}")  # a bare "Use 104." reads like a dose
     if SAFETY_LINE.lower()[:30] in low or DIRECTIVE.lower()[:30] in low:
         v.append("model_wrote_signed_line")  # code appends signed lines; the model must not
