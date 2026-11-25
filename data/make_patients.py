@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """PollenPlan CDC NHANES 2005-2006 allergy cohort builder.
 
-Replaces illustrative synthetic rows with real, de-identified public-domain
+Replaces illustrative synthetic rows with de-identified, public-domain
 CDC NCHS NHANES 2005-2006 participants (zero PHI, SEQN respondent IDs only):
 
   - Cohort: RIDAGEYR >= 6, doctor/health-professional confirmed hay fever
@@ -285,7 +285,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Cached {m['n_rows']} NHANES participants to {CACHE_CSV}")
     patients = generate_patients()
     write_patients(patients)
-    print(f"Wrote {len(patients)} CDC NHANES patients to {OUT_PATH}")
+    print(f"Wrote {len(patients)} CDC NHANES participants to {OUT_PATH}")
     return 0
 
 

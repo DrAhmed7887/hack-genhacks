@@ -224,7 +224,7 @@ def city_fallback_data(featured_date: str) -> list[dict]:
 
 
 def guard_sandbox_data(featured: dict) -> dict:
-    """Real de-identified CDC NHANES allergy patients + exact src/message_guard.py spec for live sandbox."""
+    """Public de-identified CDC NHANES survey participants with hay fever + exact src/message_guard.py spec for live sandbox."""
     sys.path.insert(0, str(ROOT / "data"))
     import make_patients as mp  # noqa: E402
     with (ROOT / "data" / "patients.csv").open() as fh:
@@ -597,10 +597,10 @@ footer {{ padding:40px 0 60px; color:var(--muted); font-size:13px; }}
     </div>
     <div class="card sandbox" id="guard-sandbox">
       <h3>Live AI Model &amp; Allowlist Guard (CDC NHANES)</h3>
-      <p class="src" style="margin-bottom:8px">Pick a real CDC NHANES hay-fever patient (with verified ImmunoCAP IgE &amp; Rx container), generate with live in-browser <code>Qwen2.5-0.5B-Instruct</code> or click an attack pill, and inspect every blocked token.</p>
+      <p class="src" style="margin-bottom:8px">Pick a CDC NHANES survey participant with hay fever (with verified ImmunoCAP IgE &amp; Rx container), generate with live in-browser <code>Qwen2.5-0.5B-Instruct</code> or click an attack pill, and inspect every blocked token.</p>
       <div class="guard-patient-row">
-        <label for="guard-patient" class="src"><b>CDC NHANES patient:</b></label>
-        <select id="guard-patient" aria-label="CDC NHANES patient"></select>
+        <label for="guard-patient" class="src"><b>CDC NHANES participant:</b></label>
+        <select id="guard-patient" aria-label="CDC NHANES participant"></select>
       </div>
       <div class="guard-meta" id="guard-meta"></div>
       <div class="llm-bar">
@@ -639,7 +639,7 @@ footer {{ padding:40px 0 60px; color:var(--muted); font-size:13px; }}
     <div class="step"><div class="n">What the trap measured today</div><div class="v">{f_o}</div><div>grains/m³ grass</div><span class="verdict yes">a high-pollen day</span></div>
   </div>
   <div class="card console">
-    <div class="bar"><div><b>Nurse copilot · {eligible} of {roster} CDC NHANES hay-fever patients, highest risk first</b><div class="src">Eligible = sensitised to {f_sp} (ImmunoCAP IgE ≥ 0.35 kU/L) and a rhinitis prescription container verified in CDC NHANES 2005–2006 (RXQ_RX_D). Order: asthma flag + moderate/severe rhinitis first ({t1}), then asthma flag or moderate/severe ({t2}), then mild ({t3}). An AI model writes each opening. Code accepts it only if every word is on a short approved list: the species, the two signed numbers, the medicine class on file, and plain words such as "pollen, measured, yesterday, above, alert line, use, today, before you go out". Anything else is replaced by the signed template. Code appends the signed safety lines itself. Nothing is sent from this page.</div></div><button class="approve" id="approve">Approve all {eligible}</button></div>
+    <div class="bar"><div><b>Nurse copilot · {eligible} of {roster} CDC NHANES hay-fever participants, highest risk first</b><div class="src">Eligible = sensitised to {f_sp} (ImmunoCAP IgE ≥ 0.35 kU/L) and a rhinitis prescription container verified in CDC NHANES 2005–2006 (RXQ_RX_D). Order: asthma flag + moderate/severe rhinitis first ({t1}), then asthma flag or moderate/severe ({t2}), then mild ({t3}). An AI model writes each opening. Code accepts it only if every word is on a short approved list: the species, the two signed numbers, the medicine class on file, and plain words such as "pollen, measured, yesterday, above, alert line, use, today, before you go out". Anything else is replaced by the signed template. Code appends the signed safety lines itself. Nothing is sent from this page.</div></div><button class="approve" id="approve">Approve all {eligible}</button></div>
     <div class="gate"><span class="chip pass">{ai_pass} AI drafts passed the safety gate</span> <span class="chip neutral">{ai_fb} replaced by the signed template</span></div>
     <div class="drafts" id="drafts"></div>
   </div>

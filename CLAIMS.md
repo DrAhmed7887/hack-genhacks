@@ -42,7 +42,7 @@ Source: `NC` = `eval/results/nowcast_2026.json`, written once by `eval/nowcast.p
 | N9 | Yesterday's trap beats the forecast in all six city × species series in 2026 | README, film | `NC.per_cell[*].P0.csi > P2.csi` | true for 6 of 6 |
 | N10 | 2021–2025: trap 670 of 857, forecast 359 of 863 | README, demo | `BT.results[].day_rules.P0/P2` tp and tp+fn | 670/857, 359/863 |
 | N11 | One morning, Madrid grass, 5 May 2026: yesterday 104, forecast 19.5, measured 79 (threshold 35) | demo, film | recomputed by `eval/render_site.py` from `data/cache_2026/` and asserted | 104, 19.5, 79 |
-| N12 | 39 of 578 CDC NHANES hay-fever patients drafted for a grass alert | demo, film | `src/reminders.build_batch` (`data/patients.csv`, `"grass"`) | 39 |
+| N12 | 39 of 578 CDC NHANES hay-fever participants drafted for a grass alert | demo, film | `src/reminders.build_batch` (`data/patients.csv`, `"grass"`) | 39 |
 
 ## AI. AI layer (nurse copilot, reminder drafts, clinician Q&A)
 
@@ -123,7 +123,7 @@ The Madrid confidence intervals are wide: olive `recall_ci95` = [0.000, 0.334], 
 
 The signed thresholds are single-centre published values. The newest large panel found none (`docs/DATA_PLAN.md` §2.6). They are for retrospective use, not clinical guidance.
 
-## F. Real CDC NHANES 2005–2006 patients and reminder rules
+## F. Public CDC NHANES 2005–2006 survey participants and reminder rules
 
 | # | Claim | Where it appears | Source file and key path | Exact value | Command |
 |---|---|---|---|---|---|
@@ -148,7 +148,7 @@ Every number in the film is read at build time from `video/remotion/src/v5/data.
 |---|---|---|---|
 | G1 | Duration 2:59 (178.7 s) | `ffprobe` on the mastered file | `ffprobe -v error -show_entries format=duration -of csv=p=0 video/remotion/out/PollenPlan_GenHacks_v5_FINAL_1080p.mp4` |
 | G2 | Pooled 2026 counts on screen (215 events, trap 164 hits, CAMS 70 hits) | rows N1–N4 above; `video/remotion/src/v5/data.json` → `pooled` | `python3 video/v5/build_data.py` then read `video/remotion/src/v5/data.json` |
-| G3 | Nurse batch 39 of 578 CDC NHANES hay-fever patients, 21 passed safety gate (18 fell back to template, 0 unsafe); held-out red team 40 attacks, 24 rule breaks, 0 reached the nurse | rows AI1, AI6 above; `video/remotion/src/v5/data.json` → `batch`, `redTeam` | as G2 |
+| G3 | Nurse batch 39 of 578 CDC NHANES hay-fever participants, 21 passed safety gate (18 fell back to template, 0 unsafe); held-out red team 40 attacks, 24 rule breaks, 0 reached the nurse | rows AI1, AI6 above; `video/remotion/src/v5/data.json` → `batch`, `redTeam` | as G2 |
 | G4 | "238 tests" | `pytest -q` summary line, run by `video/v5/build_data.py` | `.venv/bin/python -m pytest -q tests` |
 | G5 | Loudness −16 LUFS integrated, true peak below −1.5 dBTP | `ebur128` on the mastered file | `ffmpeg -i <mp4> -af ebur128=peak=true -f null -` |
 | G6 | AI-generated voice, music and b-roll are labelled; product screens and charts are not AI-generated | `video/v5/README.md` "AI-generated material in the film" | read the file |
@@ -195,6 +195,6 @@ Not claimed: N1 is a negative result (worse than the calendar rule out-of-sample
 | J1 | Observed Madrid: Comunidad de Madrid, CC BY (exact CC version not stated by the publisher) | `data/DATA_CARD.md` §3, `docs/DATA_PLAN.md` §5 | `data/cache/madrid_facf_daily.csv` (2,922 rows) |
 | J2 | Observed Basel and Zurich: MeteoSwiss, CC-BY, daily mean 6 UTC to 6 UTC | `data/DATA_CARD.md` §2 | `data/cache/meteoswiss_pbs_daily.csv` (1,574 rows), `data/cache/meteoswiss_pzh_daily.csv` (1,612 rows) |
 | J3 | Modelled: Open-Meteo Air Quality API, CAMS ENSEMBLE, CC BY 4.0, free tier non-commercial | `data/DATA_CARD.md` §1 | `data/cache/open_meteo_*.csv` (43,824 hourly rows each) |
-| J4 | Never used: the Taia unpublished table, any real patient data | repo rules, `data/DATA_CARD.md` | `ls data/cache` lists the seven files above plus eight NASA files (`nasa_power_*`, `nasa_modis_*`) |
+| J4 | Never used: the Taia unpublished table, any clinic or hospital patient records (the NHANES rows are public, de-identified survey participants) | repo rules, `data/DATA_CARD.md` | `ls data/cache` lists the seven files above plus eight NASA files (`nasa_power_*`, `nasa_modis_*`) |
 | J6 | NASA POWER (public domain, NASA LaRC POWER Project) and ORNL DAAC MODIS MOD13Q1 (NASA LP DAAC, open data) | `data/DATA_CARD.md` §5 | `data/cache/nasa_*.csv` |
 | J5 | The backtest reads only `data/cache/`, no network | `data/DATA_CARD.md` §4 | `.venv/bin/python eval/backtest.py` works offline |

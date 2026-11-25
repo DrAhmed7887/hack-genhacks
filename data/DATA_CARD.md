@@ -212,7 +212,7 @@ Added 22 Nov 2026 for the multi-sensor backtest (rules N1, N2 in
 | `nasa_power_<city>.csv` (4 files) | 1,826 | date + 8 POWER fields | daily 2021-2025 |
 | `nasa_modis_<city>.csv` (4 files) | see below | date, modis_date, ndvi | 16-day composites, 2020-12..2025-12 |
 
-## 6. Real public-domain CDC NHANES 2005–2006 allergy cohort (`data/patients.csv`)
+## 6. Public-domain CDC NHANES 2005–2006 allergy cohort (survey participants) (`data/patients.csv`)
 
 Built by `data/make_patients.py` from public-domain **CDC NCHS NHANES 2005–2006**
 examination, laboratory, and prescription files (`DEMO_D`, `AL_IGE_D`, `AGQ_D`,
