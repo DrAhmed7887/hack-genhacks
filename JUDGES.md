@@ -2,7 +2,7 @@
 
 GenHacks (**Healthcare & Environmental**) · **Live interactive workbench (no account):** <https://drahmed7887.github.io/hack-genhacks/> · **Code:** <https://github.com/DrAhmed7887/hack-genhacks>
 
-**One-line pitch:** On the untouched 2026 pollen season (1,706 city-days; Madrid, Basel, Zürich), **yesterday's local trap count** flagged **164 of 215 high-pollen days (76.3%)** versus **70 (32.6%)** for Europe's CAMS forecast (+0.332 CSI, 95% CI 0.203–0.457), paired with **578 real CDC NHANES allergy patients** and an allowlist-gated nurse console.
+**One-line pitch:** On the untouched 2026 pollen season (1,706 city-days; Madrid, Basel, Zürich), **yesterday's local trap count** flagged **164 of 215 high-pollen days (76.3%)** versus **70 (32.6%)** for Europe's CAMS forecast (+0.332 CSI, 95% CI 0.203–0.457), paired with **578 de-identified CDC NHANES survey participants with hay fever** and an allowlist-gated nurse console.
 
 ## Judging Criteria Evidence
 

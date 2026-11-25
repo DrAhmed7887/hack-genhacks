@@ -37,7 +37,7 @@ Yesterday's trap beats the forecast in all six city × species series in 2026. I
 
 ## AI layer: helps the nurse, never decides
 
-- **Nurse copilot:** the batch uses **578 real de-identified public CDC NHANES 2005–2006 hay-fever patients** (`data/patients.csv`, ImmunoCAP IgE ≥ 0.35 kU/L and verified `RXQ_RX_D` prescriptions; 39 eligible for grass). Ordered by risk: asthma flag and moderate/severe rhinitis first (23), then asthma flag or moderate/severe (10), then mild (6).
+- **Nurse copilot:** the batch uses **578 public, de-identified CDC NHANES 2005–2006 survey participants with hay fever** (a stand-in clinic roster, not clinic patients) (`data/patients.csv`, ImmunoCAP IgE ≥ 0.35 kU/L and verified `RXQ_RX_D` prescriptions; 39 eligible for grass). Ordered by risk: asthma flag and moderate/severe rhinitis first (23), then asthma flag or moderate/severe (10), then mild (6).
 - **Reminder drafts & live browser model:** Mistral Small 4 119B via RWTHgpt (`eval/ai_layer.py`) drafted openings for all 39 eligible patients (21 passed the strict allowlist gate, 18 caught for phrasing drift and safely replaced by the signed template, 0 unsafe drafts sent). Inside the live web workbench (`#workbench`), judges can also run **`Qwen2.5-0.5B-Instruct`** on-demand in WebGPU/WASM (`~350 MB` first load from jsDelivr CDN, checked by an in-browser JS mirror of `src/message_guard.py`) alongside live `F1`/`F2` logistic weights (`5c45eaf`; locked on Madrid/Basel/Zürich, illustrative out-of-domain elsewhere).
 - **Red team:** see `CLAIMS.md` §AI for every number. Tuning set (20 attacks × 2 patients = 40): 18 model rule breaks, 0 reached the nurse. Held-out set (20 unseen attacks × 2 = 40): 24 model rule breaks, **0** reached the nurse. Independent review caught 25 earlier bypasses (now locked in `tests/test_message_guard.py`).
 - **Clinician Q&A:** 12 pre-written questions; 3 symptom questions were routed to the fixed safety line without calling the model, and all 9 model answers passed groundedness checks (`0` withheld).
@@ -89,7 +89,7 @@ make test                       # the test suite
 python -m http.server 8000 -d demo       # then open http://localhost:8000
 ```
 
-`make all` re-fetches the open data, rebuilds the CDC NHANES patient table from committed extracts, and re-runs the tests and the backtest. The live page is deployed from `demo/` by `.github/workflows/deploy-pages.yml`.
+`make all` re-fetches the open data, rebuilds the CDC NHANES participant table from committed extracts, and re-runs the tests and the backtest. The live page is deployed from `demo/` by `.github/workflows/deploy-pages.yml`.
 
 ## Earlier work: the 2021–2025 backtest
 
