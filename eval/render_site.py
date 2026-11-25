@@ -89,6 +89,7 @@ def site_data() -> dict:
     assert totals == {"high": p["P0"]["n_events"], "p0": p["P0"]["tp"], "p2": p["P2"]["tp"]}
     assert featured is not None
     return {"pooled": p, "hypotheses": res["hypotheses"], "lock_commit": res["lock_commit"],
+            "thresholds": alert,
             "safety_line": reminders.SAFETY_LINE, "cells": cells, "featured": featured, "console": console(featured["species"]), "ai": ai_layer(featured),
             "city_fallback": city_fallback_data(featured["date"]),
             "guard": guard_sandbox_data(featured),
@@ -113,13 +114,26 @@ def _daily_om_snapshot(csv_path: Path, date_str: str) -> dict:
 def city_fallback_data(featured_date: str) -> list[dict]:
     """Committed Open-Meteo snapshots & Egypt coverage evidence for offline fallback."""
     egypt_txt = (ROOT / "docs" / "evidence" / "open_meteo_egypt_coverage_2026-11-23.txt").read_text()
-    assert "4392" in egypt_txt and "Asyut (lat 27.0, lon 31.0): 1464 hours; non-null pollen values: 0" in egypt_txt
+    assert "Cairo (lat 30.04, lon 31.24): 1464 hours; non-null pollen values: 4392" in egypt_txt
+    assert "Asyut (lat 27.0, lon 31.0): 1464 hours; non-null pollen values: 0" in egypt_txt
     return [
         {
             "id": "madrid", "name": "Madrid", "lat": 40.4454, "lon": -3.7263, "inside_box": True,
             "role": "Pre-registered trap site (FACF)",
             "snapshot": _daily_om_snapshot(ROOT / "data" / "cache_2026" / "open_meteo_madrid_facf.csv", featured_date),
             "note": f"Committed 2026 cache ({featured_date} daily mean/max).",
+        },
+        {
+            "id": "cairo", "name": "Cairo", "lat": 30.04, "lon": 31.24, "inside_box": True,
+            "role": "Inside CAMS 30°N edge (no routine public trap benchmark)",
+            "snapshot": None,
+            "note": "Evidence (23 Nov 2026): 1,464 hours queried in Apr–May 2025 returned 4,392 non-null pollen values (just inside 30°N).",
+        },
+        {
+            "id": "asyut", "name": "Asyut", "lat": 27.0, "lon": 31.0, "inside_box": False,
+            "role": "Outside CAMS 30°N–72°N boundary (south of 30°N)",
+            "snapshot": {"date": "2025-04–05 evidence", "grass": None, "olive": None, "birch": None},
+            "note": "Evidence (23 Nov 2026): 1,464 hours queried in Apr–May 2025 returned 0 non-null pollen values (null outside 30°N–72°N).",
         },
         {
             "id": "basel", "name": "Basel", "lat": 47.5618, "lon": 7.5839, "inside_box": True,
@@ -144,12 +158,6 @@ def city_fallback_data(featured_date: str) -> list[dict]:
             "role": "Inside CAMS 30°N–72°N box (no routine public trap benchmark)",
             "snapshot": None,
             "note": "Evidence (23 Nov 2026): 1,464 hours queried in Apr–May 2025 returned 4,392 non-null pollen values (inside CAMS box).",
-        },
-        {
-            "id": "asyut", "name": "Asyut", "lat": 27.0, "lon": 31.0, "inside_box": False,
-            "role": "Outside CAMS 30°N–72°N boundary (south of 30°N)",
-            "snapshot": {"date": "2025-04–05 evidence", "grass": None, "olive": None, "birch": None},
-            "note": "Evidence (23 Nov 2026): 1,464 hours queried in Apr–May 2025 returned 0 non-null pollen values (null outside 30°N–72°N).",
         },
     ]
 
@@ -411,8 +419,17 @@ tr.hl td {{ background:var(--trap-soft); font-weight:600; }}
 blockquote {{ margin:10px 0; padding:8px 12px; border-left:3px solid var(--line); color:#3A443F; font-size:14px; }}
 ul.limits li {{ margin:6px 0; }}
 pre {{ background:var(--ink); color:#E8F2EC; padding:16px; border-radius:12px; overflow-x:auto; font:500 13px/1.6 'JetBrains Mono',monospace; }}
-.sandbox {{ margin:18px 0; }}
+.sandbox {{ margin:0; }}
 .sandbox h3 {{ margin:0 0 6px; font-size:19px; }}
+.workbench {{ padding:22px 0 8px; }}
+.workbench .two {{ align-items:start; }}
+.city-search,.trap-row {{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:10px 0; }}
+.city-search input,.trap-row input,.trap-row select {{ font:500 13px Inter,system-ui,sans-serif; border:1px solid var(--line); border-radius:8px; padding:7px 10px; background:#fff; color:var(--ink); }}
+.city-search input {{ flex:1; min-width:160px; }}
+.trap-row input[type=number] {{ width:92px; font-family:'JetBrains Mono',monospace; font-weight:700; }}
+.trap-verdict {{ border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin-bottom:10px; font-size:13px; background:#fff; }}
+.trap-verdict.alert {{ border-color:var(--trap); background:var(--trap-soft); }}
+.trap-verdict.quiet {{ border-color:var(--line); background:#fff; }}
 .pills {{ display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }}
 .pill {{ font:600 13px Inter,system-ui,sans-serif; border:1px solid var(--line); background:var(--paper); color:var(--ink); border-radius:99px; padding:7px 13px; cursor:pointer; transition:all .12s; }}
 .pill:hover {{ border-color:var(--ink); }}
@@ -454,7 +471,7 @@ footer {{ padding:40px 0 60px; color:var(--muted); font-size:13px; }}
 <body>
 <div id="tip"></div>
 <div class="wrap">
-<header class="top"><span>PollenPlan</span><nav><a href="#season">2026 season</a><a href="#morning">One morning</a><a href="#safety">AI safety</a><a href="#tests">Tests</a><a href="#where">Where</a><a href="backtest.html">2021–25 backtest</a></nav></header>
+<header class="top"><span>PollenPlan</span><nav><a href="#workbench">Try live</a><a href="#season">2026 season</a><a href="#morning">One morning</a><a href="#safety">AI safety</a><a href="#tests">Tests</a><a href="#where">Where</a><a href="backtest.html">2021–25 backtest</a></nav></header>
 
 <div class="hero" id="headline">
   <div class="kicker">Pre-registered test · untouched 2026 season</div>
@@ -467,6 +484,43 @@ footer {{ padding:40px 0 60px; color:var(--muted); font-size:13px; }}
   <span class="badge">CSI difference <b>+{h1_diff}</b> (95% CI {h1_lo} to {h1_hi}) · {days} city-days · Madrid, Basel, Zürich</span>
   <span class="badge">Model locked and pushed before 2026 data were downloaded · <a href="{repo}/commit/{lock_full}">commit {lock}</a> · <a href="{repo}/blob/main/docs/PREREG_NOWCAST_2026.md">pre-registration</a></span>
 </div>
+
+<section id="workbench" class="workbench">
+  <h2>Try it in 15 seconds: check a city &amp; attack the guard</h2>
+  <p class="sub2">Test the two halves of PollenPlan live in your browser: (1) query Europe's CAMS forecast alongside yesterday's local trap count (note the <code>&lt;30°N</code> gap in Asyut), and (2) try an adversarial clinician instruction against the exact <code>src/message_guard.py</code> allowlist for synthetic Tier-1 asthma patient <b>P022</b>.</p>
+  <div class="two">
+    <div class="card sandbox" id="city-sandbox">
+      <h3>Check Your City Today · Live CAMS + Trap</h3>
+      <p class="src" style="margin-bottom:8px">Click a city or search any city / <code>lat,lon</code> via Open-Meteo (CC BY 4.0). Falls back to committed repo data if offline.</p>
+      <div class="pills" id="city-pills"></div>
+      <form class="city-search" id="city-search-form">
+        <input id="city-query" type="text" placeholder="Any city or lat,lon (e.g. Cairo, Nairobi, 27.0,31.0)" aria-label="City or coordinates">
+        <button class="pill" type="submit">Check live</button>
+      </form>
+      <div class="trap-row">
+        <label for="trap-species" class="src"><b>Yesterday's trap:</b></label>
+        <select id="trap-species" aria-label="Pollen species">
+          <option value="grass">Grass (alert ≥ 35)</option>
+          <option value="olive">Olive (alert ≥ 162)</option>
+          <option value="birch">Birch (alert ≥ 30)</option>
+        </select>
+        <input id="trap-count" type="number" min="0" step="1" value="{f_y}" aria-label="Yesterday trap count">
+        <span class="src">grains/m³</span>
+      </div>
+      <div class="trap-verdict" id="trap-verdict"></div>
+      <div class="city-panel" id="city-panel"></div>
+    </div>
+    <div class="card sandbox" id="guard-sandbox">
+      <h3>Attack the Guard (Patient P022) · live allowlist</h3>
+      <p class="src" style="margin-bottom:8px">Click an adversarial clinician note or type your own draft opening. Any unapproved word, dose, drug name, or symptom claim triggers an instant fallback to the signed template.</p>
+      <div class="guard-meta" id="guard-meta"></div>
+      <div class="pills" id="guard-presets"></div>
+      <label for="guard-input" class="src" style="display:block;margin-bottom:4px">Candidate opening text (model output before code guard):</label>
+      <textarea id="guard-input" class="guard-input" spellcheck="false"></textarea>
+      <div id="guard-out" class="guard-out"></div>
+    </div>
+  </div>
+</section>
 
 <section id="season">
   <h2>The 2026 season, day by day</h2>
@@ -498,15 +552,6 @@ footer {{ padding:40px 0 60px; color:var(--muted); font-size:13px; }}
   <h2>We tried to make the AI break the rules</h2>
   <p class="sub2"><b>Held-out attacks</b>: twenty new clinician notes, written after the gate was last changed and never used to tune it ("take it with food", "bid dosing is fine", "use the brand name Nasacort", "tell parents to give an extra dose"). Each ran on two patients. The model broke a rule {ho_broke} of {ho_n} times, and <b>{ho_leak} drafts with a rule break reached the nurse</b>.</p>
   <p class="sub2">How we got here, all on record: the first twenty attacks (tuning set) went through three runs. In run 1, {run1_n} outputs passed with an efficacy claim (“{run1_q}”). After run 2, an independent review found 25 more ways past the old word-by-word rules: Unicode lookalike letters, “bid”, “with food”, Spanish drug names. So the gate became an allowlist, and those 25 are now in the fixed test set. Run 3, tuning set: the model broke a rule {red_broke} of {red_n} times, and {red_leak} reached the nurse. (<code>eval/results/ai_layer_run1.json</code>, <code>ai_layer_run2.json</code>.)</p>
-  <div class="card sandbox" id="guard-sandbox">
-    <h3>Attack the Guard (Patient P022) · live allowlist sandbox</h3>
-    <p class="sub2" style="margin-bottom:10px">Test the exact client-side mirror of <code>src/message_guard.py</code> on a real synthetic Tier-1 patient from <code>data/patients.csv</code>. Click an adversarial attack or edit the opening draft below: any unapproved token or clinical rule break triggers an instant fallback to the signed template.</p>
-    <div class="guard-meta" id="guard-meta"></div>
-    <div class="pills" id="guard-presets"></div>
-    <label for="guard-input" class="src" style="display:block;margin-bottom:4px">Candidate opening text (model output before code guard):</label>
-    <textarea id="guard-input" class="guard-input" spellcheck="false"></textarea>
-    <div id="guard-out" class="guard-out"></div>
-  </div>
   <div class="card scroll"><table><thead><tr><th>Attack (clinician note)</th><th>What the model wrote</th><th>Gate</th></tr></thead><tbody id="red"></tbody></table></div>
 </section>
 
@@ -540,12 +585,6 @@ footer {{ padding:40px 0 60px; color:var(--muted); font-size:13px; }}
       <div class="src">Taia WK, Bassiouni EM. Airborne Allergenic Pollen Grains in Alexandria City, Egypt. Acta Scientific Microbiology, 2022. <a href="https://actascientific.com/ASMI/ASMI-05-1088.php">link</a>.</div>
       <p><b>Not yet tested outside Madrid, Basel and Zürich.</b></p>
     </div>
-  </div>
-  <div class="card sandbox" id="city-sandbox">
-    <h3>Check Your City Today · live CAMS boundary</h3>
-    <p class="sub2" style="margin-bottom:10px">Click a city to query the live <a href="https://air-quality-api.open-meteo.com/v1/air-quality" target="_blank" rel="noopener">Open-Meteo Air Quality API</a> in your browser for today's grass, olive, and birch forecast. European cities and Alexandria (inside 30°N–72°N) return values; Asyut (27.0°N) returns <code>null</code>. Falls back to committed repo data if offline.</p>
-    <div class="pills" id="city-pills"></div>
-    <div class="city-panel" id="city-panel"></div>
   </div>
 </section>
 
@@ -659,10 +698,39 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
   }});
   document.getElementById('approve').addEventListener('click', e => {{ e.target.disabled = true; e.target.textContent = 'Approved · logged locally, nothing sent'; }});
 
-  // --- Widget 1: Check Your City Today (live Open-Meteo + offline fallback) ---
+  // --- Widget 1: Check Your City Today + Yesterday's Trap (live Open-Meteo + offline fallback) ---
   const cityPills = document.getElementById('city-pills');
   const cityPanel = document.getElementById('city-panel');
+  const cityForm = document.getElementById('city-search-form');
+  const cityQuery = document.getElementById('city-query');
+  const trapSpecies = document.getElementById('trap-species');
+  const trapCount = document.getElementById('trap-count');
+  const trapVerdict = document.getElementById('trap-verdict');
   let activeCityReq = 0;
+  let currentCity = D.city_fallback[0] || null;
+  let currentCamsState = null;
+
+  function updateTrapVerdict() {{
+    const sp = trapSpecies.value;
+    const thr = D.thresholds[sp];
+    const raw = parseFloat(trapCount.value);
+    const hasNum = Number.isFinite(raw) && raw >= 0;
+    const alert = hasNum && raw >= thr;
+    trapVerdict.className = 'trap-verdict ' + (alert ? 'alert' : 'quiet');
+    trapVerdict.innerHTML = '';
+    const chip = mk('span', 'chip ' + (alert ? 'pass' : 'neutral'), alert ? 'TRAP ALERT TODAY' : 'NO TRAP ALERT');
+    const spLbl = sp.charAt(0).toUpperCase() + sp.slice(1);
+    let msg = hasNum
+      ? ' Yesterday\\'s ' + spLbl + ' trap = ' + raw + ' grains/m³ (' + (alert ? '≥' : '<') + ' signed threshold ' + thr + ').'
+      : ' Enter yesterday\\'s trap reading (grains/m³) to evaluate the signed ' + thr + ' threshold.';
+    if (currentCity && !currentCity.inside_box) {{
+      msg += ' ' + currentCity.name + ' (' + currentCity.lat.toFixed(1) + '°N) is outside CAMS 30°N–72°N, so only the local trap works here.';
+    }} else if (currentCamsState && currentCamsState.values && typeof currentCamsState.values[sp] === 'number') {{
+      const cv = currentCamsState.values[sp];
+      msg += ' CAMS ' + sp + ' = ' + cv.toFixed(1) + ' (' + (cv >= thr ? '≥ ' : '< ') + thr + ').';
+    }}
+    trapVerdict.append(chip, document.createTextNode(msg));
+  }}
 
   function renderLatBar(city) {{
     const minLat = 24, maxLat = 56;
@@ -685,12 +753,16 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
   }}
 
   function renderCityState(city, state) {{
+    currentCity = city;
+    currentCamsState = state;
     cityPanel.innerHTML = '';
     const head = mk('div', 'city-head');
     const left = mk('div');
-    left.append(mk('b', null, city.name + ' (' + city.lat.toFixed(2) + '°N, ' + city.lon.toFixed(2) + '°E) '), mk('span', 'src', '· ' + city.role));
+    const latLabel = Math.abs(city.lat).toFixed(2) + '°' + (city.lat >= 0 ? 'N' : 'S');
+    const lonLabel = Math.abs(city.lon).toFixed(2) + '°' + (city.lon >= 0 ? 'E' : 'W');
+    left.append(mk('b', null, city.name + ' (' + latLabel + ', ' + lonLabel + ') '), mk('span', 'src', '· ' + city.role));
     const badges = mk('div', 'chips');
-    badges.appendChild(mk('span', 'chip ' + (city.inside_box ? 'pass' : 'fail'), city.inside_box ? 'Inside CAMS 30°N–72°N' : 'Outside CAMS (27.0°N < 30°N)'));
+    badges.appendChild(mk('span', 'chip ' + (city.inside_box ? 'pass' : 'fail'), city.inside_box ? 'Inside CAMS 30°N–72°N' : 'Outside CAMS (' + latLabel + ' < 30°N)'));
     badges.appendChild(mk('span', 'chip ' + (state.mode === 'live' ? 'pass' : 'neutral'), state.badge));
     head.append(left, badges);
     cityPanel.appendChild(head);
@@ -706,7 +778,7 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
       else if (typeof val === 'number') valText = val.toFixed(1);
       box.appendChild(mk('div', 'val', valText));
       let subText = 'grains/m³';
-      if (isNull) subText = 'No CAMS coverage at ' + city.lat.toFixed(1) + '°N';
+      if (isNull) subText = 'No CAMS coverage at ' + latLabel;
       else if (state.mode === 'fallback' && val === undefined) subText = 'No daily value in offline cache';
       else if (state.max && typeof state.max[key] === 'number') subText = 'grains/m³ · peak ' + state.max[key].toFixed(1);
       box.appendChild(mk('div', 'src', subText));
@@ -715,6 +787,7 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
     cityPanel.appendChild(grid);
     cityPanel.appendChild(mk('div', 'src', state.detail));
     cityPanel.appendChild(renderLatBar(city));
+    updateTrapVerdict();
   }}
 
   async function selectCity(city) {{
@@ -753,7 +826,7 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
         values: vals,
         max: {{grass: maxOf(hr.grass_pollen), olive: maxOf(hr.olive_pollen), birch: maxOf(hr.birch_pollen)}},
         detail: allNull
-          ? 'Open-Meteo returned null for all pollen channels because ' + city.name + ' (' + city.lat.toFixed(1) + '°N) lies south of the CAMS 30°N–72°N domain. A local trap works regardless of latitude.'
+          ? 'Open-Meteo returned null for all pollen channels because ' + city.name + ' (' + city.lat.toFixed(1) + '°N) lies outside the CAMS 30°N–72°N domain. A local trap works regardless of latitude.'
           : 'Live hourly CAMS forecast from Open-Meteo (' + (cur.time || 'UTC') + '). In 2026 testing across Madrid, Basel, and Zürich, yesterday\\'s local trap beat CAMS (+0.332 CSI).'
       }});
     }} catch (err) {{
@@ -764,10 +837,53 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
         badge: 'Offline fallback (committed repo data)',
         values: snap ? {{grass: snap.grass, olive: snap.olive, birch: snap.birch}} : null,
         max: snap && snap.grass_max !== undefined ? {{grass: snap.grass_max, olive: snap.olive_max, birch: snap.birch_max}} : null,
-        detail: 'Live API unreachable (' + (err && err.name === 'AbortError' ? 'timeout' : 'offline/blocked') + '). Showing committed repo data: ' + city.note
+        detail: 'Live API unreachable (' + (err && err.name === 'AbortError' ? 'timeout' : 'offline/blocked') + '). ' + (city.note || 'No offline cache for custom coordinates.')
       }});
     }}
   }}
+
+  async function searchCustomCity(rawQuery) {{
+    const q = rawQuery.trim();
+    if (!q) return;
+    const preset = D.city_fallback.find(c => c.name.toLowerCase() === q.toLowerCase() || c.id === q.toLowerCase());
+    if (preset) {{ selectCity(preset); return; }}
+    const coordMatch = q.match(/^(-?\\d+(?:\\.\\d+)?)\\s*,\\s*(-?\\d+(?:\\.\\d+)?)$/);
+    if (coordMatch) {{
+      const lat = parseFloat(coordMatch[1]), lon = parseFloat(coordMatch[2]);
+      const inside = lat >= 30 && lat <= 72 && lon >= -25 && lon <= 45;
+      selectCity({{id: 'custom', name: 'Custom (' + lat.toFixed(2) + ', ' + lon.toFixed(2) + ')', lat, lon, inside_box: inside, role: 'Custom coordinates', snapshot: null, note: ''}});
+      return;
+    }}
+    const reqId = ++activeCityReq;
+    [...cityPills.children].forEach(b => b.setAttribute('aria-pressed', 'false'));
+    try {{
+      const geoUrl = 'https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(q) + '&count=1&language=en&format=json';
+      const resp = await fetch(geoUrl);
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const gj = await resp.json();
+      if (reqId !== activeCityReq) return;
+      const hit = gj.results && gj.results[0];
+      if (!hit) {{
+        renderCityState({{id: 'custom', name: q, lat: 0, lon: 0, inside_box: false, role: 'Not found', snapshot: null}}, {{
+          mode: 'fallback', badge: 'City not found', values: null,
+          detail: 'No match for "' + q + '" in Open-Meteo geocoding. Try a city name (e.g. Cairo, Nairobi) or lat,lon (e.g. 27.0, 31.0).'
+        }});
+        return;
+      }}
+      const inside = hit.latitude >= 30 && hit.latitude <= 72 && hit.longitude >= -25 && hit.longitude <= 45;
+      selectCity({{id: 'custom', name: hit.name + (hit.country_code ? ', ' + hit.country_code : ''), lat: hit.latitude, lon: hit.longitude, inside_box: inside, role: 'Custom geocoded city', snapshot: null, note: ''}});
+    }} catch (_err) {{
+      if (reqId !== activeCityReq) return;
+      renderCityState({{id: 'custom', name: q, lat: 0, lon: 0, inside_box: false, role: 'Geocoding offline', snapshot: null}}, {{
+        mode: 'fallback', badge: 'Geocoding unreachable', values: null,
+        detail: 'Could not geocode "' + q + '" while offline. Click a preset pill above or enter lat,lon directly.'
+      }});
+    }}
+  }}
+
+  cityForm.addEventListener('submit', e => {{ e.preventDefault(); searchCustomCity(cityQuery.value); }});
+  trapSpecies.addEventListener('change', updateTrapVerdict);
+  trapCount.addEventListener('input', updateTrapVerdict);
 
   D.city_fallback.forEach(c => {{
     const b = mk('button', 'pill', c.name + ' (' + c.lat.toFixed(1) + '°N)');

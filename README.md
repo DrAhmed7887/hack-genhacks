@@ -58,16 +58,12 @@ We found no study comparing those Egyptian values with trap counts. The trap-fir
 
 ## Limits
 
-- **Scale:** three trap sites, six series and 215 high days in 2026. Madrid olive had only 11 high days.
-- **Study type:** this is retrospective scoring of a pre-registered rule, not a prospective trial. No patient outcome was measured.
-- **Late onsets:** yesterday's count cannot see the first high day of a burst, so on a sudden rise the rule alerts one day late. Those days count as misses above.
-- **Reading delay:** the rule needs yesterday's count by morning.
-  - MeteoSwiss publishes files "up to yesterday".
-  - Madrid publishes daily from January to June and weekly after that.
-  - The two-day-old reading also beat the forecast.
-- **Thresholds:** single-centre values (`rules/thresholds.json`, signed 22 Nov 2026).
-- **Valencia:** the demo clinic's city has no trap counts in this repo. It is **never scored** and carries no accuracy claim.
-- **Data:** the patients are synthetic. Nothing is sent.
+- **Scale:** three trap sites, six series, and 215 high days in 2026 (Madrid olive had only 11).
+- **Study type:** retrospective scoring of a pre-registered rule, not a prospective trial; no patient outcome was measured.
+- **Late onsets & reading delay:** yesterday's count alerts one day late on sudden rises (counted as misses above) and requires yesterday's reading by morning (MeteoSwiss publishes "up to yesterday"; Madrid daily Jan–Jun, weekly after; 2-day lag also beat CAMS).
+- **Thresholds:** single-centre published values (`rules/thresholds.json`, signed 22 Nov 2026).
+- **Valencia:** the demo clinic's city has no trap counts in this repo; it is **never scored** and carries no accuracy claim.
+- **Synthetic data:** patients are synthetic (`N = 200`, seed `20261120`); nothing is sent externally.
 
 ![PollenPlan Workflow](docs/flow.svg)
 
