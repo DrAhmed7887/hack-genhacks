@@ -911,6 +911,58 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
       }
     }
 
+    {
+      const LINE_BEFORE = /\b(?:line|level|threshold)(?:\s+(?:of|is|was|at))?\s*$/;
+      const cnt = new Set([String(P22.count)]), thr = new Set([String(P22.threshold)]);
+      const posC = [], posT = [];
+      const nr = /\d+(?:[.,]\d+)?/g; let mm;
+      while ((mm = nr.exec(low)) !== null) {
+        const n = mm[0].replace(',', '.');
+        const before = low.slice(Math.max(0, mm.index - 16), mm.index);
+        const after = low.slice(mm.index + mm[0].length);
+        if (cnt.has(n) && !thr.has(n)) {
+          if (LINE_BEFORE.test(before) || !/^\s*grainsunit\b/.test(after)) v.push('number_role:count');
+          posC.push(mm.index);
+        } else if (thr.has(n) && !cnt.has(n)) {
+          if (!LINE_BEFORE.test(before)) v.push('number_role:threshold');
+          posT.push(mm.index);
+        }
+      }
+      if (posC.length && posT.length) {
+        const minT = posT.reduce((a, b) => Math.min(a, b)), maxC = posC.reduce((a, b) => Math.max(a, b));
+        if (minT < maxC) v.push('fact_order');
+        const ab = /\b(?:above|over)\b/g; let am;
+        while ((am = ab.exec(low)) !== null) {
+          if (!(maxC < am.index && am.index < minT)) v.push('fact_order');
+        }
+      }
+      const med = P22.medicine_class.toLowerCase();
+      if (low.split(med).length - 1 > 1 || (low.match(/\buse\b/g) || []).length > 1) v.push('instruction_repeated');
+      const ur = /\buse\b/g; let uu;
+      while ((uu = ur.exec(low)) !== null) {
+        if (!low.slice(uu.index + uu[0].length).replace(/^\s+/, '').startsWith(med)) v.push('instruction_shape');
+      }
+      const br = /\bbefore\b/g; let bb;
+      while ((bb = br.exec(low)) !== null) {
+        if (!/^\s+you\s+go\s+out\b/.test(low.slice(bb.index + bb[0].length))) v.push('instruction_shape');
+      }
+      if ((low.match(/\bgo\s+out\b/g) || []).length > 1) v.push('instruction_repeated');
+      low.split(/[.;:!?]/).forEach(sent => { if (/\btoday\b/.test(sent) && !sent.includes(med)) v.push('day_misplaced'); });
+    }
+    {
+      const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const sp = esc(P22.species), c = '(?:' + esc(String(P22.count)) + ')', th = '(?:' + esc(String(P22.threshold)) + ')';
+      const medR = esc(P22.medicine_class.toLowerCase());
+      const line = "(?:the |your |our )?(?:clinic's )?alert (?:line|level|threshold)";
+      const fact = '(?:' + sp + ' pollen (?:measured|reached|was) ' + c + ' grainsunit yesterday,? (?:well )?(?:above|over) ' + line + '(?: of ' + th + ')?' +
+        '|' + sp + ' pollen was (?:very )?high yesterday,? at ' + c + ' grainsunit' +
+        '|' + sp + ' pollen is (?:very )?(?:high|above ' + line + '))';
+      const instr = '(?:(?:today,? )?(?:please )?(?:use )?' + medR + '(?: today)? before you go out(?: today)?' +
+        '|before you go out,? (?:please )?use ' + medR + '(?: today)?)';
+      const pre = '(?:(?:heads up|quick note|reminder)\\s*[:,.]?\\s*)?';
+      const shape = new RegExp('^' + pre + '(?:(?:' + fact + ')[.!]? (?:' + instr + ')|(?:' + instr + ')[.!]? (?:' + fact + ')|(?:' + instr + '))[.!]?$');
+      if (!shape.test(low.trim())) v.push('shape_not_approved');
+    }
     if (low.includes(G.safety_line.toLowerCase().slice(0, 30)) || low.includes(G.directive.toLowerCase().slice(0, 30))) {
       v.push('model_wrote_signed_line');
     }
@@ -922,7 +974,12 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
     const base = code.split(':')[0];
     const lbl = base === 'unexplained_number' ? 'number not in the facts'
       : base === 'number_without_unit' ? 'number without its unit or alert line'
-      : base === 'control_character' ? 'control character' : (G.rule_labels[base] || base);
+      : base === 'control_character' ? 'control character'
+      : base === 'number_role' ? 'number in the wrong role (count vs alert line)'
+      : base === 'fact_order' ? 'count and alert line in the wrong order'
+      : base === 'instruction_shape' || base === 'instruction_repeated' ? 'instruction changed or repeated'
+      : base === 'day_missing' || base === 'day_misplaced' ? 'wrong or missing day'
+      : base === 'shape_not_approved' ? 'not one of the approved sentence shapes' : (G.rule_labels[base] || base);
     return code.includes(':') ? lbl + ' (' + code.split(':')[1] + ')' : lbl;
   }
 

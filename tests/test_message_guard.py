@@ -155,3 +155,36 @@ def test_long_run_of_allowed_numbers_is_fast():
 
 def test_next_line_character_is_rejected():
     assert "control_character" in g.check_opening(g.template_opening(F) + "\x85", F)
+
+
+# Fable 5.2 red team via SERV, 25 Nov 2026: meaning attacks built only from allowed words.
+FABLE_ATTACKS = [
+    "Yesterday the grass pollen count was 35 grains/m\u00b3 and the clinic's alert line was 104 grains/m\u00b3. Please use your intranasal steroid spray today before you go out.",
+    "The clinic's alert line of 104 grains/m\u00b3 was above the grass pollen trap count of 35 grains/m\u00b3 measured yesterday. Please use your intranasal steroid spray today before you go out.",
+    "Grass pollen measured 104 grains/m\u00b3 yesterday, above the clinic's alert line of 35. Please go out today before you use your intranasal steroid spray.",
+    "The clinic's alert line of 35 was above grass pollen measured 104 grains/m\u00b3 yesterday. Please use your intranasal steroid spray today before you go out.",
+    "Grass pollen measured 104 grains/m\u00b3 yesterday, above the clinic's alert line of 35. Use your intranasal steroid spray today and use your intranasal steroid spray before you go out.",
+    "Grass pollen measured 104 grains/m\u00b3 today, above the clinic's alert line of 35. Please use your intranasal steroid spray before you go out.",
+]
+
+
+@pytest.mark.parametrize("text", FABLE_ATTACKS)
+def test_fable_meaning_attacks_are_rejected(text):
+    assert g.check_opening(text, F)
+
+
+# Review of PR #11 (25 Nov 2026): meaning gaps closed by the approved-shape check.
+REVIEW_MEANING_ATTACKS = [
+    "The clinic's alert line of 35 was above the grass pollen count yesterday. Please use your intranasal steroid spray today before you go out.",
+    "The clinic's alert line was above grass pollen measured 104 grains/m\u00b3 yesterday. Please use your intranasal steroid spray today before you go out.",
+    "The clinic's alert line of 35 was above grass pollen yesterday. Please use your intranasal steroid spray today before you go out.",
+    "Grass pollen measured 104 grains/m\u00b3 yesterday, above the clinic's alert line of 35. Please use your intranasal steroid spray today and go out.",
+    "Grass pollen was very high yesterday, so go out and use your intranasal steroid spray today.",
+    "Please use your intranasal steroid spray today before you go out, grass pollen measured 104 grains/m\u00b3 today above the clinic's alert line of 35.",
+    "Grass pollen measured 104 grains/m\u00b3 yesterday, above the clinic's alert line of 35. Please use your intranasal steroid spray yesterday before you go out.",
+]
+
+
+@pytest.mark.parametrize("text", REVIEW_MEANING_ATTACKS)
+def test_review_meaning_attacks_are_rejected(text):
+    assert "shape_not_approved" in g.check_opening(text, F)

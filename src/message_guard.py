@@ -138,9 +138,76 @@ def check_opening(text: str, f: Facts) -> list[str]:
         elif not (re.match(r"\s*grainsunit\b", t[m.end():], re.I)
                   or re.search(r"\b(?:line|level|threshold)(?:\s+of)?\s*$", t[max(0, m.start() - 16):m.start()], re.I)):
             v.append(f"number_without_unit:{n}")  # a bare "Use 104." reads like a dose
+    v.extend(_structure_violations(low, f))
+    if not _shape_ok(low, f):
+        v.append("shape_not_approved")
     if SAFETY_LINE.lower()[:30] in low or DIRECTIVE.lower()[:30] in low:
         v.append("model_wrote_signed_line")  # code appends signed lines; the model must not
     return sorted(set(v))
+
+
+_LINE_BEFORE = re.compile(r"\b(?:line|level|threshold)(?:\s+(?:of|is|was|at))?\s*$")
+
+
+def _structure_violations(low: str, f: Facts) -> list[str]:
+    """Meaning checks the word allowlist cannot see (Fable 5.2 red team, 25 Nov 2026):
+    swapped count/line numbers, reversed comparison, reversed or repeated instruction, wrong day."""
+    v: list[str] = []
+    cnt, thr = {_num(f.count), f"{f.count:g}"}, {_num(f.threshold), f"{f.threshold:g}"}
+    pos_c, pos_t = [], []
+    for m in re.finditer(r"\d+(?:[.,]\d+)?", low):
+        n = m.group().replace(",", ".")
+        before = low[max(0, m.start() - 16):m.start()]
+        if n in cnt and n not in thr:
+            if _LINE_BEFORE.search(before) or not re.match(r"\s*grainsunit\b", low[m.end():]):
+                v.append("number_role:count")
+            pos_c.append(m.start())
+        elif n in thr and n not in cnt:
+            if not _LINE_BEFORE.search(before):
+                v.append("number_role:threshold")
+            pos_t.append(m.start())
+    if pos_c and pos_t:
+        if min(pos_t) < max(pos_c):
+            v.append("fact_order")
+        for m in re.finditer(r"\b(?:above|over)\b", low):
+            if not (max(pos_c) < m.start() < min(pos_t)):
+                v.append("fact_order")
+    med = f.medicine_class.lower()
+    if low.count(med) > 1 or len(re.findall(r"\buse\b", low)) > 1:
+        v.append("instruction_repeated")
+    for m in re.finditer(r"\buse\b", low):
+        if not low[m.end():].lstrip().startswith(med):
+            v.append("instruction_shape")
+    for m in re.finditer(r"\bbefore\b", low):
+        if not re.match(r"\s+you\s+go\s+out\b", low[m.end():]):
+            v.append("instruction_shape")
+    if len(re.findall(r"\bgo\s+out\b", low)) > 1:
+        v.append("instruction_repeated")
+    for sent in re.split(r"[.;:!?]", low):
+        if re.search(r"\btoday\b", sent) and med not in sent:
+            v.append("day_misplaced")
+    return v
+
+
+def _shape_regex(f: Facts) -> re.Pattern:
+    """The only approved shapes: optional heads-up, one fact sentence, one instruction sentence (either order)."""
+    sp = re.escape(f.species)
+    c = "(?:" + "|".join(re.escape(x) for x in sorted({_num(f.count), f"{f.count:g}"})) + ")"
+    t = "(?:" + "|".join(re.escape(x) for x in sorted({_num(f.threshold), f"{f.threshold:g}"})) + ")"
+    med = re.escape(f.medicine_class.lower())
+    line = r"(?:the |your |our )?(?:clinic's )?alert (?:line|level|threshold)"
+    fact = (rf"(?:{sp} pollen (?:measured|reached|was) {c} grainsunit yesterday,? (?:well )?(?:above|over) {line}(?: of {t})?"
+            rf"|{sp} pollen was (?:very )?high yesterday,? at {c} grainsunit"
+            rf"|{sp} pollen is (?:very )?(?:high|above {line}))")
+    instr = (rf"(?:(?:today,? )?(?:please )?(?:use )?{med}(?: today)? before you go out(?: today)?"
+             rf"|before you go out,? (?:please )?use {med}(?: today)?)")
+    pre = r"(?:(?:heads up|quick note|reminder)\s*[:,.]?\s*)?"
+    end = r"[.!]?"
+    return re.compile(rf"^{pre}(?:(?:{fact}){end} (?:{instr})|(?:{instr}){end} (?:{fact})|(?:{instr})){end}$")
+
+
+def _shape_ok(low: str, f: Facts) -> bool:
+    return bool(_shape_regex(f).match(low.strip()))
 
 
 def finalise(model_opening: str | None, f: Facts) -> tuple[str, Checked]:
