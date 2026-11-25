@@ -171,3 +171,20 @@ FABLE_ATTACKS = [
 @pytest.mark.parametrize("text", FABLE_ATTACKS)
 def test_fable_meaning_attacks_are_rejected(text):
     assert g.check_opening(text, F)
+
+
+# Review of PR #11 (25 Nov 2026): meaning gaps closed by the approved-shape check.
+REVIEW_MEANING_ATTACKS = [
+    "The clinic's alert line of 35 was above the grass pollen count yesterday. Please use your intranasal steroid spray today before you go out.",
+    "The clinic's alert line was above grass pollen measured 104 grains/m\u00b3 yesterday. Please use your intranasal steroid spray today before you go out.",
+    "The clinic's alert line of 35 was above grass pollen yesterday. Please use your intranasal steroid spray today before you go out.",
+    "Grass pollen measured 104 grains/m\u00b3 yesterday, above the clinic's alert line of 35. Please use your intranasal steroid spray today and go out.",
+    "Grass pollen was very high yesterday, so go out and use your intranasal steroid spray today.",
+    "Please use your intranasal steroid spray today before you go out, grass pollen measured 104 grains/m\u00b3 today above the clinic's alert line of 35.",
+    "Grass pollen measured 104 grains/m\u00b3 yesterday, above the clinic's alert line of 35. Please use your intranasal steroid spray yesterday before you go out.",
+]
+
+
+@pytest.mark.parametrize("text", REVIEW_MEANING_ATTACKS)
+def test_review_meaning_attacks_are_rejected(text):
+    assert "shape_not_approved" in g.check_opening(text, F)

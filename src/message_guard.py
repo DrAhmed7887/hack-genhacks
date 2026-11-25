@@ -139,6 +139,8 @@ def check_opening(text: str, f: Facts) -> list[str]:
                   or re.search(r"\b(?:line|level|threshold)(?:\s+of)?\s*$", t[max(0, m.start() - 16):m.start()], re.I)):
             v.append(f"number_without_unit:{n}")  # a bare "Use 104." reads like a dose
     v.extend(_structure_violations(low, f))
+    if not _shape_ok(low, f):
+        v.append("shape_not_approved")
     if SAFETY_LINE.lower()[:30] in low or DIRECTIVE.lower()[:30] in low:
         v.append("model_wrote_signed_line")  # code appends signed lines; the model must not
     return sorted(set(v))
@@ -185,6 +187,27 @@ def _structure_violations(low: str, f: Facts) -> list[str]:
         if re.search(r"\btoday\b", sent) and med not in sent:
             v.append("day_misplaced")
     return v
+
+
+def _shape_regex(f: Facts) -> re.Pattern:
+    """The only approved shapes: optional heads-up, one fact sentence, one instruction sentence (either order)."""
+    sp = re.escape(f.species)
+    c = "(?:" + "|".join(re.escape(x) for x in sorted({_num(f.count), f"{f.count:g}"})) + ")"
+    t = "(?:" + "|".join(re.escape(x) for x in sorted({_num(f.threshold), f"{f.threshold:g}"})) + ")"
+    med = re.escape(f.medicine_class.lower())
+    line = r"(?:the |your |our )?(?:clinic's )?alert (?:line|level|threshold)"
+    fact = (rf"(?:{sp} pollen (?:measured|reached|was) {c} grainsunit yesterday,? (?:well )?(?:above|over) {line}(?: of {t})?"
+            rf"|{sp} pollen was (?:very )?high yesterday,? at {c} grainsunit"
+            rf"|{sp} pollen is (?:very )?(?:high|above {line}))")
+    instr = (rf"(?:(?:today,? )?(?:please )?(?:use )?{med}(?: today)? before you go out(?: today)?"
+             rf"|before you go out,? (?:please )?use {med}(?: today)?)")
+    pre = r"(?:(?:heads up|quick note|reminder)\s*[:,.]?\s*)?"
+    end = r"[.!]?"
+    return re.compile(rf"^{pre}(?:(?:{fact}){end} (?:{instr})|(?:{instr}){end} (?:{fact})|(?:{instr})){end}$")
+
+
+def _shape_ok(low: str, f: Facts) -> bool:
+    return bool(_shape_regex(f).match(low.strip()))
 
 
 def finalise(model_opening: str | None, f: Facts) -> tuple[str, Checked]:

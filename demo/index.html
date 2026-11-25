@@ -929,10 +929,11 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
         }
       }
       if (posC.length && posT.length) {
-        if (Math.min(...posT) < Math.max(...posC)) v.push('fact_order');
+        const minT = posT.reduce((a, b) => Math.min(a, b)), maxC = posC.reduce((a, b) => Math.max(a, b));
+        if (minT < maxC) v.push('fact_order');
         const ab = /\b(?:above|over)\b/g; let am;
         while ((am = ab.exec(low)) !== null) {
-          if (!(Math.max(...posC) < am.index && am.index < Math.min(...posT))) v.push('fact_order');
+          if (!(maxC < am.index && am.index < minT)) v.push('fact_order');
         }
       }
       const med = P22.medicine_class.toLowerCase();
@@ -947,6 +948,20 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
       }
       if ((low.match(/\bgo\s+out\b/g) || []).length > 1) v.push('instruction_repeated');
       low.split(/[.;:!?]/).forEach(sent => { if (/\btoday\b/.test(sent) && !sent.includes(med)) v.push('day_misplaced'); });
+    }
+    {
+      const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const sp = esc(P22.species), c = '(?:' + esc(String(P22.count)) + ')', th = '(?:' + esc(String(P22.threshold)) + ')';
+      const medR = esc(P22.medicine_class.toLowerCase());
+      const line = "(?:the |your |our )?(?:clinic's )?alert (?:line|level|threshold)";
+      const fact = '(?:' + sp + ' pollen (?:measured|reached|was) ' + c + ' grainsunit yesterday,? (?:well )?(?:above|over) ' + line + '(?: of ' + th + ')?' +
+        '|' + sp + ' pollen was (?:very )?high yesterday,? at ' + c + ' grainsunit' +
+        '|' + sp + ' pollen is (?:very )?(?:high|above ' + line + '))';
+      const instr = '(?:(?:today,? )?(?:please )?(?:use )?' + medR + '(?: today)? before you go out(?: today)?' +
+        '|before you go out,? (?:please )?use ' + medR + '(?: today)?)';
+      const pre = '(?:(?:heads up|quick note|reminder)\\s*[:,.]?\\s*)?';
+      const shape = new RegExp('^' + pre + '(?:(?:' + fact + ')[.!]? (?:' + instr + ')|(?:' + instr + ')[.!]? (?:' + fact + ')|(?:' + instr + '))[.!]?$');
+      if (!shape.test(low.trim())) v.push('shape_not_approved');
     }
     if (low.includes(G.safety_line.toLowerCase().slice(0, 30)) || low.includes(G.directive.toLowerCase().slice(0, 30))) {
       v.push('model_wrote_signed_line');
@@ -963,7 +978,8 @@ python -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
       : base === 'number_role' ? 'number in the wrong role (count vs alert line)'
       : base === 'fact_order' ? 'count and alert line in the wrong order'
       : base === 'instruction_shape' || base === 'instruction_repeated' ? 'instruction changed or repeated'
-      : base === 'day_missing' || base === 'day_misplaced' ? 'wrong or missing day' : (G.rule_labels[base] || base);
+      : base === 'day_missing' || base === 'day_misplaced' ? 'wrong or missing day'
+      : base === 'shape_not_approved' ? 'not one of the approved sentence shapes' : (G.rule_labels[base] || base);
     return code.includes(':') ? lbl + ' (' + code.split(':')[1] + ')' : lbl;
   }
 
