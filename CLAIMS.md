@@ -1,6 +1,6 @@
 # CLAIMS: every public number and feature claim, with its source
 
-Last verified: 23 Nov 2026 (section N added for the pre-registered 2026 test); sections A–K verified 22–23 Nov 2026 on top of commit `1f826e6`. Every number below was read out of `eval/results/backtest.json` (written by `eval/backtest.py`), `rules/thresholds.json`, `data/make_patients.py` or `data/patients.csv`, not typed from memory. The numbers appear in `README.md`, `DEVPOST_DRAFT.md`, `demo/backtest.html`, `docs/results_table.md` and the video (`video/STORYBOARD.md`, `video/film/script.json`, `video/film/compositions/*.html`).
+Last verified: 23 Nov 2026 (section N added for the pre-registered 2026 test); sections A–K verified 22–23 Nov 2026 on top of commit `1f826e6`. Every number below was read out of `eval/results/backtest.json` (written by `eval/backtest.py`), `rules/thresholds.json`, `data/make_patients.py` or `data/patients.csv`, not typed from memory. The numbers appear in `README.md`, `DEVPOST_DRAFT.md`, `demo/backtest.html`, `docs/results_table.md` and the video (`video/SCRIPT_V5.md`, `video/v5/narration.json`, `video/v5/README.md`).
 
 ## How to reproduce from a fresh clone
 
@@ -35,9 +35,9 @@ Source: `NC` = `eval/results/nowcast_2026.json`, written once by `eval/nowcast.p
 | N2 | Yesterday's trap flagged 164 of 215 (76.3%), 40 false-alert days, CSI 0.643 | same | `NC.pooled.P0` | tp 164, fp 40, recall 0.763, csi 0.643 |
 | N3 | CAMS forecast flagged 70 of 215 (32.6%), 10 false-alert days, CSI 0.311 | same | `NC.pooled.P2` | tp 70, fp 10, recall 0.326, csi 0.311 |
 | N4 | H1 passed: CSI +0.332, 95% CI 0.203 to 0.457 | same | `NC.hypotheses.H1` | csi_diff 0.332, ci95 [0.203, 0.457], passes true |
-| N5 | H2 passed (+0.291, CI 0.176 to 0.406); H3 failed (−0.041, CI −0.117 to 0.028); H4 failed (+0.020, CI −0.021 to 0.064) | README, demo, film | `NC.hypotheses.H2/H3/H4` | as stated |
+| N5 | H2 passed (+0.291, CI 0.176 to 0.406); H3 failed (−0.041, CI −0.117 to 0.028); H4 failed (+0.020, CI −0.021 to 0.064) | README, demo, film | `NC.hypotheses.H2`, `NC.hypotheses.H3`, `NC.hypotheses.H4` | as stated |
 | N6 | Two-day-old trap reading: 151 of 215, CSI 0.572; beats the forecast (CI 0.134 to 0.384) | README, demo | `NC.pooled.P0_D2`, `NC.hypotheses.sensitivity_P0_D2_vs_P2` | tp 151, csi 0.572 |
-| N7 | Fusion F1 159/215 CSI 0.602; F2 (+NASA) 181/215 CSI 0.622; calendar C0 118/215 CSI 0.449 | README, demo | `NC.pooled.F1/F2/C0` | as stated |
+| N7 | Fusion F1 159/215 CSI 0.602; F2 (+NASA) 181/215 CSI 0.622; calendar C0 118/215 CSI 0.449 | README, demo | `NC.pooled.F1`, `NC.pooled.F2`, `NC.pooled.C0` | as stated |
 | N8 | Forecast missed 145 high days, yesterday's trap missed 51 | demo, film | `NC.pooled.P2.fn`, `NC.pooled.P0.fn` | 145, 51 |
 | N9 | Yesterday's trap beats the forecast in all six city × species series in 2026 | README, film | `NC.per_cell[*].P0.csi > P2.csi` | true for 6 of 6 |
 | N10 | 2021–2025: trap 670 of 857, forecast 359 of 863 | README, demo | `BT.results[].day_rules.P0/P2` tp and tp+fn | 670/857, 359/863 |
@@ -53,10 +53,10 @@ Source: `AI` = `eval/results/ai_layer.json` (written by `eval/ai_layer.py`, mode
 | AI1 | 111 AI-written drafts, all 111 passed the code safety gate, 0 replaced by the template | `AI.draft_summary` | n 111, passed 111, fell back 0 |
 | AI2 | Batch ordered by risk: 9 asthma flag + moderate/severe, 58 asthma flag or moderate/severe, 44 mild | `AI.drafts[].tier` | 9 / 58 / 44 |
 | AI3 | Tuning red team (20 attacks × 2 patients = 40, run 3): the model broke a rule 12 times; 0 drafts with a rule break reached the nurse | `AI.red_team_summary` | 40, 12, 0 |
-| AI4 | Run 1: 2 outputs passed the gate with an efficacy claim ("help prevent asthma attacks"); rule added, re-run | `ai_layer_run1.json` re-checked with today's gate | 2 |
+| AI4 | Run 1: 2 outputs passed the gate with an efficacy claim ("help prevent asthma attacks"); rule added, re-run | `eval/results/ai_layer_run1.json` re-checked with today's gate | 2 |
 | AI5 | Clinician Q&A: 12 questions; 3 symptom questions answered by the fixed safety reply without calling the model; 2 model answers withheld by the check | `AI.qa[].route`, `AI.qa[].violations` | 12, 3, 2 |
 | AI6 | Held-out red team (20 new attacks written after the last gate change, × 2 patients = 40): the model broke a rule 21 times; 0 reached the nurse | `AI.red_team_heldout_summary` | 40, 21, 0 |
-| AI7 | Independent review of the run-2 gate found 25 bypasses; all 25 are in the fixed test set and rejected | `tests/test_message_guard.py::REVIEW_BYPASSES` | 25 |
+| AI7 | Independent review of the run-2 gate found 25 bypasses; all 25 are in the fixed test set and rejected | `tests/test_message_guard.py` (`REVIEW_BYPASSES`) | 25 |
 
 > **Legacy sections (A–E, K).** These rows record the 2021–2025 backtest of the earlier rules, now superseded. Its totals (863 high days, six rules) are quoted only as background on the front page and in the Devpost draft. The full numbers appear only on pages and sections marked superseded (`demo/backtest.html`), in `docs/results_table.md` and in `eval/results/backtest.json`. The "Where it appears" column shows where each number appeared before the 23 Nov 2026 rebuild. The current headline is section N.
 
@@ -147,9 +147,9 @@ Every number in the film is read at build time from `video/remotion/src/v5/data.
 | # | Claim | Source | Command |
 |---|---|---|---|
 | G1 | Duration 2:57 (176.6 s) | `ffprobe` on the mastered file | `ffprobe -v error -show_entries format=duration -of csv=p=0 video/remotion/out/PollenPlan_GenHacks_v5_FINAL_1080p.mp4` |
-| G2 | Pooled 2026 counts on screen (215 events, trap 164 hits, CAMS 70 hits) | rows N1–N4 above; `data.json` → `pooled` | `python3 video/v5/build_data.py` then read `video/remotion/src/v5/data.json` |
-| G3 | Nurse batch 111 of 200, all 111 passed the safety gate; held-out red team 40 attacks, 21 rule breaks, 0 reached the nurse | rows AI1, AI6 above; `data.json` → `batch`, `redTeam` | as G2 |
-| G4 | "239 tests" | `pytest -q` summary line, run by `build_data.py` | `.venv/bin/python -m pytest -q tests` |
+| G2 | Pooled 2026 counts on screen (215 events, trap 164 hits, CAMS 70 hits) | rows N1–N4 above; `video/remotion/src/v5/data.json` → `pooled` | `python3 video/v5/build_data.py` then read `video/remotion/src/v5/data.json` |
+| G3 | Nurse batch 111 of 200, all 111 passed the safety gate; held-out red team 40 attacks, 21 rule breaks, 0 reached the nurse | rows AI1, AI6 above; `video/remotion/src/v5/data.json` → `batch`, `redTeam` | as G2 |
+| G4 | "239 tests" | `pytest -q` summary line, run by `video/v5/build_data.py` | `.venv/bin/python -m pytest -q tests` |
 | G5 | Loudness −16 LUFS integrated, true peak below −1.5 dBTP | `ebur128` on the mastered file | `ffmpeg -i <mp4> -af ebur128=peak=true -f null -` |
 | G6 | AI-generated voice, music and b-roll are labelled; product screens and charts are not AI-generated | `video/v5/README.md` "AI-generated material in the film" | read the file |
 
