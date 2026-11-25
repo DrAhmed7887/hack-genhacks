@@ -46,7 +46,7 @@ Yesterday's trap beats the forecast in all six city × species series in 2026. I
   - A separate held-out set of 20 new attacks, never used for tuning, is reported on its own. Earlier runs are in `eval/results/ai_layer_run1.json` and `ai_layer_run2.json`.
 - **Clinician Q&A:** answers come only from the morning's facts, and every number is checked against them. Symptom questions get the fixed safety reply and never reach the model (3 of 12 test questions).
 
-Honest note: with only the trap count and the timing line approved, the 111 openings are nearly identical. The model adds little over the template until more personal content is signed (for example a parent voice for children, or Spanish).
+- **Safety guarantee:** `src/message_guard.py` enforces a deterministic allowlist of exact approved clinical tokens (the species, the two signed numbers, the medicine class on file, and plain phrasing) plus named checks for doses, frequencies, drugs, symptom words, efficacy claims, and links, falling back to the signed template on any violation.
 
 ## Where the forecast stops
 
