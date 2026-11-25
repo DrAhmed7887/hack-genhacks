@@ -327,6 +327,7 @@ TEMPLATE = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
 <title>PollenPlan · Read the trap</title>
 <meta name="description" content="On the untouched 2026 pollen season, yesterday's local trap count flagged {trap_tp} of {events} high-pollen days; Europe's CAMS forecast flagged {cams_tp}. Pre-registered.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
