@@ -50,6 +50,7 @@ Python (numpy, pandas, pytest), CDC NCHS NHANES 2005–2006 (public domain), Tra
 ## Links
 
 - Live interactive workbench & demo (no account): https://drahmed7887.github.io/hack-genhacks/
+- Demo video (2:59): https://youtu.be/bybQPPLhNfw
 - Repository (Apache 2.0): https://github.com/DrAhmed7887/hack-genhacks
 - Judge guide: https://github.com/DrAhmed7887/hack-genhacks/blob/main/JUDGES.md
 - Pre-registration (`prereg-lock-2026`, `5c45eaf`): https://github.com/DrAhmed7887/hack-genhacks/blob/main/docs/PREREG_NOWCAST_2026.md

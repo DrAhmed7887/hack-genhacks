@@ -4,7 +4,7 @@
 
 **What this comparison is, in plain words:** "trap beats CAMS" compares *yesterday's measured count* (a persistence rule) with *today's forecast*. It is not one forecast beating another. The rule is **untested outside Madrid, Basel and Zürich**.
 
-**Live demo, no account:** <https://drahmed7887.github.io/hack-genhacks/> · **Reproduce with no keys:**
+**Live demo, no account:** <https://drahmed7887.github.io/hack-genhacks/> · **Demo video:** <https://youtu.be/bybQPPLhNfw> · **Reproduce with no keys:**
 
 ```bash
 python -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/python -m pytest -q && .venv/bin/python eval/verify_claims.py

@@ -1,6 +1,6 @@
 # PollenPlan: guide for judges
 
-GenHacks (**Healthcare & Environmental**) · **Live interactive workbench (no account):** <https://drahmed7887.github.io/hack-genhacks/> · **Code:** <https://github.com/DrAhmed7887/hack-genhacks>
+GenHacks (**Healthcare & Environmental**) · **Live interactive workbench (no account):** <https://drahmed7887.github.io/hack-genhacks/> · **Demo video:** <https://youtu.be/bybQPPLhNfw> · **Code:** <https://github.com/DrAhmed7887/hack-genhacks>
 
 **One-line pitch:** On the untouched 2026 pollen season (1,706 city-days; Madrid, Basel, Zürich), **yesterday's local trap count** flagged **164 of 215 high-pollen days (76.3%)** versus **70 (32.6%)** for Europe's CAMS forecast (+0.332 CSI, 95% CI 0.203–0.457), paired with **578 de-identified CDC NHANES survey participants with hay fever** and an allowlist-gated nurse console.
 
@@ -18,4 +18,4 @@ GenHacks (**Healthcare & Environmental**) · **Live interactive workbench (no ac
 - Retrospective scoring of 3 European trap sites (215 high days in 2026; Madrid olive n=11); no prospective clinical trial or patient outcome measured.
 - Persistence alerts 1 day late on sudden bursts and needs yesterday's trap count by morning; thresholds (`162/35/30` grains/m³) are single-centre values signed 22 Nov 2026.
 - CDC NHANES 2005–2006 assays ImmunoCAP grass and birch sIgE (`>= 0.35 kU/L`), not olive IgE; no external sends; Valencia is never scored.
-- Video link attached at Devpost submission.
+- Demo video (2:59): <https://youtu.be/bybQPPLhNfw>.
