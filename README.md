@@ -50,7 +50,12 @@ The CAMS European pollen forecast covers 25° W–45° E and 30° N–72° N ([C
 
 We queried it for Egypt ([`docs/evidence/open_meteo_egypt_coverage_2026-11-23.txt`](docs/evidence/open_meteo_egypt_coverage_2026-11-23.txt)). Alexandria and Cairo, inside the box, get pollen values. Asyut (27° N) gets none.
 
-We found no study comparing those Egyptian values with trap counts. The trap-first rule needs only a local trap. In Alexandria, a one-year volumetric trap study (May 2019 – April 2020; Taia & Bassiouni, *Acta Scientific Microbiology* 2022) shows the measurement can be made. **The rule is not yet tested outside Madrid, Basel and Zürich.**
+We found no study comparing those Egyptian values with trap counts. The trap-first rule needs only a local trap. In Alexandria, volumetric trap records from 1981–1982 (El-Ghazaly & Fawzy, *Grana* 1988, [`10.1080/00173138809427736`](https://doi.org/10.1080/00173138809427736)) and May 2019–April 2020 (Taia & Bassiouni, *Acta Scientific Microbiology* 2022, [`10.31080/ASMI.2022.05.1088`](https://doi.org/10.31080/ASMI.2022.05.1088)) show the measurement can be made, while a 2026 continent-wide review confirms zero published volumetric traps south of 30° N in North Africa ([`10.1007/s10453-026-09933-w`](https://doi.org/10.1007/s10453-026-09933-w)). **The rule is not yet tested outside Madrid, Basel and Zürich.**
+
+### Related literature
+
+- **Persistence vs. dispersion ensembles:** In the foundational CAMS olive ensemble evaluation (2014, 62 EAN sites, zero in Africa), 1-day persistence beat even the dynamically fused ensemble on continuous RMSE before decaying at day +2, though binary clinical alert CSI/recall was not evaluated ([Sofiev et al., *ACP* 2017](https://doi.org/10.5194/acp-17-12341-2017)). In Australia's AusPollen verification, *curated* local forecasts usually beat persistence ([Emmerson et al., *Atmos Environ X* 2022](https://doi.org/10.1016/j.aeaoa.2022.100183)); our locked 2026 test shows the inverse for un-curated CAMS ENSEMBLE alerts, where even a 2-day-lagged trap reading (`P0_D2`, CSI `0.572`) outperforms CAMS (`0.311`).
+- **Digital alert quality & clinical stakes:** Commercial pollen app hit rates often sit near ~50% ([Bastl et al., *JMIR* 2017](https://doi.org/10.2196/jmir.7426)), whereas a 2025 controlled trial (N = 167) found reliable forecast-equipped allergy apps improved medication use and symptom control ([*Allergy* 2025](https://doi.org/10.1111/all.16558)).
 
 ## Limits
 
